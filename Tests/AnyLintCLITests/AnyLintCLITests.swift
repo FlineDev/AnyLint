@@ -1,7 +1,7 @@
 import XCTest
-@testable import AnyLint
+@testable import AnyLintCLI
 
-final class AnyLintTests: XCTestCase {
+final class AnyLintCLITests: XCTestCase {
     func testExample() {
         // TODO: [2020-03-07] not yet implemented
     }
