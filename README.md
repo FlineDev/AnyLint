@@ -3,16 +3,16 @@
 Lint anything by combining the power of Swift & regular expressions.
 
 <p align="center">
-    <a href="https://app.bitrise.io/app/TODO">
-        <img src="https://app.bitrise.io/app/TODO/status.svg?token=TODO&branch=main"
+    <a href="https://app.bitrise.io/app/b2708c16ab236ff8">
+        <img src="https://app.bitrise.io/app/b2708c16ab236ff8/status.svg?token=PuELIpLj_V11GkcIztEgGQ&branch=main"
             alt="Build Status">
     </a>
     <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
-        <img src="https://api.codacy.com/project/badge/Grade/TODO"
+        <img src="https://api.codacy.com/project/badge/Grade/c881ee12938145d3bfd398eff1571228"
              alt="Code Quality"/>
     </a>
     <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
-        <img src="https://api.codacy.com/project/badge/Coverage/TODO"
+        <img src="https://api.codacy.com/project/badge/Coverage/c881ee12938145d3bfd398eff1571228"
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
