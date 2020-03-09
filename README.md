@@ -1,7 +1,3 @@
-# AnyLint
-
-Lint anything by combining the power of Swift & regular expressions.
-
 <p align="center">
     <a href="https://app.bitrise.io/app/b2708c16ab236ff8">
         <img src="https://app.bitrise.io/app/b2708c16ab236ff8/status.svg?token=PuELIpLj_V11GkcIztEgGQ&branch=main"
@@ -50,7 +46,7 @@ Lint anything by combining the power of Swift & regular expressions.
 
 # AnyLint
 
-This is the FitnessTracker app project for the Android platform.
+Lint anything by combining the power of Swift & regular expressions.
 
 ## Installation
 
