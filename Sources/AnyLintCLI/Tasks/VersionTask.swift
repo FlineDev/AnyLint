@@ -1,6 +1,6 @@
 import Foundation
 
-struct VersionTask {}
+struct VersionTask { /* for extension purposes only */ }
 
 extension VersionTask: Task {
     func perform() {
