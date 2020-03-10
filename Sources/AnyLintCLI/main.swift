@@ -1,3 +1,5 @@
 import Foundation
+import SwiftCLI
 
-// TODO: [cg_2020-03-08] not yet implemented
+let singleCommand = CLI(singleCommand: SingleCommand())
+singleCommand.goAndExit()
