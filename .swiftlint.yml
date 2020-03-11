@@ -241,11 +241,11 @@ custom_rules:
     name: "Local l10n"
     message: "Don't name local variable `l10n` – use a property instead and further specify with `localL10n` if needed."
     severity: warning
-  log_prefix:
+  logger:
     included: ".*.swift"
-    regex: 'log\.(?:verbose|debug|info|warning|error)\("(?:verbose|debug|info|warning|error).*"\)'
-    name: "Logging Prefix"
-    message: "Don't use logging prefixes with log.verbose/debug/info/warning/error – done automatically."
+    regex: 'print\([^\n]+\)'
+    name: "Logger"
+    message: "Don't use `print` – use `log.message` instead."
     severity: warning
   multiline_guard_end:
     included: ".*.swift"

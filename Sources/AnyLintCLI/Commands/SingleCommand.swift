@@ -3,7 +3,7 @@ import SwiftCLI
 
 class SingleCommand: Command {
     // MARK: - Basics
-    var name: String = "anylint"
+    var name: String = Constants.commandName
     var shortDescription: String = "Lint anything by combining the power of Swift & regular expressions."
 
     // MARK: - Subcommands
@@ -30,8 +30,7 @@ class SingleCommand: Command {
         // init subcommand
         if let initTemplateName = initTemplateName {
             guard let initTemplate = InitTask.Template(rawValue: initTemplateName) else {
-                // TODO: [cg_2020-03-10] replace print with more semantically weighted output that also makes CLI testable
-                print("Unknown default template '\(initTemplateName)' – use one of: [\(Constants.initTemplateCases)]")
+                log.message("Unknown default template '\(initTemplateName)' – use one of: [\(Constants.initTemplateCases)]", level: .error)
                 exit(EXIT_FAILURE)
             }
 

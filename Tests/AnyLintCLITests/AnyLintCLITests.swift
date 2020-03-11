@@ -1,4 +1,3 @@
-@testable import AnyLintCLI
 import XCTest
 
 final class AnyLintCLITests: XCTestCase {

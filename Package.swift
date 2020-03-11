@@ -9,6 +9,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Flinesoft/HandySwift.git", from: "3.1.0"),
+        .package(url: "https://github.com/onevcat/Rainbow.git", from: "3.1.5"),
         .package(url: "https://github.com/jakeheis/SwiftCLI.git", from: "6.0.1"),
     ],
     targets: [
@@ -22,7 +23,7 @@ let package = Package(
         ),
         .target(
             name: "AnyLintCLI",
-            dependencies: ["HandySwift", "SwiftCLI"]
+            dependencies: ["HandySwift", "Rainbow", "SwiftCLI"]
         ),
         .testTarget(
             name: "AnyLintCLITests",
