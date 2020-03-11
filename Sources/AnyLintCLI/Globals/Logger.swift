@@ -79,22 +79,22 @@ final class Logger {
 
         switch level {
         case .success:
-            print(formattedCurrentDateTime(), "✅ ", message.lightGreen)
+            print(formattedCurrentTime(), "✅ ", message.lightGreen)
 
         case .info:
-            print(formattedCurrentDateTime(), "ℹ️ ", message.lightBlue)
+            print(formattedCurrentTime(), "ℹ️ ", message.lightBlue)
 
         case .warning:
-            print(formattedCurrentDateTime(), "⚠️ ", message.yellow)
+            print(formattedCurrentTime(), "⚠️ ", message.yellow)
 
         case .error:
-            print(formattedCurrentDateTime(), "❌ ", message.lightRed)
+            print(formattedCurrentTime(), "❌ ", message.lightRed)
         }
     }
 
-    private func formattedCurrentDateTime() -> String {
+    private func formattedCurrentTime() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        dateFormatter.dateFormat = "HH:mm:ss.SSS"
         let dateTime = dateFormatter.string(from: Date())
         return "\(dateTime):"
     }

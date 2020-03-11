@@ -21,11 +21,13 @@ class SingleCommand: Command {
     func execute() throws {
         // version subcommand
         if version {
-            VersionTask().perform()
+            try VersionTask().perform()
             exit(EXIT_SUCCESS)
         }
 
-        let configurationPaths = customPaths.isEmpty ? [Constants.defaultConfigurationPath] : customPaths
+        let configurationPaths = customPaths.isEmpty
+            ? [fileManager.currentDirectoryPath.appendingPathComponent(Constants.defaultConfigFileName)]
+            : customPaths
 
         // init subcommand
         if let initTemplateName = initTemplateName {
@@ -34,15 +36,15 @@ class SingleCommand: Command {
                 exit(EXIT_FAILURE)
             }
 
-            for path in configurationPaths {
-                InitTask(path: path, template: initTemplate).perform()
+            for configPath in configurationPaths {
+                try InitTask(configFilePath: configPath, template: initTemplate).perform()
             }
             exit(EXIT_SUCCESS)
         }
 
         // lint command
-        for path in configurationPaths {
-            LintTask(path: path).perform()
+        for configPath in configurationPaths {
+            try LintTask(configFilePath: configPath).perform()
         }
         exit(EXIT_SUCCESS)
     }
