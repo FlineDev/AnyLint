@@ -2,7 +2,7 @@ import Foundation
 
 extension String {
     var absolutePath: String {
-        guard let url = URL(string: self) else {
+        guard let url = URL(string: self, relativeTo: fileManager.currentDirectoryUrl) else {
             log.message("Could not convert path '\(self)' to type URL.", level: .error)
             exit(EXIT_FAILURE)
         }
