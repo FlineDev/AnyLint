@@ -15,7 +15,7 @@ let package = Package(
     targets: [
         .target(
             name: "AnyLint",
-            dependencies: ["HandySwift"]
+            dependencies: ["HandySwift", "Utility"]
         ),
         .testTarget(
             name: "AnyLintTests",
@@ -23,11 +23,16 @@ let package = Package(
         ),
         .target(
             name: "AnyLintCLI",
-            dependencies: ["HandySwift", "Rainbow", "SwiftCLI"]
+            dependencies: ["HandySwift", "Rainbow", "SwiftCLI", "Utility"]
         ),
         .testTarget(
             name: "AnyLintCLITests",
             dependencies: ["AnyLintCLI"]
         ),
+        .target(
+            name: "Utility",
+            dependencies: ["Rainbow"]
+        ),
+        .testTarget(name: "UtilityTests")
     ]
 )

@@ -3,9 +3,10 @@ import Rainbow
 
 // swiftlint:disable logger
 
-final class Logger {
+/// Helper to log output to console or elsewhere.
+public final class Logger {
     /// The print level type.
-    enum PrintLevel: String {
+    public enum PrintLevel: String {
         /// Print success information.
         case success
 
@@ -36,7 +37,7 @@ final class Logger {
     }
 
     /// The output type.
-    enum OutputType {
+    public enum OutputType {
         /// Output is targeted to a console to be read by developers.
         case console
 
@@ -60,7 +61,7 @@ final class Logger {
     ///   - level: The level of the print statement.
     ///   - file: The file this print statement refers to. Used for showing errors/warnings within Xcode if run as script phase.
     ///   - line: The line within the file this print statement refers to. Used for showing errors/warnings within Xcode if run as script phase.
-    func message(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil) {
+    public func message(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil) {
         switch outputType {
         case .console:
             consoleMessage(message, level: level, file: file, line: line)
@@ -73,8 +74,8 @@ final class Logger {
         }
     }
 
-    private func consoleMessage(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil) {
-        let location = locationInfo(file: file, line: line)?.replacingOccurrences(of: FileManager.default.currentDirectoryPath, with: ".")
+    private func consoleMessage(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil, charInLine: Int? = nil) {
+        let location = locationInfo(file: file, line: line, charInLine: charInLine)?.replacingOccurrences(of: fileManager.currentDirectoryPath, with: ".")
         let message = location != nil ? [location!, message].joined(separator: " ") : message
 
         switch level {
@@ -99,17 +100,18 @@ final class Logger {
         return "\(dateTime):"
     }
 
-    private func xcodeMessage(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil) {
-        if let location = locationInfo(file: file, line: line) {
+    private func xcodeMessage(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil, charInLine: Int? = nil) {
+        if let location = locationInfo(file: file, line: line, charInLine: charInLine) {
             print(location, "\(level.rawValue): \(Constants.toolName): ", message)
         } else {
             print("\(level.rawValue): \(Constants.toolName): ", message)
         }
     }
 
-    private func locationInfo(file: String?, line: Int?) -> String? {
+    private func locationInfo(file: String?, line: Int?, charInLine: Int?) -> String? {
         guard let file = file else { return nil }
         guard let line = line else { return "\(file): " }
-        return "\(file):\(line): "
+        guard let charInLine = charInLine else { return "\(file):\(line): " }
+        return "\(file):\(line):\(charInLine): "
     }
 }

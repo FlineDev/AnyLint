@@ -1,30 +1,25 @@
 import Foundation
 import SwiftCLI
+import Utility
 
 struct LintTask {
     let configFilePath: String
 }
 
 extension LintTask: TaskHandler {
+    enum LintError: Error {
+        case configFileFailed
+    }
+
+    /// - Throws: `LintError.configFileFailed` if running a configuration file fails
     func perform() throws {
-        guard fileManager.fileExists(atPath: configFilePath) else {
-            log.message(
-                "No configuration file found at \(configFilePath) – consider running `\(Constants.commandName) --init` with a template.",
-                level: .error
-            )
-            exit(EXIT_FAILURE)
-        }
+        try ValidateOrFail.configFileExists(at: configFilePath)
 
         if !fileManager.isExecutableFile(atPath: configFilePath) {
             try Task.run(bash: "chmod +x '\(configFilePath)'")
         }
 
-        do {
-            try Task.run(bash: "which swift-sh")
-        } catch is RunError {
-            log.message("swift-sh not installed – please follow instructions on https://github.com/mxcl/swift-sh#installation to install.", level: .error)
-            exit(EXIT_FAILURE)
-        }
+        try ValidateOrFail.swiftShInstalled()
 
         do {
             log.message("Start linting using config file at \(configFilePath) ...", level: .info)
@@ -32,7 +27,7 @@ extension LintTask: TaskHandler {
             log.message("Successfully linted without errors using config file at \(configFilePath). Congrats! 🎉", level: .success)
         } catch is RunError {
             log.message("Linting failed using config file at \(configFilePath).", level: .error)
-            exit(EXIT_FAILURE)
+            throw LintError.configFileFailed
         }
     }
 }

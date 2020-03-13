@@ -1,5 +1,6 @@
 import Foundation
 import SwiftCLI
+import Utility
 
 struct InitTask {
     enum Template: String, CaseIterable {
@@ -10,13 +11,13 @@ struct InitTask {
         var configFileContents: String {
             switch self {
             case .blank:
-                return BlankTemplate.fileContents
+                return BlankTemplate.fileContents()
 
             case .android:
-                return AndroidTemplate.fileContents
+                return AndroidTemplate.fileContents()
 
             case .ios:
-                return IOSTemplate.fileContents
+                return IOSTemplate.fileContents()
             }
         }
     }
