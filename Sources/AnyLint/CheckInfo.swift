@@ -12,14 +12,6 @@ public struct CheckInfo {
 
     /// The severity level for the report in case the check fails.
     public let severity: Severity
-
-    func consoleDescription(match: Regex.Match?) -> String {
-        if let match = match {
-            return "" // TODO: [cg_2020-03-12] not yet implemented
-        } else {
-            return "\(id) – \(hint)"
-        }
-    }
 }
 
 extension CheckInfo: Hashable {

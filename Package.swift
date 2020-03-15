@@ -31,7 +31,7 @@ let package = Package(
         ),
         .target(
             name: "Utility",
-            dependencies: ["Rainbow"]
+            dependencies: ["HandySwift", "Rainbow"]
         ),
         .testTarget(name: "UtilityTests")
     ]

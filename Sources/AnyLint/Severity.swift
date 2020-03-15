@@ -1,7 +1,8 @@
 import Foundation
+import Utility
 
 /// Defines the severity of a lint check.
-public enum Severity {
+public enum Severity: Int, CaseIterable {
     /// Use for checks that are mostly informational and not necessarily problematic.
     case info
 
@@ -10,4 +11,17 @@ public enum Severity {
 
     /// Use for checks that probably are problematic.
     case error
+
+    var logLevel: Logger.PrintLevel {
+        switch self {
+        case .info:
+            return .info
+
+        case .warning:
+            return .warning
+
+        case .error:
+            return .error
+        }
+    }
 }

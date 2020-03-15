@@ -6,10 +6,12 @@ import Utility
 enum AndroidTemplate: ConfigurationTemplate {
     static func fileContents() -> String {
         """
-        #!/usr/local/bin/\(CLIConstants.swiftShCommand)
+        #!\(CLIConstants.swiftShPath)
         import AnyLint // @Flinesoft ~> \(Constants.currentVersion)
 
         // TODO: [cg_2020-03-11] not yet implemented
+
+        Lint.logSummaryAndExit()
         
         """
     }

@@ -5,14 +5,34 @@ final class Statistics {
     static let shared = Statistics()
 
     var executedChecks: [CheckInfo] = []
-    var allViolations: [Violation] = []
     var violationsPerCheck: [CheckInfo: [Violation]] = [:]
+    var violationsBySeverity: [Severity: [Violation]] = [.info: [], .warning: [], .error: []]
+
+    var maxViolationSeverity: Severity? {
+        violationsBySeverity.keys.max { $0.rawValue < $1.rawValue }
+    }
 
     private init() {}
 
     func found(violations: [Violation], in check: CheckInfo) {
         executedChecks.append(check)
-        allViolations.append(contentsOf: violations)
         violationsPerCheck[check] = violations
+        violationsBySeverity[check.severity]!.append(contentsOf: violations)
+    }
+
+    func logSummary() {
+        if executedChecks.isEmpty {
+            log.message("No checks found to perform.", level: .warning)
+        } else if violationsBySeverity.isEmpty {
+            log.message("Performed \(executedChecks.count) checks without any violations.", level: .info)
+        } else {
+            let errors = "\(violationsBySeverity[.error]!.count) errors"
+            let warnings = "\(violationsBySeverity[.warning]!.count) warnings"
+
+            log.message(
+                "Performed \(executedChecks.count) checks and found \(errors) & \(warnings).",
+                level: maxViolationSeverity!.logLevel
+            )
+        }
     }
 }

@@ -17,42 +17,22 @@ public enum Lint {
     public static func checkFileContents(
         checkInfo: CheckInfo,
         regex: Regex,
-        includeFilters: [Regex] = [],
+        includeFilters: [Regex] = [#".*"#],
         excludeFilters: [Regex] = [],
         autoCorrectReplacement: String? = nil,
         matchingExamples: [String] = [],
         nonMatchingExamples: [String] = []
     ) {
-        // TODO: [cg_2020-03-13] validate matching and non-matching examples first
+        validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
+        validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
 
-        var violations: [Violation] = []
         let filePathsToCheck: [String] = FilesSearch.allFiles(
             within: fileManager.currentDirectoryPath,
             includeFilters: includeFilters,
             excludeFilters: excludeFilters
         )
 
-        for filePath in filePathsToCheck {
-            if let fileData = fileManager.contents(atPath: filePath), let fileContents = String(data: fileData, encoding: .utf8) {
-                for match in regex.matches(in: fileContents) {
-                    // TODO: [cg_2020-03-13] use capture group named 'pointer' if exists
-                    let locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
-
-                    // TODO: [cg_2020-03-13] autocorrect if autocorrection is available
-                    violations.append(
-                        FileContentViolation(
-                            checkInfo: checkInfo,
-                            filePath: filePath,
-                            lineNum: locationInfo.line,
-                            charInLine: locationInfo.charInLine
-                        )
-                    )
-                }
-            } else {
-                log.message("Could not read contents of file at \(filePath). Make sure it is a text file and is formatted as UTF8.", level: .warning)
-            }
-        }
-
+        let violations = FileContentsChecker(checkInfo: checkInfo, regex: regex, filePathsToCheck: filePathsToCheck).performCheck()
         Statistics.shared.found(violations: violations, in: checkInfo)
     }
 
@@ -70,23 +50,28 @@ public enum Lint {
     public static func checkFilePaths(
         checkInfo: CheckInfo,
         regex: Regex,
-        includeFilters: [Regex] = [],
+        includeFilters: [Regex] = [#".*"#],
         excludeFilters: [Regex] = [],
         autoCorrectReplacement: String? = nil,
         matchingExamples: [String] = [],
         nonMatchingExamples: [String] = [],
         violateIfNoMatchesFound: Bool = false
     ) {
-        // TODO: [cg_2020-03-13] validate matching and non-matching examples first
+        validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
+        validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
 
-        var violations: [Violation] = []
         let filePathsToCheck: [String] = FilesSearch.allFiles(
             within: fileManager.currentDirectoryPath,
             includeFilters: includeFilters,
             excludeFilters: excludeFilters
         )
 
-        // TODO: [cg_2020-03-12] not yet implemented
+        let violations = FilePathsChecker(
+            checkInfo: checkInfo,
+            regex: regex,
+            filePathsToCheck: filePathsToCheck,
+            violateIfNoMatchesFound: violateIfNoMatchesFound
+        ).performCheck()
 
         Statistics.shared.found(violations: violations, in: checkInfo)
     }
@@ -104,12 +89,10 @@ public enum Lint {
         matchingExamples: [String] = [],
         nonMatchingExamples: [String] = []
     ) {
-        // TODO: [cg_2020-03-13] validate matching and non-matching examples first
+        validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
+        validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
 
-        var violations: [Violation] = []
-
-        // TODO: [cg_2020-03-12] not yet implemented
-
+        let violations = LastCommitMessageChecker(checkInfo: checkInfo, regex: regex).performCheck()
         Statistics.shared.found(violations: violations, in: checkInfo)
     }
 
@@ -120,5 +103,44 @@ public enum Lint {
     ///   - customClosure: The custom logic to run which produces an array of `Violation` objects for any violations.
     public static func customCheck(checkInfo: CheckInfo, customClosure: () -> [Violation]) {
         Statistics.shared.found(violations: customClosure(), in: checkInfo)
+    }
+
+    /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
+    public static func logSummaryAndExit(failOnWarnings: Bool = false) {
+        Statistics.shared.logSummary()
+
+        if Statistics.shared.violationsBySeverity[.error]!.isFilled {
+            exit(EXIT_FAILURE)
+        } else if failOnWarnings && Statistics.shared.violationsBySeverity[.warning]!.isFilled {
+            exit(EXIT_FAILURE)
+        } else {
+            exit(EXIT_SUCCESS)
+        }
+    }
+
+    static func validate(regex: Regex, matchesForEach matchingExamples: [String], checkInfo: CheckInfo) {
+        for example in matchingExamples {
+            if !regex.matches(example) {
+                // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
+                log.message(
+                    "Couldn't find a match for regex '\(regex)' in check '\(checkInfo.id)' within matching example:\n\(example)",
+                    level: .error
+                )
+                exit(EXIT_FAILURE)
+            }
+        }
+    }
+
+    static func validate(regex: Regex, doesNotMatchAny nonMatchingExamples: [String], checkInfo: CheckInfo) {
+        for example in nonMatchingExamples {
+            if regex.matches(example) {
+                // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
+                log.message(
+                    "Unexpectedly found a match for regex '\(regex)' in check '\(checkInfo.id)' within non-matching example:\n\(example)",
+                    level: .error
+                )
+                exit(EXIT_FAILURE)
+            }
+        }
     }
 }

@@ -9,9 +9,9 @@ struct EditTask {
 extension EditTask: TaskHandler {
     func perform() throws {
         try ValidateOrFail.configFileExists(at: configFilePath)
-        try ValidateOrFail.swiftShInstalled()
+        ValidateOrFail.swiftShInstalled()
 
         log.message("Opening config file at \(configFilePath) in Xcode to edit ...", level: .info)
-        try Task.run(bash: "\(CLIConstants.swiftShCommand) edit '\(configFilePath)'")
+        try Task.run(bash: "\(CLIConstants.swiftShPath) edit '\(configFilePath)'")
     }
 }

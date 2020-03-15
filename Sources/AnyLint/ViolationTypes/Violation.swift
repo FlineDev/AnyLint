@@ -3,27 +3,29 @@ import HandySwift
 import Utility
 
 /// A violation found in a check.
-open class Violation {
+public struct Violation {
     /// The info about the chack that caused this violation.
     public let checkInfo: CheckInfo
 
-    /// Create a new violation.
-    public init(checkInfo: CheckInfo) {
-        self.checkInfo = checkInfo
-    }
+    /// The file path the violation is related to.
+    public let filePath: String?
 
-    func logMessage(match: Regex.Match?) {
-        let message = "\(checkInfo.consoleDescription(match: match))"
+    /// The info about the exact location of the violation within the file. Will be ignored if no `filePath` specified.
+    public let locationInfo: String.LocationInfo?
 
-        switch checkInfo.severity {
-        case .info:
-            log.message(message, level: .info)
+    func logMessage() {
+        let checkInfoMessage = "[\(checkInfo.id)] \(checkInfo.hint)"
 
-        case .warning:
-            log.message(message, level: .warning)
-
-        case .error:
-            log.message(message, level: .error)
+        guard let filePath = filePath else {
+            log.message(checkInfoMessage, level: checkInfo.severity.logLevel)
+            return
         }
+
+        guard let locationInfo = locationInfo else {
+            log.message("\(filePath): \(checkInfoMessage)", level: checkInfo.severity.logLevel)
+            return
+        }
+
+        log.message("\(filePath):\(locationInfo.line):\(locationInfo.charInLine): \(checkInfoMessage)", level: checkInfo.severity.logLevel)
     }
 }

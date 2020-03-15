@@ -261,12 +261,6 @@ custom_rules:
     name: "Multiline Guard Start"
     message: "Always start a multiline guard via `guard` then a line break and all expressions indented."
     severity: warning
-  multiple_closure_params:
-    included: ".*.swift"
-    regex: '\n *(?:[^\.\n=]+\.)+[^\(\s]+\([^\{\n]+\{[^\}\n]+\}\)\s*\{'
-    name: "Multiple Closure Params"
-    message: "Don't use multiple in-line closures – save one or more of them to variables instead."
-    severity: warning
   none_case_enum:
     included: ".*.swift"
     regex: 'enum\s+[^\{]+\{(?:\s*\/\/[^\n]*)*(?:\s*case\s+[^\n]+)*\s*case\s+none[^\S]'
