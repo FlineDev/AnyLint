@@ -1,4 +1,5 @@
 @testable import AnyLint
+import HandySwift
 @testable import Utility
 import XCTest
 
@@ -8,31 +9,45 @@ final class LintTests: XCTestCase {
         TestHelper.shared.reset()
     }
 
-    func testCheckFileContents() {
-        // TODO: [cg_2020-03-15] not yet implemented
-    }
-
-    func testCheckFilePaths() {
-        // TODO: [cg_2020-03-15] not yet implemented
-    }
-
-    func testCheckLastCommitMessage() {
-        // TODO: [cg_2020-03-15] not yet implemented
-    }
-
-    func testCustomCheck() {
-        // TODO: [cg_2020-03-15] not yet implemented
-    }
-
-    func testLogSummaryAndExit() {
-        // TODO: [cg_2020-03-15] not yet implemented
-    }
-
     func testValidateRegexMatchesForEach() {
-        // TODO: [cg_2020-03-15] not yet implemented
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        let regex: Regex = #"foo[0-9]?bar"#
+        let checkInfo = CheckInfo(id: "foo_bar", hint: "do bar", severity: .warning)
+
+        Lint.validate(
+            regex: regex,
+            matchesForEach: ["foo1bar", "foobar", "myfoo4barbeque"],
+            checkInfo: checkInfo
+        )
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        Lint.validate(
+            regex: regex,
+            matchesForEach: ["foo1bar", "FooBar", "myfoo4barbeque"],
+            checkInfo: checkInfo
+        )
+        XCTAssertEqual(TestHelper.shared.exitStatus, .failure)
     }
 
     func testValidateRegexDoesNotMatchAny() {
-        // TODO: [cg_2020-03-15] not yet implemented
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        let regex: Regex = #"foo[0-9]?bar"#
+        let checkInfo = CheckInfo(id: "foo_bar", hint: "do bar", severity: .warning)
+
+        Lint.validate(
+            regex: regex,
+            doesNotMatchAny: ["fooLbar", "FooBar", "myfoo40barbeque"],
+            checkInfo: checkInfo
+        )
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        Lint.validate(
+            regex: regex,
+            doesNotMatchAny: ["fooLbar", "foobar", "myfoo40barbeque"],
+            checkInfo: checkInfo
+        )
+        XCTAssertEqual(TestHelper.shared.exitStatus, .failure)
     }
 }

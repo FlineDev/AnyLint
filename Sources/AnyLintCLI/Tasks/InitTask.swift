@@ -30,7 +30,8 @@ extension InitTask: TaskHandler {
     func perform() throws {
         guard !fileManager.fileExists(atPath: configFilePath) else {
             log.message("Configuration file already exists at path '\(configFilePath)'.", level: .error)
-            exit(EXIT_FAILURE)
+            log.exit(status: .failure)
+            return // only reachable in unit tests
         }
 
         log.message("Making sure config file directory exists ...", level: .info)

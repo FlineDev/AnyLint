@@ -110,11 +110,11 @@ public enum Lint {
         Statistics.shared.logSummary()
 
         if Statistics.shared.violationsBySeverity[.error]!.isFilled {
-            exit(EXIT_FAILURE)
+            log.exit(status: .failure)
         } else if failOnWarnings && Statistics.shared.violationsBySeverity[.warning]!.isFilled {
-            exit(EXIT_FAILURE)
+            log.exit(status: .failure)
         } else {
-            exit(EXIT_SUCCESS)
+            log.exit(status: .success)
         }
     }
 
@@ -126,7 +126,7 @@ public enum Lint {
                     "Couldn't find a match for regex '\(regex)' in check '\(checkInfo.id)' within matching example:\n\(example)",
                     level: .error
                 )
-                exit(EXIT_FAILURE)
+                log.exit(status: .failure)
             }
         }
     }
@@ -139,7 +139,7 @@ public enum Lint {
                     "Unexpectedly found a match for regex '\(regex)' in check '\(checkInfo.id)' within non-matching example:\n\(example)",
                     level: .error
                 )
-                exit(EXIT_FAILURE)
+                log.exit(status: .failure)
             }
         }
     }

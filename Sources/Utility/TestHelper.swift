@@ -17,5 +17,6 @@ public final class TestHelper {
     /// Deletes all data collected until now.
     public func reset() {
         consoleOutputs = []
+        exitStatus = nil
     }
 }

@@ -7,7 +7,8 @@ public enum FilesSearch {
     static func allFiles(within path: String, includeFilters: [Regex], excludeFilters: [Regex] = []) -> [String] {
         guard let url = URL(string: path, relativeTo: fileManager.currentDirectoryUrl) else {
             log.message("Could not convert path '\(path)' to type URL.", level: .error)
-            exit(EXIT_FAILURE)
+            log.exit(status: .failure)
+            return [] // only reachable in unit tests
         }
 
         guard let enumerator = fileManager.enumerator(
@@ -17,7 +18,8 @@ public enum FilesSearch {
             errorHandler: nil
         ) else {
             log.message("Couldn't create enumerator for path '\(path)'.", level: .error)
-            exit(EXIT_FAILURE)
+            log.exit(status: .failure)
+            return [] // only reachable in unit tests
         }
 
         var filePaths: [String] = []
@@ -29,7 +31,8 @@ public enum FilesSearch {
                 let isRegularFilePath = resourceValues.isRegularFile
             else {
                 log.message("Could not read resource values for file at \(fileUrl.path)", level: .error)
-                exit(EXIT_FAILURE)
+                log.exit(status: .failure)
+                return [] // only reachable in unit tests
             }
 
             // skip if any exclude filter applies

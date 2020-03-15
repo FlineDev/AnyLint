@@ -23,7 +23,7 @@ class SingleCommand: Command {
         // version subcommand
         if version {
             try VersionTask().perform()
-            exit(EXIT_SUCCESS)
+            log.exit(status: .success)
         }
 
         let configurationPaths = customPaths.isEmpty
@@ -34,13 +34,14 @@ class SingleCommand: Command {
         if let initTemplateName = initTemplateName {
             guard let initTemplate = InitTask.Template(rawValue: initTemplateName) else {
                 log.message("Unknown default template '\(initTemplateName)' – use one of: [\(CLIConstants.initTemplateCases)]", level: .error)
-                exit(EXIT_FAILURE)
+                log.exit(status: .failure)
+                return // only reachable in unit tests
             }
 
             for configPath in configurationPaths {
                 try InitTask(configFilePath: configPath, template: initTemplate).perform()
             }
-            exit(EXIT_SUCCESS)
+            log.exit(status: .success)
         }
 
         // lint main command

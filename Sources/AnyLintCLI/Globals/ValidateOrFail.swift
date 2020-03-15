@@ -10,7 +10,8 @@ enum ValidateOrFail {
                 "swift-sh not installed – please follow instructions on https://github.com/mxcl/swift-sh#installation to install.",
                 level: .error
             )
-            exit(EXIT_FAILURE)
+            log.exit(status: .failure)
+            return // only reachable in unit tests
         }
     }
 
@@ -20,7 +21,8 @@ enum ValidateOrFail {
                 "No configuration file found at \(configFilePath) – consider running `\(CLIConstants.commandName) --init` with a template.",
                 level: .error
             )
-            exit(EXIT_FAILURE)
+            log.exit(status: .failure)
+            return // only reachable in unit tests
         }
     }
 }
