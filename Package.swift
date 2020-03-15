@@ -33,6 +33,9 @@ let package = Package(
             name: "Utility",
             dependencies: ["HandySwift", "Rainbow"]
         ),
-        .testTarget(name: "UtilityTests")
+        .testTarget(
+            name: "UtilityTests",
+            dependencies: ["Utility"]
+        )
     ]
 )

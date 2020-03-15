@@ -41,11 +41,27 @@ public final class Logger {
         /// Output is targeted to a console to be read by developers.
         case console
 
-        /// Output is targeted to Xcode. Native support for Xcode Warnings & Errors.
-        case xcode
-
         /// Output is targeted for unit tests. Collect into globally accessible TestHelper.
         case test
+    }
+
+    /// The exit status.
+    public enum ExitStatus {
+        /// Successfully finished task.
+        case success
+
+        /// Failed to finish task.
+        case failure
+
+        var statusCode: Int32 {
+            switch self {
+            case .success:
+                return EXIT_SUCCESS
+
+            case .failure:
+                return EXIT_FAILURE
+            }
+        }
     }
 
     let outputType: OutputType
@@ -59,25 +75,28 @@ public final class Logger {
     /// - Parameters:
     ///   - message: The message to be printed. Don't include `Error!`, `Warning!` or similar information at the beginning.
     ///   - level: The level of the print statement.
-    ///   - file: The file this print statement refers to. Used for showing errors/warnings within Xcode if run as script phase.
-    ///   - line: The line within the file this print statement refers to. Used for showing errors/warnings within Xcode if run as script phase.
-    public func message(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil) {
+    public func message(_ message: String, level: PrintLevel) {
         switch outputType {
         case .console:
-            consoleMessage(message, level: level, file: file, line: line)
-
-        case .xcode:
-            xcodeMessage(message, level: level, file: file, line: line)
+            consoleMessage(message, level: level)
 
         case .test:
-            TestHelper.shared.consoleOutputs.append((message, level, file, line))
+            TestHelper.shared.consoleOutputs.append((message, level))
         }
     }
 
-    private func consoleMessage(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil, charInLine: Int? = nil) {
-        let location = locationInfo(file: file, line: line, charInLine: charInLine)?.replacingOccurrences(of: fileManager.currentDirectoryPath, with: ".")
-        let message = location != nil ? [location!, message].joined(separator: " ") : message
+    /// Exits the current program with the given status.
+    public func exit(status: ExitStatus) {
+        switch outputType {
+        case .console:
+            Darwin.exit(status.statusCode)
 
+        case .test:
+            TestHelper.shared.exitStatus = status
+        }
+    }
+
+    private func consoleMessage(_ message: String, level: PrintLevel) {
         switch level {
         case .success:
             print(formattedCurrentTime(), "✅ ", message.lightGreen)
@@ -98,20 +117,5 @@ public final class Logger {
         dateFormatter.dateFormat = "HH:mm:ss.SSS"
         let dateTime = dateFormatter.string(from: Date())
         return "\(dateTime):"
-    }
-
-    private func xcodeMessage(_ message: String, level: PrintLevel, file: String? = nil, line: Int? = nil, charInLine: Int? = nil) {
-        if let location = locationInfo(file: file, line: line, charInLine: charInLine) {
-            print(location, "\(level.rawValue): \(Constants.toolName): ", message)
-        } else {
-            print("\(level.rawValue): \(Constants.toolName): ", message)
-        }
-    }
-
-    private func locationInfo(file: String?, line: Int?, charInLine: Int?) -> String? {
-        guard let file = file else { return nil }
-        guard let line = line else { return "\(file): " }
-        guard let charInLine = charInLine else { return "\(file):\(line): " }
-        return "\(file):\(line):\(charInLine): "
     }
 }

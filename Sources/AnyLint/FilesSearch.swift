@@ -23,20 +23,6 @@ public enum FilesSearch {
         var filePaths: [String] = []
 
         for case let fileUrl as URL in enumerator {
-            // skip if no include filter applies
-            guard includeFilters.contains(where: { $0.matches(fileUrl.relativePath) }) else {
-                enumerator.skipDescendants()
-                continue
-            }
-
-            // skip if any exclude filter applies
-            if excludeFilters.contains(where: { $0.matches(fileUrl.relativePath) }) {
-                enumerator.skipDescendants()
-                continue
-            }
-
-            // TODO: [cg_2020-03-15] make sure not to skip any hidden directories, that were explicitly specified in includeFilters
-
             guard
                 let resourceValues = try? fileUrl.resourceValues(forKeys: [URLResourceKey.isRegularFileKey, URLResourceKey.isHiddenKey]),
                 let isHiddenFilePath = resourceValues.isHidden,
@@ -46,14 +32,24 @@ public enum FilesSearch {
                 exit(EXIT_FAILURE)
             }
 
-            // skip hidden files and directories
-            if isHiddenFilePath {
-                enumerator.skipDescendants()
+            // skip if any exclude filter applies
+            if excludeFilters.contains(where: { $0.matches(fileUrl.relativePathFromCurrent) }) {
+                if !isRegularFilePath {
+                    enumerator.skipDescendants()
+                }
                 continue
             }
 
-            if isRegularFilePath {
-                filePaths.append(fileUrl.relativePath)
+            // skip hidden files and directories
+            if isHiddenFilePath {
+                if !isRegularFilePath {
+                    enumerator.skipDescendants()
+                }
+                continue
+            }
+
+            if isRegularFilePath, includeFilters.contains(where: { $0.matches(fileUrl.relativePathFromCurrent) }) {
+                filePaths.append(fileUrl.relativePathFromCurrent)
             }
         }
 

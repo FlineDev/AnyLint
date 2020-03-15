@@ -20,6 +20,13 @@ final class Statistics {
         violationsBySeverity[check.severity]!.append(contentsOf: violations)
     }
 
+    /// Use for unit testing only.
+    func reset() {
+        executedChecks = []
+        violationsPerCheck = [:]
+        violationsBySeverity = [.info: [], .warning: [], .error: []]
+    }
+
     func logSummary() {
         if executedChecks.isEmpty {
             log.message("No checks found to perform.", level: .warning)
