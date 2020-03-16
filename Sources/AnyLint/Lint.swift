@@ -76,26 +76,6 @@ public enum Lint {
         Statistics.shared.found(violations: violations, in: checkInfo)
     }
 
-    /// Checks the last commit message.
-    ///
-    /// - Parameters:
-    ///   - checkInfo: The info object providing some general information on the lint check.
-    ///   - regex: The regex to use for matching the commit message.
-    ///   - matchingExamples: An array of example messages where the `regex` is expected to trigger. Optionally, the expected pointer position can be marked with ↘.
-    ///   - nonMatchingExamples: An array of example messages where the `regex` is expected not to trigger.
-    public static func checkLastCommitMessage(
-        checkInfo: CheckInfo,
-        regex: Regex,
-        matchingExamples: [String] = [],
-        nonMatchingExamples: [String] = []
-    ) {
-        validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
-        validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
-
-        let violations = LastCommitMessageChecker(checkInfo: checkInfo, regex: regex).performCheck()
-        Statistics.shared.found(violations: violations, in: checkInfo)
-    }
-
     /// Run custom logic as checks.
     ///
     /// - Parameters:
