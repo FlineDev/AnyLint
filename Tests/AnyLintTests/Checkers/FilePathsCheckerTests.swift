@@ -9,6 +9,67 @@ final class FilePathsCheckerTests: XCTestCase {
     }
 
     func testPerformCheck() {
-        // TODO: [cg_2020-03-15] not yet implemented
+        withTemporaryFiles(
+            [
+                (subpath: "Sources/Hello.swift", contents: ""),
+                (subpath: "Sources/World.swift", contents: ""),
+            ]
+        ) { filePathsToCheck in
+            let violations = sayHelloChecker(filePathsToCheck: filePathsToCheck).performCheck()
+            XCTAssertEqual(violations.count, 0)
+        }
+
+        withTemporaryFiles([(subpath: "Sources/World.swift", contents: "")]) { filePathsToCheck in
+            let violations = sayHelloChecker(filePathsToCheck: filePathsToCheck).performCheck()
+
+            XCTAssertEqual(violations.count, 1)
+
+            XCTAssertEqual(violations[0].checkInfo, sayHelloCheck())
+            XCTAssertNil(violations[0].filePath)
+            XCTAssertNil(violations[0].locationInfo)
+            XCTAssertNil(violations[0].locationInfo)
+        }
+
+        withTemporaryFiles(
+            [
+                (subpath: "Sources/Hello.swift", contents: ""),
+                (subpath: "Sources/World.swift", contents: ""),
+            ]
+        ) { filePathsToCheck in
+            let violations = noWorldChecker(filePathsToCheck: filePathsToCheck).performCheck()
+
+            XCTAssertEqual(violations.count, 1)
+
+            XCTAssertEqual(violations[0].checkInfo, noWorldCheck())
+            XCTAssertEqual(violations[0].filePath, "\(tempDir)/Sources/World.swift")
+            XCTAssertNil(violations[0].locationInfo)
+            XCTAssertNil(violations[0].locationInfo)
+        }
+    }
+
+    private func sayHelloChecker(filePathsToCheck: [String]) -> FilePathsChecker {
+        FilePathsChecker(
+            checkInfo: sayHelloCheck(),
+            regex: #".*Hello\.swift"#,
+            filePathsToCheck: filePathsToCheck,
+            violateIfNoMatchesFound: true
+        )
+    }
+
+    private func sayHelloCheck() -> CheckInfo {
+        CheckInfo(id: "say_hello", hint: "Should always say hello.", severity: .info)
+    }
+
+    private func noWorldChecker(filePathsToCheck: [String]) -> FilePathsChecker {
+        FilePathsChecker(
+            checkInfo: noWorldCheck(),
+            regex: #".*World\.swift"#,
+            filePathsToCheck: filePathsToCheck,
+            violateIfNoMatchesFound: false
+        )
+    }
+
+    private func noWorldCheck() -> CheckInfo {
+        CheckInfo(id: "no_world", hint: "Do not include the global world, be more specific instead.", severity: .error)
     }
 }

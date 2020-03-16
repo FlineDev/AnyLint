@@ -9,6 +9,30 @@ final class FileContentsCheckerTests: XCTestCase {
     }
 
     func testPerformCheck() {
-        // TODO: [cg_2020-03-15] not yet implemented
+        let temporaryFiles: [TemporaryFile] = [
+            (subpath: "Sources/Hello.swift", contents: "let x = 5\nvar y = 10"),
+            (subpath: "Sources/World.swift", contents: "let x=5\nvar y=10"),
+        ]
+
+        withTemporaryFiles(temporaryFiles) { filePathsToCheck in
+            let checkInfo = CheckInfo(id: "whitespacing", hint: "Always add a single whitespace around '='.", severity: .warning)
+            let violations = FileContentsChecker(
+                checkInfo: checkInfo,
+                regex: #"(let|var) \w+=\w+"#,
+                filePathsToCheck: filePathsToCheck
+            ).performCheck()
+
+            XCTAssertEqual(violations.count, 2)
+
+            XCTAssertEqual(violations[0].checkInfo, checkInfo)
+            XCTAssertEqual(violations[0].filePath, "\(tempDir)/Sources/World.swift")
+            XCTAssertEqual(violations[0].locationInfo!.line, 1)
+            XCTAssertEqual(violations[0].locationInfo!.charInLine, 1)
+
+            XCTAssertEqual(violations[1].checkInfo, checkInfo)
+            XCTAssertEqual(violations[1].filePath, "\(tempDir)/Sources/World.swift")
+            XCTAssertEqual(violations[1].locationInfo!.line, 2)
+            XCTAssertEqual(violations[1].locationInfo!.charInLine, 1)
+        }
     }
 }

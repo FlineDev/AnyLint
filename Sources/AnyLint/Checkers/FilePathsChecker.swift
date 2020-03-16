@@ -17,28 +17,15 @@ extension FilePathsChecker: Checker {
             let matchingFilePathsCount = filePathsToCheck.filter { regex.matches($0) }.count
             if matchingFilePathsCount <= 0 {
                 violations.append(
-                    Violation(
-                        checkInfo: checkInfo,
-                        filePath: nil,
-                        locationInfo: nil
-                    )
+                    Violation(checkInfo: checkInfo, filePath: nil, locationInfo: nil)
                 )
             }
         } else {
-            for filePath in filePathsToCheck {
-                for match in regex.matches(in: filePath) {
-                    // TODO: [cg_2020-03-13] use capture group named 'pointer' if exists
-                    let locationInfo = filePath.locationInfo(of: match.range.lowerBound)
-
-                    // TODO: [cg_2020-03-13] autocorrect if autocorrection is available
-                    violations.append(
-                        Violation(
-                            checkInfo: checkInfo,
-                            filePath: filePath,
-                            locationInfo: locationInfo
-                        )
-                    )
-                }
+            for filePath in filePathsToCheck where regex.matches(filePath) {
+                // TODO: [cg_2020-03-13] autocorrect if autocorrection is available
+                violations.append(
+                    Violation(checkInfo: checkInfo, filePath: filePath, locationInfo: nil)
+                )
             }
         }
 

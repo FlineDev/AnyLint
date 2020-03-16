@@ -7,8 +7,9 @@ extension String {
     func locationInfo(of index: String.Index) -> LocationInfo {
         let prefix = self[startIndex ..< index]
         let prefixLines = prefix.split(separator: "\n")
-        guard let lastPrefixLine = prefixLines.last else { return (line: 0, charInLine: 0) }
+        guard let lastPrefixLine = prefixLines.last else { return (line: 1, charInLine: 1) }
 
-        return (line: prefixLines.count, charInLine: lastPrefixLine.count)
+        let charInLine = prefix.last == "\n" ? 1 : lastPrefixLine.count + 1
+        return (line: prefixLines.count + 1, charInLine: charInLine)
     }
 }

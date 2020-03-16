@@ -1,38 +1,36 @@
 @testable import AnyLint
+import HandySwift
 @testable import Utility
 import XCTest
 
 final class FilesSearchTests: XCTestCase {
-    private let tempDir: String = "AnyLintTempTests"
-
     override func setUp() {
         log = Logger(outputType: .test)
         TestHelper.shared.reset()
     }
 
     func testAllFilesWithinPath() {
-        try? FileManager.default.createDirectory(atPath: "\(tempDir)/Sources", withIntermediateDirectories: true, attributes: nil)
-        FileManager.default.createFile(atPath: "\(tempDir)/Hello.swift", contents: nil, attributes: nil)
-        FileManager.default.createFile(atPath: "\(tempDir)/World.swift", contents: nil, attributes: nil)
-        FileManager.default.createFile(atPath: "\(tempDir)/.hidden_file", contents: nil, attributes: nil)
+        withTemporaryFiles(
+            [
+                (subpath: "Sources/Hello.swift", contents: ""),
+                (subpath: "Sources/World.swift", contents: ""),
+                (subpath: "Sources/.hidden_file", contents: ""),
+                (subpath: "Sources/.hidden_dir/unhidden_file", contents: ""),
+            ]
+        ) { _ in
+            let includeFilterFilePaths = FilesSearch.allFiles(
+                within: FileManager.default.currentDirectoryPath,
+                includeFilters: [try Regex("\(tempDir)/.*")],
+                excludeFilters: []
+            )
+            XCTAssertEqual(includeFilterFilePaths, ["\(tempDir)/Sources/Hello.swift", "\(tempDir)/Sources/World.swift"])
 
-        try? FileManager.default.createDirectory(atPath: "\(tempDir)/.hidden_dir", withIntermediateDirectories: true, attributes: nil)
-        FileManager.default.createFile(atPath: "\(tempDir)/.hidden_dir/unhidden_file", contents: nil, attributes: nil)
-
-        let includeFilterFilePaths = FilesSearch.allFiles(
-            within: FileManager.default.currentDirectoryPath,
-            includeFilters: [#"AnyLintTempTests/.*"#],
-            excludeFilters: []
-        )
-        XCTAssertEqual(includeFilterFilePaths, ["\(tempDir)/Hello.swift", "\(tempDir)/World.swift"])
-
-        let excludeFilterFilePaths = FilesSearch.allFiles(
-            within: FileManager.default.currentDirectoryPath,
-            includeFilters: [#"AnyLintTempTests/.*"#],
-            excludeFilters: [#"World"#]
-        )
-        XCTAssertEqual(excludeFilterFilePaths, ["\(tempDir)/Hello.swift"])
-
-        try? FileManager.default.removeItem(atPath: tempDir)
+            let excludeFilterFilePaths = FilesSearch.allFiles(
+                within: FileManager.default.currentDirectoryPath,
+                includeFilters: [try Regex("\(tempDir)/.*")],
+                excludeFilters: ["World"]
+            )
+            XCTAssertEqual(excludeFilterFilePaths, ["\(tempDir)/Sources/Hello.swift"])
+        }
     }
 }
