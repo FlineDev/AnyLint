@@ -19,19 +19,9 @@ public struct Violation {
         self.locationInfo = locationInfo
     }
 
-    func logMessage() {
-        let checkInfoMessage = "\("[\(checkInfo.id)]".bold) \(checkInfo.hint)"
-
-        guard let filePath = filePath else {
-            log.message(checkInfoMessage, level: checkInfo.severity.logLevel)
-            return
-        }
-
-        guard let locationInfo = locationInfo else {
-            log.message("\(filePath): \(checkInfoMessage)", level: checkInfo.severity.logLevel)
-            return
-        }
-
-        log.message("\(filePath):\(locationInfo.line):\(locationInfo.charInLine): \(checkInfoMessage)", level: checkInfo.severity.logLevel)
+    func locationMessage() -> String? {
+        guard let filePath = filePath else { return nil }
+        guard let locationInfo = locationInfo else { return filePath }
+        return "\(filePath):\(locationInfo.line):\(locationInfo.charInLine)"
     }
 }

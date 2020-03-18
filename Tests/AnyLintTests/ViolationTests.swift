@@ -10,24 +10,19 @@ final class ViolationTests: XCTestCase {
         Statistics.shared.reset()
     }
 
-    func testLogMessage() {
+    func testLocationMessage() {
         let checkInfo = CheckInfo(id: "demo_check", hint: "Make sure to always check the demo.", severity: .warning)
-        Violation(checkInfo: checkInfo).logMessage()
+        XCTAssertNil(Violation(checkInfo: checkInfo).locationMessage())
 
-        XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .warning)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[0].message, "\("[demo_check]".bold) Make sure to always check the demo.")
+        let fileViolation = Violation(checkInfo: checkInfo, filePath: "Temp/Souces/Hello.swift")
+        XCTAssertEqual(fileViolation.locationMessage(), "Temp/Souces/Hello.swift")
 
-        Violation(checkInfo: checkInfo, filePath: "Temp/Souces/Hello.swift").logMessage()
+        let locationInfoViolation = Violation(
+            checkInfo: checkInfo,
+            filePath: "Temp/Souces/World.swift",
+            locationInfo: String.LocationInfo(line: 5, charInLine: 15)
+        )
 
-        XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 2)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[1].level, .warning)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[1].message, "Temp/Souces/Hello.swift: \("[demo_check]".bold) Make sure to always check the demo.")
-
-        Violation(checkInfo: checkInfo, filePath: "Temp/Souces/World.swift", locationInfo: String.LocationInfo(line: 5, charInLine: 15)).logMessage()
-
-        XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 3)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[2].level, .warning)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[2].message, "Temp/Souces/World.swift:5:15: \("[demo_check]".bold) Make sure to always check the demo.")
+        XCTAssertEqual(locationInfoViolation.locationMessage(), "Temp/Souces/World.swift:5:15")
     }
 }

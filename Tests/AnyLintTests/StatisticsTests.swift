@@ -1,4 +1,5 @@
 @testable import AnyLint
+import Rainbow
 @testable import Utility
 import XCTest
 
@@ -59,6 +60,8 @@ final class StatisticsTests: XCTestCase {
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .warning)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].message, "No checks found to perform.")
 
+        TestHelper.shared.reset()
+
         let checkInfo1 = CheckInfo(id: "id1", hint: "hint1", severity: .info)
         Statistics.shared.found(
             violations: [Violation(checkInfo: checkInfo1)],
@@ -67,19 +70,43 @@ final class StatisticsTests: XCTestCase {
 
         let checkInfo2 = CheckInfo(id: "id2", hint: "hint2", severity: .warning)
         Statistics.shared.found(
-            violations: [Violation(checkInfo: checkInfo2), Violation(checkInfo: checkInfo2)],
+            violations: [
+                Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Harry.swift"),
+                Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Albus.swift"),
+            ],
             in: CheckInfo(id: "id2", hint: "hint2", severity: .warning)
         )
 
         let checkInfo3 = CheckInfo(id: "id3", hint: "hint3", severity: .error)
         Statistics.shared.found(
-            violations: [Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3)],
+            violations: [
+                Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 10, charInLine: 30)),
+                Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 72, charInLine: 17)),
+                Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Albus.swift", locationInfo: (line: 40, charInLine: 4)),
+            ],
             in: CheckInfo(id: "id3", hint: "hint3", severity: .error)
         )
 
         Statistics.shared.logSummary()
-        XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 2)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[1].level, .error)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[1].message, "Performed 3 check(s) and found 3 error(s) & 2 warning(s).")
+
+        XCTAssertEqual(
+            TestHelper.shared.consoleOutputs.map { $0.level },
+            [.info, .warning, .warning, .warning, .error, .error, .error, .error, .error]
+        )
+
+        XCTAssertEqual(
+            TestHelper.shared.consoleOutputs.map { $0.message },
+            [
+                "\("[id1]".bold) Found 1 violation(s).",
+                "\("[id2]".bold) Found 2 violation(s) at:",
+                "> 1. Hogwarts/Harry.swift",
+                "> 2. Hogwarts/Albus.swift",
+                "\("[id3]".bold) Found 3 violation(s) at:",
+                "> 1. Hogwarts/Harry.swift:10:30",
+                "> 2. Hogwarts/Harry.swift:72:17",
+                "> 3. Hogwarts/Albus.swift:40:4",
+                "Performed 3 check(s) and found 3 error(s) & 2 warning(s).",
+            ]
+        )
     }
 }

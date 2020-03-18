@@ -8,6 +8,11 @@ extension String {
     /// Info about the exact location of a character in a given file.
     public typealias LocationInfo = (line: Int, charInLine: Int)
 
+    /// Removes any newlines between capture groups in regexes.
+    public func removeNewlinesBetweenCaptureGroups() -> String {
+        components(separatedBy: ")\n(").joined(separator: ")(")
+    }
+
     func locationInfo(of index: String.Index) -> LocationInfo {
         let prefix = self[startIndex ..< index]
         let prefixLines = prefix.split(separator: "\n")

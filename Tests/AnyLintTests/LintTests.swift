@@ -49,4 +49,10 @@ final class LintTests: XCTestCase {
         )
         XCTAssertEqual(TestHelper.shared.exitStatus, .failure)
     }
+
+    func testValidateAutocorrectsAllExamples() {
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        // TODO: [cg_2020-03-18] not yet implemented
+    }
 }

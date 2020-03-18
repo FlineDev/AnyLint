@@ -31,6 +31,24 @@ final class Statistics {
         if executedChecks.isEmpty {
             log.message("No checks found to perform.", level: .warning)
         } else if violationsBySeverity.values.contains(where: { $0.isFilled }) {
+            for check in executedChecks {
+                if let checkViolations = violationsPerCheck[check], checkViolations.isFilled {
+                    let violationLocationMessages = checkViolations.compactMap { $0.locationMessage() }
+
+                    if violationLocationMessages.isFilled {
+                        log.message("\("[\(check.id)]".bold) Found \(checkViolations.count) violation(s) at:", level: check.severity.logLevel)
+                        let numerationDigits = String(violationLocationMessages.count).count
+
+                        for (index, locationMessage) in violationLocationMessages.enumerated() {
+                            let violationNumString = String(format: "%0\(numerationDigits)d", index + 1)
+                            log.message("> \(violationNumString). " + locationMessage, level: check.severity.logLevel)
+                        }
+                    } else {
+                        log.message("\("[\(check.id)]".bold) Found \(checkViolations.count) violation(s).", level: check.severity.logLevel)
+                    }
+                }
+            }
+
             let errors = "\(violationsBySeverity[.error]!.count) error(s)"
             let warnings = "\(violationsBySeverity[.warning]!.count) warning(s)"
 
