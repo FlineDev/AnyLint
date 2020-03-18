@@ -9,7 +9,7 @@ final class Statistics {
     var violationsBySeverity: [Severity: [Violation]] = [.info: [], .warning: [], .error: []]
 
     var maxViolationSeverity: Severity? {
-        violationsBySeverity.keys.max { $0.rawValue < $1.rawValue }
+        violationsBySeverity.keys.filter { !violationsBySeverity[$0]!.isEmpty }.max { $0.rawValue < $1.rawValue }
     }
 
     private init() {}
@@ -30,16 +30,16 @@ final class Statistics {
     func logSummary() {
         if executedChecks.isEmpty {
             log.message("No checks found to perform.", level: .warning)
-        } else if violationsBySeverity.isEmpty {
-            log.message("Performed \(executedChecks.count) checks without any violations.", level: .info)
-        } else {
-            let errors = "\(violationsBySeverity[.error]!.count) errors"
-            let warnings = "\(violationsBySeverity[.warning]!.count) warnings"
+        } else if violationsBySeverity.values.contains(where: { $0.isFilled }) {
+            let errors = "\(violationsBySeverity[.error]!.count) error(s)"
+            let warnings = "\(violationsBySeverity[.warning]!.count) warning(s)"
 
             log.message(
-                "Performed \(executedChecks.count) checks and found \(errors) & \(warnings).",
+                "Performed \(executedChecks.count) check(s) and found \(errors) & \(warnings).",
                 level: maxViolationSeverity!.logLevel
             )
+        } else {
+            log.message("Performed \(executedChecks.count) check(s) without any violations.", level: .success)
         }
     }
 }

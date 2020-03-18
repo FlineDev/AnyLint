@@ -1,4 +1,5 @@
 import Foundation
+import Rainbow
 import Utility
 
 /// A violation found in a check.
@@ -19,7 +20,7 @@ public struct Violation {
     }
 
     func logMessage() {
-        let checkInfoMessage = "[\(checkInfo.id)] \(checkInfo.hint)"
+        let checkInfoMessage = "\("[\(checkInfo.id)]".bold) \(checkInfo.hint)"
 
         guard let filePath = filePath else {
             log.message(checkInfoMessage, level: checkInfo.severity.logLevel)

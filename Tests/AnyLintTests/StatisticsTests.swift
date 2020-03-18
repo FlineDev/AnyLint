@@ -80,6 +80,6 @@ final class StatisticsTests: XCTestCase {
         Statistics.shared.logSummary()
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 2)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[1].level, .error)
-        XCTAssertEqual(TestHelper.shared.consoleOutputs[1].message, "Performed 3 checks and found 3 errors & 2 warnings.")
+        XCTAssertEqual(TestHelper.shared.consoleOutputs[1].message, "Performed 3 check(s) and found 3 error(s) & 2 warning(s).")
     }
 }

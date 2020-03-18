@@ -11,6 +11,13 @@ public struct CheckInfo {
 
     /// The severity level for the report in case the check fails.
     public let severity: Severity
+
+    /// Initializes a new info object for the lint check.
+    public init(id: String, hint: String, severity: Severity) {
+        self.id = id
+        self.hint = hint
+        self.severity = severity
+    }
 }
 
 extension CheckInfo: Hashable {

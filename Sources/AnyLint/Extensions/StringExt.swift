@@ -1,4 +1,8 @@
 import Foundation
+import Utility
+
+/// `Regex` is a swifty regex engine built on top of the NSRegularExpression api.
+public typealias Regex = Utility.Regex
 
 extension String {
     /// Info about the exact location of a character in a given file.

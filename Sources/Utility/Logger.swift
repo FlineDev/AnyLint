@@ -99,7 +99,7 @@ public final class Logger {
     private func consoleMessage(_ message: String, level: PrintLevel) {
         switch level {
         case .success:
-            print(formattedCurrentTime(), "✅ ", message.lightGreen)
+            print(formattedCurrentTime(), "✅ ", message.green)
 
         case .info:
             print(formattedCurrentTime(), "ℹ️ ", message.lightBlue)
