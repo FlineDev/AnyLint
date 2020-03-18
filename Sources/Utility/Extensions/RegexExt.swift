@@ -1,5 +1,4 @@
 import Foundation
-import HandySwift
 
 extension Regex: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {

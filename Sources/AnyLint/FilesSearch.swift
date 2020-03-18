@@ -1,5 +1,4 @@
 import Foundation
-import HandySwift
 import Utility
 
 /// Helper to search for files and filter using Regexes.

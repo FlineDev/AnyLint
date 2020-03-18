@@ -8,14 +8,13 @@ let package = Package(
         .executable(name: "anylint", targets: ["AnyLintCLI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Flinesoft/HandySwift.git", from: "3.1.0"),
         .package(url: "https://github.com/onevcat/Rainbow.git", from: "3.1.5"),
         .package(url: "https://github.com/jakeheis/SwiftCLI.git", from: "6.0.1"),
     ],
     targets: [
         .target(
             name: "AnyLint",
-            dependencies: ["HandySwift", "Utility"]
+            dependencies: ["Utility"]
         ),
         .testTarget(
             name: "AnyLintTests",
@@ -23,7 +22,7 @@ let package = Package(
         ),
         .target(
             name: "AnyLintCLI",
-            dependencies: ["HandySwift", "Rainbow", "SwiftCLI", "Utility"]
+            dependencies: ["Rainbow", "SwiftCLI", "Utility"]
         ),
         .testTarget(
             name: "AnyLintCLITests",
@@ -31,7 +30,7 @@ let package = Package(
         ),
         .target(
             name: "Utility",
-            dependencies: ["HandySwift", "Rainbow"]
+            dependencies: ["Rainbow"]
         ),
         .testTarget(
             name: "UtilityTests",

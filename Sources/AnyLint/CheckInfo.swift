@@ -1,5 +1,4 @@
 import Foundation
-import HandySwift
 import Utility
 
 /// Provides some basic information needed in each lint check.

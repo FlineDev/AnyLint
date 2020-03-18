@@ -1,5 +1,4 @@
 import Foundation
-import HandySwift
 import Utility
 
 /// The linter type providing APIs for checking anything using regular expressions.

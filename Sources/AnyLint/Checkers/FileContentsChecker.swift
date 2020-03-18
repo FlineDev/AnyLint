@@ -1,5 +1,4 @@
 import Foundation
-import HandySwift
 import Utility
 
 struct FileContentsChecker {

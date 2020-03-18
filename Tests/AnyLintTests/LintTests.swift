@@ -1,5 +1,4 @@
 @testable import AnyLint
-import HandySwift
 @testable import Utility
 import XCTest
 
