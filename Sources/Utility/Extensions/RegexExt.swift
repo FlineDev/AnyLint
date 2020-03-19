@@ -11,3 +11,15 @@ extension Regex: ExpressibleByStringLiteral {
         }
     }
 }
+
+extension Regex: ExpressibleByDictionaryLiteral {
+    public init(dictionaryLiteral elements: (String, String)...) {
+        do {
+            self = try Regex(elements.reduce(into: "") { result, element in result.append("(?<\(element.0)>\(element.1))") })
+        } catch {
+            log.message("Failed to convert Dictionary literal '\(elements)' to type Regex.", level: .error)
+            log.exit(status: .failure)
+            exit(EXIT_FAILURE) // only reachable in unit tests
+        }
+    }
+}

@@ -139,6 +139,27 @@ public enum Lint {
     }
 
     static func validateAutocorrectsAll(examples: [AutoCorrectExample], regex: Regex, autocorrectReplacement: String) {
-        // TODO: [cg_2020-03-18] not yet implemented
+        for (before, after) in examples {
+            let autocorrected = regex.replacingMatches(
+                in: before,
+                with: numerizedNamedCaptureRefs(in: autocorrectReplacement, relatedRegex: regex)
+            )
+            if autocorrected != after {
+                log.message(
+                    "Autocorrecting example '\(before)' did not result in expected output. Expected '\(after)' but got '\(autocorrected)' instead.",
+                    level: .error
+                )
+                log.exit(status: .failure)
+            }
+        }
+    }
+
+    /// Numerizes references to named capture groups to work around missing named capture group replacement in `NSRegularExpression` APIs.
+    static func numerizedNamedCaptureRefs(in replacementString: String, relatedRegex: Regex) -> String {
+        let captureGroupNameRegex = Regex(#"\(\?\<([a-zA-Z0-9_-]+)\>[^\)]+\)"#)
+        let captureGroupNames: [String] = captureGroupNameRegex.matches(in: relatedRegex.pattern).map { $0.captures[0]! }
+        return captureGroupNames.enumerated().reduce(replacementString) { result, enumeratedGroupName in
+            result.replacingOccurrences(of: "$\(enumeratedGroupName.element)", with: "$\(enumeratedGroupName.offset + 1)")
+        }
     }
 }

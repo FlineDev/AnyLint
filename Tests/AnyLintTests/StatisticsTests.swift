@@ -91,20 +91,23 @@ final class StatisticsTests: XCTestCase {
 
         XCTAssertEqual(
             TestHelper.shared.consoleOutputs.map { $0.level },
-            [.info, .warning, .warning, .warning, .error, .error, .error, .error, .error]
+            [.info, .info, .warning, .warning, .warning, .warning, .error, .error, .error, .error, .error, .error]
         )
 
         XCTAssertEqual(
             TestHelper.shared.consoleOutputs.map { $0.message },
             [
-                "\("[id1]".bold) Found 1 violation(s).",
-                "\("[id2]".bold) Found 2 violation(s) at:",
+                "[id1] Found 1 violation(s).",
+                ">> Hint: hint1",
+                "[id2] Found 2 violation(s) at:",
                 "> 1. Hogwarts/Harry.swift",
                 "> 2. Hogwarts/Albus.swift",
-                "\("[id3]".bold) Found 3 violation(s) at:",
+                ">> Hint: hint2",
+                "[id3] Found 3 violation(s) at:",
                 "> 1. Hogwarts/Harry.swift:10:30",
                 "> 2. Hogwarts/Harry.swift:72:17",
                 "> 3. Hogwarts/Albus.swift:40:4",
+                ">> Hint: hint3",
                 "Performed 3 check(s) and found 3 error(s) & 2 warning(s).",
             ]
         )

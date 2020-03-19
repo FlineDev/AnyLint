@@ -50,9 +50,65 @@ final class LintTests: XCTestCase {
         XCTAssertEqual(TestHelper.shared.exitStatus, .failure)
     }
 
-    func testValidateAutocorrectsAllExamples() {
+    func testValidateAutocorrectsAllExamplesWithAnonymousGroups() {
         XCTAssertNil(TestHelper.shared.exitStatus)
 
-        // TODO: [cg_2020-03-18] not yet implemented
+        let anonymousCaptureRegex = try? Regex(#"([^\.]+)(\.)([^\.]+)(\.)([^\.]+)"#)
+
+        Lint.validateAutocorrectsAll(
+            examples: [
+                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                (before: "forums.swift.org", after: "org.swift.forums"),
+            ],
+            regex: anonymousCaptureRegex!,
+            autocorrectReplacement: "$5$2$3$4$1"
+        )
+
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        Lint.validateAutocorrectsAll(
+            examples: [
+                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                (before: "forums.swift.org", after: "org.swift.forums"),
+            ],
+            regex: anonymousCaptureRegex!,
+            autocorrectReplacement: "$4$1$2$3$0"
+        )
+
+        XCTAssertEqual(TestHelper.shared.exitStatus, .failure)
+    }
+
+    func testValidateAutocorrectsAllExamplesWithNamedGroups() {
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        let namedCaptureRegex: Regex = [
+            "prefix": #"[^\.]+"#,
+            "separator1": #"\."#,
+            "content": #"[^\.]+"#,
+            "separator2": #"\."#,
+            "suffix": #"[^\.]+"#,
+        ]
+
+        Lint.validateAutocorrectsAll(
+            examples: [
+                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                (before: "forums.swift.org", after: "org.swift.forums"),
+            ],
+            regex: namedCaptureRegex,
+            autocorrectReplacement: "$suffix$separator1$content$separator2$prefix"
+        )
+
+        XCTAssertNil(TestHelper.shared.exitStatus)
+
+        Lint.validateAutocorrectsAll(
+            examples: [
+                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                (before: "forums.swift.org", after: "org.swift.forums"),
+            ],
+            regex: namedCaptureRegex,
+            autocorrectReplacement: "$sfx$sep1$cnt$sep2$pref"
+        )
+
+        XCTAssertEqual(TestHelper.shared.exitStatus, .failure)
     }
 }

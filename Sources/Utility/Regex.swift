@@ -7,6 +7,9 @@ public struct Regex {
     // MARK: - Properties
     private let regularExpression: NSRegularExpression
 
+    /// The regex patterns string.
+    public let pattern: String
+
     // MARK: - Initializers
     /// Create a `Regex` based on a pattern string.
     ///
@@ -20,6 +23,7 @@ public struct Regex {
     ///
     /// - throws: A value of `ErrorType` describing the invalid regular expression.
     public init(_ pattern: String, options: Options = []) throws {
+        self.pattern = pattern
         regularExpression = try NSRegularExpression(
             pattern: pattern,
             options: options.toNSRegularExpressionOptions

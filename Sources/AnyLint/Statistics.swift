@@ -46,6 +46,8 @@ final class Statistics {
                     } else {
                         log.message("\("[\(check.id)]".bold) Found \(checkViolations.count) violation(s).", level: check.severity.logLevel)
                     }
+
+                    log.message(">> Hint: \(check.hint)".bold.italic, level: check.severity.logLevel)
                 }
             }
 

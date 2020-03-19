@@ -1,8 +1,6 @@
 import Foundation
 import Rainbow
 
-// swiftlint:disable logger
-
 /// Helper to log output to console or elsewhere.
 public final class Logger {
     /// The print level type.
