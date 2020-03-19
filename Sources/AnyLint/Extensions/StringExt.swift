@@ -16,4 +16,8 @@ extension String {
         let charInLine = prefix.last == "\n" ? 1 : lastPrefixLine.count + 1
         return (line: prefixLines.count + 1, charInLine: charInLine)
     }
+
+    func showNewlines() -> String {
+        replacingOccurrences(of: "\n", with: #"\n"#).replacingOccurrences(of: "\t", with: #"\t"#)
+    }
 }

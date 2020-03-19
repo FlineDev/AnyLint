@@ -23,3 +23,19 @@ extension Regex: ExpressibleByDictionaryLiteral {
         }
     }
 }
+
+extension Regex {
+    /// Replaces all captures groups with the given capture references. References can be numbers like `$1` and capture names like `$prefix`.
+    public func replaceAllCaptures(in input: String, with template: String) -> String {
+        replacingMatches(in: input, with: numerizedNamedCaptureRefs(in: template))
+    }
+
+    /// Numerizes references to named capture groups to work around missing named capture group replacement in `NSRegularExpression` APIs.
+    func numerizedNamedCaptureRefs(in replacementString: String) -> String {
+        let captureGroupNameRegex = Regex(#"\(\?\<([a-zA-Z0-9_-]+)\>[^\)]+\)"#)
+        let captureGroupNames: [String] = captureGroupNameRegex.matches(in: pattern).map { $0.captures[0]! }
+        return captureGroupNames.enumerated().reduce(replacementString) { result, enumeratedGroupName in
+            result.replacingOccurrences(of: "$\(enumeratedGroupName.element)", with: "$\(enumeratedGroupName.offset + 1)")
+        }
+    }
+}

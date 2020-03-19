@@ -15,12 +15,12 @@ final class FilePathsCheckerTests: XCTestCase {
                 (subpath: "Sources/World.swift", contents: ""),
             ]
         ) { filePathsToCheck in
-            let violations = sayHelloChecker(filePathsToCheck: filePathsToCheck).performCheck()
+            let violations = try sayHelloChecker(filePathsToCheck: filePathsToCheck).performCheck()
             XCTAssertEqual(violations.count, 0)
         }
 
         withTemporaryFiles([(subpath: "Sources/World.swift", contents: "")]) { filePathsToCheck in
-            let violations = sayHelloChecker(filePathsToCheck: filePathsToCheck).performCheck()
+            let violations = try sayHelloChecker(filePathsToCheck: filePathsToCheck).performCheck()
 
             XCTAssertEqual(violations.count, 1)
 
@@ -36,7 +36,7 @@ final class FilePathsCheckerTests: XCTestCase {
                 (subpath: "Sources/World.swift", contents: ""),
             ]
         ) { filePathsToCheck in
-            let violations = noWorldChecker(filePathsToCheck: filePathsToCheck).performCheck()
+            let violations = try noWorldChecker(filePathsToCheck: filePathsToCheck).performCheck()
 
             XCTAssertEqual(violations.count, 1)
 
@@ -52,6 +52,7 @@ final class FilePathsCheckerTests: XCTestCase {
             checkInfo: sayHelloCheck(),
             regex: #".*Hello\.swift"#,
             filePathsToCheck: filePathsToCheck,
+            autoCorrectReplacement: nil,
             violateIfNoMatchesFound: true
         )
     }
@@ -65,6 +66,7 @@ final class FilePathsCheckerTests: XCTestCase {
             checkInfo: noWorldCheck(),
             regex: #".*World\.swift"#,
             filePathsToCheck: filePathsToCheck,
+            autoCorrectReplacement: nil,
             violateIfNoMatchesFound: false
         )
     }

@@ -106,7 +106,7 @@ public final class Logger {
             print(formattedCurrentTime(), "⚠️ ", message.yellow)
 
         case .error:
-            print(formattedCurrentTime(), "❌ ", message.lightRed)
+            print(formattedCurrentTime(), "❌", message.lightRed)
         }
     }
 

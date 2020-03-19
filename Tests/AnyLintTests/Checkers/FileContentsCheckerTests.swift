@@ -16,10 +16,11 @@ final class FileContentsCheckerTests: XCTestCase {
 
         withTemporaryFiles(temporaryFiles) { filePathsToCheck in
             let checkInfo = CheckInfo(id: "whitespacing", hint: "Always add a single whitespace around '='.", severity: .warning)
-            let violations = FileContentsChecker(
+            let violations = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: #"(let|var) \w+=\w+"#,
-                filePathsToCheck: filePathsToCheck
+                filePathsToCheck: filePathsToCheck,
+                autoCorrectReplacement: nil
             ).performCheck()
 
             XCTAssertEqual(violations.count, 2)

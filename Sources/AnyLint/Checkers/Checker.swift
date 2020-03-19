@@ -1,5 +1,5 @@
 import Foundation
 
 protocol Checker {
-    func performCheck() -> [Violation]
+    func performCheck() throws -> [Violation]
 }

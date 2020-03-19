@@ -13,10 +13,14 @@ public struct Violation {
     /// The info about the exact location of the violation within the file. Will be ignored if no `filePath` specified.
     public let locationInfo: String.LocationInfo?
 
-    init(checkInfo: CheckInfo, filePath: String? = nil, locationInfo: String.LocationInfo? = nil) {
+    /// The autocorrection applied to fix this violation.
+    public let appliedAutoCorrection: AutoCorrection?
+
+    init(checkInfo: CheckInfo, filePath: String? = nil, locationInfo: String.LocationInfo? = nil, appliedAutoCorrection: AutoCorrection? = nil) {
         self.checkInfo = checkInfo
         self.filePath = filePath
         self.locationInfo = locationInfo
+        self.appliedAutoCorrection = appliedAutoCorrection
     }
 
     func locationMessage() -> String? {

@@ -57,8 +57,8 @@ final class LintTests: XCTestCase {
 
         Lint.validateAutocorrectsAll(
             examples: [
-                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
-                (before: "forums.swift.org", after: "org.swift.forums"),
+                AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
             ],
             regex: anonymousCaptureRegex!,
             autocorrectReplacement: "$5$2$3$4$1"
@@ -68,8 +68,8 @@ final class LintTests: XCTestCase {
 
         Lint.validateAutocorrectsAll(
             examples: [
-                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
-                (before: "forums.swift.org", after: "org.swift.forums"),
+                AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
             ],
             regex: anonymousCaptureRegex!,
             autocorrectReplacement: "$4$1$2$3$0"
@@ -91,8 +91,8 @@ final class LintTests: XCTestCase {
 
         Lint.validateAutocorrectsAll(
             examples: [
-                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
-                (before: "forums.swift.org", after: "org.swift.forums"),
+                AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
             ],
             regex: namedCaptureRegex,
             autocorrectReplacement: "$suffix$separator1$content$separator2$prefix"
@@ -102,8 +102,8 @@ final class LintTests: XCTestCase {
 
         Lint.validateAutocorrectsAll(
             examples: [
-                (before: "prefix.content.suffix", after: "suffix.content.prefix"),
-                (before: "forums.swift.org", after: "org.swift.forums"),
+                AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
+                AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
             ],
             regex: namedCaptureRegex,
             autocorrectReplacement: "$sfx$sep1$cnt$sep2$pref"
