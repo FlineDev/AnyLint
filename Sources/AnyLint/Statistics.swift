@@ -47,11 +47,20 @@ final class Statistics {
                             let prefix = "> \(violationNumString). "
                             log.message(prefix + violation.locationMessage()!, level: check.severity.logLevel)
 
+                            let prefixLengthWhitespaces = (0 ..< prefix.count).map { _ in " " }.joined()
                             if let appliedAutoCorrection = violation.appliedAutoCorrection {
-                                let prefixLengthWhitespaces = (0 ..< prefix.count).map { _ in " " }.joined()
                                 for messageLine in appliedAutoCorrection.appliedMessageLines {
                                     log.message(prefixLengthWhitespaces + messageLine, level: .info)
                                 }
+                            } else if let matchedString = violation.matchedString {
+                                log.message(prefixLengthWhitespaces + "Matching string:".bold + " (trimmed & reduced whitespaces)", level: .info)
+                                let matchedStringOutput = matchedString
+                                    .showNewlines()
+                                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                                    .replacingOccurrences(of: "        ", with: "  ")
+                                    .replacingOccurrences(of: "      ", with: "  ")
+                                    .replacingOccurrences(of: "    ", with: "  ")
+                                log.message(prefixLengthWhitespaces + "> " + matchedStringOutput, level: .info)
                             }
                         }
                     } else {

@@ -34,6 +34,7 @@ extension FileContentsChecker: Checker {
                         Violation(
                             checkInfo: checkInfo,
                             filePath: filePath,
+                            matchedString: match.string,
                             locationInfo: locationInfo,
                             appliedAutoCorrection: appliedAutoCorrection
                         )

@@ -102,7 +102,7 @@ public struct Regex {
 extension Regex: CustomStringConvertible {
     /// Returns a string describing the regex using its pattern string.
     public var description: String {
-        "Regex<\"\(regularExpression.pattern)\">"
+        "/\(regularExpression.pattern)/"
     }
 }
 
@@ -209,11 +209,8 @@ extension Regex {
                 }
 
             return captureRanges.map { [unowned self] captureRange in
-                if let captureRange = captureRange {
-                    return String(describing: self.baseString[captureRange])
-                }
-
-                return nil
+                guard let captureRange = captureRange else { return nil }
+                return String(describing: self.baseString[captureRange])
             }
         }()
 

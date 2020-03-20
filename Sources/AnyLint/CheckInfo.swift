@@ -13,7 +13,7 @@ public struct CheckInfo {
     public let severity: Severity
 
     /// Initializes a new info object for the lint check.
-    public init(id: String, hint: String, severity: Severity) {
+    public init(id: String, hint: String, severity: Severity = .error) {
         self.id = id
         self.hint = hint
         self.severity = severity

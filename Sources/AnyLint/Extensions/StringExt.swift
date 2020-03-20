@@ -10,14 +10,14 @@ extension String {
 
     func locationInfo(of index: String.Index) -> LocationInfo {
         let prefix = self[startIndex ..< index]
-        let prefixLines = prefix.split(separator: "\n")
+        let prefixLines = prefix.components(separatedBy: .newlines)
         guard let lastPrefixLine = prefixLines.last else { return (line: 1, charInLine: 1) }
 
         let charInLine = prefix.last == "\n" ? 1 : lastPrefixLine.count + 1
-        return (line: prefixLines.count + 1, charInLine: charInLine)
+        return (line: prefixLines.count, charInLine: charInLine)
     }
 
     func showNewlines() -> String {
-        replacingOccurrences(of: "\n", with: #"\n"#).replacingOccurrences(of: "\t", with: #"\t"#)
+        components(separatedBy: .newlines).joined(separator: #"\n"#)
     }
 }
