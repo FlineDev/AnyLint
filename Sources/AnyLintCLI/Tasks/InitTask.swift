@@ -5,19 +5,11 @@ import Utility
 struct InitTask {
     enum Template: String, CaseIterable {
         case blank
-        case ios
-        case android
 
         var configFileContents: String {
             switch self {
             case .blank:
                 return BlankTemplate.fileContents()
-
-            case .android:
-                return AndroidTemplate.fileContents()
-
-            case .ios:
-                return IOSTemplate.fileContents()
             }
         }
     }

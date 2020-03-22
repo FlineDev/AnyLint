@@ -214,9 +214,9 @@ extension Regex {
             }
         }()
 
-        private let result: NSTextCheckingResult
+        let result: NSTextCheckingResult
 
-        private let baseString: String
+        let baseString: String
 
         // MARK: - Initializers
         internal init(result: NSTextCheckingResult, in string: String) {

@@ -34,7 +34,12 @@ public enum Lint {
         )
 
         if let autoCorrectReplacement = autoCorrectReplacement {
-            validateAutocorrectsAll(examples: autoCorrectExamples, regex: regex, autocorrectReplacement: autoCorrectReplacement)
+            validateAutocorrectsAll(
+                checkInfo: checkInfo,
+                examples: autoCorrectExamples,
+                regex: regex,
+                autocorrectReplacement: autoCorrectReplacement
+            )
         }
 
         let filePathsToCheck: [String] = FilesSearch.allFiles(
@@ -85,7 +90,12 @@ public enum Lint {
         )
 
         if let autoCorrectReplacement = autoCorrectReplacement {
-            validateAutocorrectsAll(examples: autoCorrectExamples, regex: regex, autocorrectReplacement: autoCorrectReplacement)
+            validateAutocorrectsAll(
+                checkInfo: checkInfo,
+                examples: autoCorrectExamples,
+                regex: regex,
+                autocorrectReplacement: autoCorrectReplacement
+            )
         }
 
         let filePathsToCheck: [String] = FilesSearch.allFiles(
@@ -132,7 +142,7 @@ public enum Lint {
             if !regex.matches(example) {
                 // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
                 log.message(
-                    "Couldn't find a match for regex '\(regex)' in check '\(checkInfo.id)' within matching example:\n\(example)",
+                    "Couldn't find a match for regex \(regex) in check '\(checkInfo.id)' within matching example:\n\(example)",
                     level: .error
                 )
                 log.exit(status: .failure)
@@ -145,7 +155,7 @@ public enum Lint {
             if regex.matches(example) {
                 // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
                 log.message(
-                    "Unexpectedly found a match for regex '\(regex)' in check '\(checkInfo.id)' within non-matching example:\n\(example)",
+                    "Unexpectedly found a match for regex \(regex) in check '\(checkInfo.id)' within non-matching example:\n\(example)",
                     level: .error
                 )
                 log.exit(status: .failure)
@@ -153,14 +163,16 @@ public enum Lint {
         }
     }
 
-    static func validateAutocorrectsAll(examples: [AutoCorrection], regex: Regex, autocorrectReplacement: String) {
+    static func validateAutocorrectsAll(checkInfo: CheckInfo, examples: [AutoCorrection], regex: Regex, autocorrectReplacement: String) {
         for autocorrect in examples {
             let autocorrected = regex.replaceAllCaptures(in: autocorrect.before, with: autocorrectReplacement)
             if autocorrected != autocorrect.after {
                 log.message(
                     """
-                    Autocorrecting example '\(autocorrect.before)' did not result in expected output.
-                    Expected '\(autocorrect.after)' but got '\(autocorrected)'.
+                    Autocorrecting example for \(checkInfo.id) did not result in expected output.
+                    Before:   '\(autocorrect.before.showNewlines())'
+                    After:    '\(autocorrected.showNewlines())'
+                    Expected: '\(autocorrect.after.showNewlines())'
                     """,
                     level: .error
                 )

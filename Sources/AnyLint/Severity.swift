@@ -24,4 +24,20 @@ public enum Severity: Int, CaseIterable {
             return .error
         }
     }
+
+    static func from(string: String) -> Severity? {
+        switch string {
+        case "info", "i":
+            return .info
+
+        case "warning", "w":
+            return .warning
+
+        case "error", "e":
+            return .error
+
+        default:
+            return nil
+        }
+    }
 }

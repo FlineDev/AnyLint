@@ -56,6 +56,7 @@ final class LintTests: XCTestCase {
         let anonymousCaptureRegex = try? Regex(#"([^\.]+)(\.)([^\.]+)(\.)([^\.]+)"#)
 
         Lint.validateAutocorrectsAll(
+            checkInfo: CheckInfo(id: "id", hint: "hint"),
             examples: [
                 AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
                 AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
@@ -67,6 +68,7 @@ final class LintTests: XCTestCase {
         XCTAssertNil(TestHelper.shared.exitStatus)
 
         Lint.validateAutocorrectsAll(
+            checkInfo: CheckInfo(id: "id", hint: "hint"),
             examples: [
                 AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
                 AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
@@ -90,6 +92,7 @@ final class LintTests: XCTestCase {
         ]
 
         Lint.validateAutocorrectsAll(
+            checkInfo: CheckInfo(id: "id", hint: "hint"),
             examples: [
                 AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
                 AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
@@ -101,6 +104,7 @@ final class LintTests: XCTestCase {
         XCTAssertNil(TestHelper.shared.exitStatus)
 
         Lint.validateAutocorrectsAll(
+            checkInfo: CheckInfo(id: "id", hint: "hint"),
             examples: [
                 AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
                 AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),

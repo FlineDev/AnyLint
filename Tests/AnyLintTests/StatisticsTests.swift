@@ -54,7 +54,7 @@ final class StatisticsTests: XCTestCase {
         XCTAssertEqual(Statistics.shared.violationsPerCheck.keys.count, 3)
     }
 
-    func testLogSummary() {
+    func testLogSummary() { // swiftlint:disable:this function_body_length
         Statistics.shared.logSummary()
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .warning)
@@ -94,22 +94,25 @@ final class StatisticsTests: XCTestCase {
             [.info, .info, .warning, .warning, .warning, .warning, .error, .error, .error, .error, .error, .error]
         )
 
-        XCTAssertEqual(
-            TestHelper.shared.consoleOutputs.map { $0.message },
-            [
-                "[id1] Found 1 violation(s).",
-                ">> Hint: hint1",
-                "[id2] Found 2 violation(s) at:",
-                "> 1. Hogwarts/Harry.swift",
-                "> 2. Hogwarts/Albus.swift",
-                ">> Hint: hint2",
-                "[id3] Found 3 violation(s) at:",
-                "> 1. Hogwarts/Harry.swift:10:30",
-                "> 2. Hogwarts/Harry.swift:72:17",
-                "> 3. Hogwarts/Albus.swift:40:4",
-                ">> Hint: hint3",
-                "Performed 3 check(s) and found 3 error(s) & 2 warning(s).",
-            ]
-        )
+        let expectedOutputs = [
+            "\("[id1]".bold) Found 1 violation(s).",
+            ">> Hint: hint1".bold.italic,
+            "\("[id2]".bold) Found 2 violation(s) at:",
+            "> 1. Hogwarts/Harry.swift",
+            "> 2. Hogwarts/Albus.swift",
+            ">> Hint: hint2".bold.italic,
+            "\("[id3]".bold) Found 3 violation(s) at:",
+            "> 1. Hogwarts/Harry.swift:10:30",
+            "> 2. Hogwarts/Harry.swift:72:17",
+            "> 3. Hogwarts/Albus.swift:40:4",
+            ">> Hint: hint3".bold.italic,
+            "Performed 3 check(s) and found 3 error(s) & 2 warning(s).",
+        ]
+
+        XCTAssertEqual(TestHelper.shared.consoleOutputs.count, expectedOutputs.count)
+
+        for (index, expectedOutput) in expectedOutputs.enumerated() {
+            XCTAssertEqual(TestHelper.shared.consoleOutputs[index].message, expectedOutput)
+        }
     }
 }
