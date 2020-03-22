@@ -30,3 +30,6 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 - None.
 ### Security
 - None.
+
+## [0.1.0] - 2020-03-22
+Initial public release.
