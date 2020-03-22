@@ -6,10 +6,10 @@ let swiftSourceFiles: Regex = #"Sources/.*\.swift"#
 let swiftTestFiles: Regex = #"Tests/.*\.swift"#
 let readmeFile: Regex = #"README\.md"#
 
-// MARK: -
-// MARK: empty_method_body
+// MARK: - Checks
+// MARK: EmptyMethodBody
 try Lint.checkFileContents(
-    checkInfo: "empty_method_body: Don't use whitespace or newlines for the body of empty methods.",
+    checkInfo: "EmptyMethodBody: Don't use whitespace or newlines for the body of empty methods.",
     regex: ["declaration": #"(init|func [^\(\s]+)\([^{]*\)"#, "spacing": #"\s*"#, "body": #"\{\s+\}"#],
     matchingExamples: [
         "init() { }",
@@ -34,27 +34,27 @@ try Lint.checkFileContents(
     ]
 )
 
-// MARK: empty_todo
+// MARK: EmptyTodo
 try Lint.checkFileContents(
-    checkInfo: "empty_todo: `// TODO:` comments should not be empty.",
+    checkInfo: "EmptyTodo: `// TODO:` comments should not be empty.",
     regex: #"// TODO: ?(\[[\d\-_a-z]+\])? *\n"#,
     matchingExamples: ["// TODO:\n", "// TODO: [2020-03-19]\n", "// TODO: [cg_2020-03-19]  \n"],
     nonMatchingExamples: ["// TODO: refactor", "// TODO: not yet implemented", "// TODO: [cg_2020-03-19] not yet implemented"],
     includeFilters: [swiftSourceFiles, swiftTestFiles]
 )
 
-// MARK: empty_type
+// MARK: EmptyType
 try Lint.checkFileContents(
-    checkInfo: "empty_type: Don't keep empty types in code without commenting inside why they are needed.",
+    checkInfo: "EmptyType: Don't keep empty types in code without commenting inside why they are needed.",
     regex: #"(class|protocol|struct|enum) [^\{]+\{\s*\}"#,
     matchingExamples: ["class Foo {}", "enum Constants {\n    \n}", "struct MyViewModel(x: Int, y: Int, closure: () -> Void) {}"],
     nonMatchingExamples: ["class Foo { /* TODO: not yet implemented */ }", "func foo() {}", "init() {}", "enum Bar { case x, y }"],
     includeFilters: [swiftSourceFiles, swiftTestFiles]
 )
 
-// MARK: guard_multiline_2
+// MARK: GuardMultiline2
 try Lint.checkFileContents(
-    checkInfo: "guard_multiline_2: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+    checkInfo: "GuardMultiline2: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
     regex: [
         "newline": #"\n"#,
         "guardIndent": #" *"#,
@@ -121,9 +121,9 @@ try Lint.checkFileContents(
     ]
 )
 
-// MARK: guard_multiline_3
+// MARK: GuardMultiline3
 try Lint.checkFileContents(
-    checkInfo: "guard_multiline_3: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+    checkInfo: "GuardMultiline3: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
     regex: [
         "newline": #"\n"#,
         "guardIndent": #" *"#,
@@ -197,9 +197,9 @@ try Lint.checkFileContents(
     ]
 )
 
-// MARK: guard_multiline_4
+// MARK: GuardMultiline4
 try Lint.checkFileContents(
-    checkInfo: "guard_multiline_4: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+    checkInfo: "GuardMultiline4: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
     regex: [
         "newline": #"\n"#,
         "guardIndent": #" *"#,
@@ -280,9 +280,9 @@ try Lint.checkFileContents(
     ]
 )
 
-// MARK: guard_multiline_n
+// MARK: GuardMultilineN
 try Lint.checkFileContents(
-    checkInfo: "guard_multiline_n: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+    checkInfo: "GuardMultilineN: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
     regex: #"\n *guard *([^\n]+,\n){4,}[^\n]*\S\s*else\s*\{\s*"#,
     matchingExamples: [
         """
@@ -321,18 +321,18 @@ try Lint.checkFileContents(
     includeFilters: [swiftSourceFiles, swiftTestFiles]
 )
 
-// MARK: if_as_guard
+// MARK: IfAsGuard
 try Lint.checkFileContents(
-    checkInfo: "if_as_guard: Don't use an if statement to just return – use guard for such cases instead.",
+    checkInfo: "IfAsGuard: Don't use an if statement to just return – use guard for such cases instead.",
     regex: #" +if [^\{]+\{\s*return\s*[^\}]*\}(?! *else)"#,
     matchingExamples: [" if x == 5 { return }", " if x == 5 {\n    return nil\n}", " if x == 5 { return 500 }", " if x == 5 { return do(x: 500, y: 200) }"],
     nonMatchingExamples: [" if x == 5 {\n    let y = 200\n    return y\n}", " if x == 5 { someMethod(x: 500, y: 200) }", " if x == 500 { return } else {"],
     includeFilters: [swiftSourceFiles, swiftTestFiles]
 )
 
-// MARK: late_force_unwrapping_3
+// MARK: LateForceUnwrapping3
 try Lint.checkFileContents(
-    checkInfo: "late_force_unwrapping_3: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
+    checkInfo: "LateForceUnwrapping3: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
     regex: [
         "openingBrace": #"\("#,
         "callPart1": #"[^\s\?\.]+"#,
@@ -353,9 +353,9 @@ try Lint.checkFileContents(
     ]
 )
 
-// MARK: late_force_unwrapping_2
+// MARK: LateForceUnwrapping2
 try Lint.checkFileContents(
-    checkInfo: "late_force_unwrapping_2: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
+    checkInfo: "LateForceUnwrapping2: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
     regex: [
         "openingBrace": #"\("#,
         "callPart1": #"[^\s\?\.]+"#,
@@ -374,9 +374,9 @@ try Lint.checkFileContents(
     ]
 )
 
-// MARK: late_force_unwrapping_1
+// MARK: LateForceUnwrapping1
 try Lint.checkFileContents(
-    checkInfo: "late_force_unwrapping_1: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
+    checkInfo: "LateForceUnwrapping1: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
     regex: [
         "openingBrace": #"\("#,
         "callPart1": #"[^\s\?\.]+"#,
@@ -393,9 +393,9 @@ try Lint.checkFileContents(
     ]
 )
 
-// MARK: logger
+// MARK: Logger
 try Lint.checkFileContents(
-    checkInfo: "logger: Don't use `print` – use `log.message` instead.",
+    checkInfo: "Logger: Don't use `print` – use `log.message` instead.",
     regex: #"print\([^\n]+\)"#,
     matchingExamples: [#"print("Hellow World!")"#, #"print(5)"#, #"print(\n    "hi"\n)"#],
     nonMatchingExamples: [#"log.message("Hello world!")"#],
@@ -403,18 +403,18 @@ try Lint.checkFileContents(
     excludeFilters: [#"Sources/.*/Logger\.swift"#]
 )
 
-// MARK: readme
+// MARK: Readme
 try Lint.checkFilePaths(
-    checkInfo: "readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
+    checkInfo: "Readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
     regex: #"^README\.md$"#,
     matchingExamples: ["README.md"],
     nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
     violateIfNoMatchesFound: true
 )
 
-// MARK: readme_path
+// MARK: ReadmePath
 try Lint.checkFilePaths(
-    checkInfo: "readme_path: The README file should be named exactly `README.md`.",
+    checkInfo: "ReadmePath: The README file should be named exactly `README.md`.",
     regex: #"^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$"#,
     matchingExamples: ["README.markdown", "readme.md", "ReadMe.md"],
     nonMatchingExamples: ["README.md", "CHANGELOG.md", "CONTRIBUTING.md", "api/help.md"],
@@ -426,9 +426,9 @@ try Lint.checkFilePaths(
     ]
 )
 
-// MARK: readme_top_level_title
+// MARK: ReadmeTopLevelTitle
 try Lint.checkFileContents(
-    checkInfo: "readme_top_level_title: The README.md file should only contain a single top level title.",
+    checkInfo: "ReadmeTopLevelTitle: The README.md file should only contain a single top level title.",
     regex: #"(^|\n)#[^#](.*\n)*\n#[^#]"#,
     matchingExamples: [
         """
@@ -453,9 +453,9 @@ try Lint.checkFileContents(
     includeFilters: [readmeFile]
 )
 
-// MARK: readme_typo_license
+// MARK: ReadmeTypoLicense
 try Lint.checkFileContents(
-    checkInfo: "readme_typo_license: Misspelled word 'license'.",
+    checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
     regex: #"([\s#]L|l)isence([\s\.,:;])"#,
     matchingExamples: [" lisence:", "## Lisence\n"],
     nonMatchingExamples: [" license:", "## License\n"],
