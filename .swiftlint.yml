@@ -1,0 +1,121 @@
+# Basic Configuration
+opt_in_rules:
+- anyobject_protocol
+- array_init
+- attributes
+- closure_end_indentation
+- closure_spacing
+- collection_alignment
+- conditional_returns_on_newline
+- contains_over_filter_count
+- contains_over_filter_is_empty
+- contains_over_first_not_nil
+- contains_over_range_nil_comparison
+- convenience_type
+- empty_collection_literal
+- empty_count
+- empty_string
+- empty_xctest_method
+- explicit_init
+- explicit_type_interface
+- fallthrough
+- fatal_error_message
+- file_name
+- file_name_no_space
+- file_types_order
+- first_where
+- flatmap_over_map_reduce
+- function_default_parameter_at_end
+- identical_operands
+- implicit_return
+- implicitly_unwrapped_optional
+- indentation_width
+- joined_default_parameter
+- last_where
+- legacy_multiple
+- legacy_random
+- literal_expression_end_indentation
+- lower_acl_than_parent
+- missing_docs
+- modifier_order
+- multiline_arguments
+- multiline_arguments_brackets
+- multiline_literal_brackets
+- multiline_parameters
+- multiline_parameters_brackets
+- nslocalizedstring_key
+- number_separator
+- object_literal
+- operator_usage_whitespace
+- optional_enum_case_matching
+- override_in_extension
+- pattern_matching_keywords
+- prefer_self_type_over_type_of_self
+- private_action
+- private_outlet
+- prohibited_super_call
+- reduce_into
+- redundant_nil_coalescing
+- redundant_type_annotation
+- single_test_class
+- sorted_first_last
+- sorted_imports
+- static_operator
+- strong_iboutlet
+- switch_case_on_newline
+- toggle_bool
+- trailing_closure
+- type_contents_order
+- unavailable_function
+- unneeded_parentheses_in_closure_argument
+- untyped_error_in_catch
+- unused_declaration
+- unused_import
+- vertical_parameter_alignment_on_call
+- vertical_whitespace_between_cases
+- vertical_whitespace_closing_braces
+- vertical_whitespace_opening_braces
+- xct_specific_matcher
+- yoda_condition
+
+included:
+  - Sources
+  - Tests
+
+excluded:
+  - Tests/LinuxMain.swift
+
+disabled_rules:
+  - todo
+
+# Rule Configurations
+conditional_returns_on_newline:
+  if_only: true
+
+explicit_type_interface:
+  allow_redundancy: true
+  excluded:
+    - local
+
+file_name:
+  suffix_pattern: "Ext"
+
+identifier_name:
+  max_length: 60
+  excluded:
+    - id
+    - db
+    - to
+
+line_length:
+  warning: 160
+  ignores_comments: true
+
+nesting:
+  type_level: 3
+
+trailing_comma:
+  mandatory_comma: true
+
+trailing_whitespace:
+  ignores_comments: false
