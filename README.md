@@ -12,8 +12,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.0.0-blue.svg"
-             alt="Version: 0.0.0">
+        <img src="https://img.shields.io/badge/Version-0.1.0-blue.svg"
+             alt="Version: 0.1.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -50,7 +50,28 @@ Lint anything by combining the power of Swift & regular expressions.
 
 ## Installation
 
-TODO
+### Via [Homebrew](https://brew.sh):
+
+To **install** AnyLint the first time, run these commands:
+
+```bash
+brew tap Flinesoft/AnyLint https://github.com/Flinesoft/AnyLint.git
+brew install anylint
+```
+
+To **update** it to the latest version, run this instead:
+
+```bash
+brew upgrade anylint
+```
+
+### Via [Mint](https://github.com/yonaskolb/Mint):
+
+To **install** AnyLint or **update** to the latest version, run this command:
+
+```bash
+mint install Flinesoft/AnyLint
+```
 
 ## Getting Started
 
@@ -128,8 +149,6 @@ Many parameters in the above mentioned lint check methods are of `Regex` type. A
 
 Note that we recommend using [raw strings](https://www.hackingwithswift.com/articles/162/how-to-use-raw-strings-in-swift) (`#"foo"#` instead of `"foo"`) for all regexes to get rid of double escaping backslashes (e.g. `\\s` becomes `\s`). This also allows for testing regexes in online regex editors like [rubular](https://rubular.com/) first and then copy & pasting from them without any additional escaping.
 
-In general, initializing a `Regex` object is enough to use AnyLint – the matching part will be handled automatically. In case you want to use the `customCheck` method and need regexes there, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift) (the project, the class was taken from) or read the [code documentation comments](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift).
-
 #### CheckInfo
 
 A `CheckInfo` contains the basic information about a lint check. It consists of:
@@ -142,7 +161,7 @@ While there is an initializer available, we recommend using a String Literal ins
 
 ```swift
 // accepted structure: <id>(@<severity>): <hint>
-let checkInfo: CheckInfo = "readme_path: The README file should be named exactly `README.md`."
+let checkInfo: CheckInfo = "ReadmePath: The README file should be named exactly `README.md`."
 ```
 
 ### Check File Contents
@@ -254,6 +273,8 @@ AnyLint allows you to do any kind of lint checks (thus its name) as it gives you
 2. `customClosure`: Your custom logic which produces an array of `Violation` objects.
 
 Note that the `Violation` type just holds some additional information on the file, matched string, location in the file and applied autocorrection and that all these fields are optional. It is a simple struct used by the AnyLint reporter for more detailed output, no logic attached. The only required field is the `CheckInfo` object which caused the violation.
+
+If you want to use regexes in your custom code, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift) (the project, the class was taken from) or read the [code documentation comments](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift).
 
 When using the `customCheck`, you might want to also include some Swift packages for [easier file handling](https://github.com/JohnSundell/Files) or [running shell commands](https://github.com/JohnSundell/ShellOut). You can do so by adding them at the top of the file like so:
 
