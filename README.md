@@ -51,7 +51,7 @@
 
 # AnyLint
 
-Lint anything by combining the power of Swift & regular expressions.
+Lint any project in any language using Swift and regular expressions. With built-in support for matching and non-matching examples validation & autocorrect replacement. Replaces SwiftLint custom rules & works for other languages as well! 🎉
 
 ## Installation
 
