@@ -86,7 +86,7 @@ To initialize AnyLint in a project, run:
 anylint --init blank
 ```
 
-This will create the Swift script file `lint.swift` with something like following contents:
+This will create the Swift script file `lint.swift` with something like the following contents:
 
 ```swift
 #!/usr/local/bin/swift-sh
