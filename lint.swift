@@ -453,19 +453,5 @@ try Lint.checkFileContents(
     includeFilters: [readmeFile]
 )
 
-// MARK: ReadmeTypoLicense
-try Lint.checkFileContents(
-    checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
-    regex: #"([\s#]L|l)isence([\s\.,:;])"#,
-    matchingExamples: [" lisence:", "## Lisence\n"],
-    nonMatchingExamples: [" license:", "## License\n"],
-    includeFilters: [readmeFile],
-    autoCorrectReplacement: "$1icense$2",
-    autoCorrectExamples: [
-        AutoCorrection(before: " lisence:", after: " license:"),
-        AutoCorrection(before: "## Lisence\n", after: "## License\n"),
-    ]
-)
-
 // MARK: - Log Summary & Exit
 Lint.logSummaryAndExit()

@@ -21,7 +21,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- None.
+- Changed `CheckInfo` id casing convention from snake_case to UpperCamelCase in `blank` template.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Deprecated
 - None.
 ### Removed

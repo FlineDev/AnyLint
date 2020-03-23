@@ -10,18 +10,18 @@ enum BlankTemplate: ConfigurationTemplate {
             let readmeFile: Regex = #"README\.md"#
 
             // MARK: - Checks
-            // MARK: readme
+            // MARK: Readme
             try Lint.checkFilePaths(
-                checkInfo: "readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
+                checkInfo: "Readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
                 regex: #"^README\.md$"#,
                 matchingExamples: ["README.md"],
                 nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
                 violateIfNoMatchesFound: true
             )
 
-            // MARK: readme_path
+            // MARK: ReadmePath
             try Lint.checkFilePaths(
-                checkInfo: "readme_path: The README file should be named exactly `README.md`.",
+                checkInfo: "ReadmePath: The README file should be named exactly `README.md`.",
                 regex: #"^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$"#,
                 matchingExamples: ["README.markdown", "readme.md", "ReadMe.md"],
                 nonMatchingExamples: ["README.md", "CHANGELOG.md", "CONTRIBUTING.md", "api/help.md"],
@@ -33,9 +33,9 @@ enum BlankTemplate: ConfigurationTemplate {
                 ]
             )
 
-            // MARK: readme_top_level_title
+            // MARK: ReadmeTopLevelTitle
             try Lint.checkFileContents(
-                checkInfo: "readme_top_level_title: The README.md file should only contain a single top level title.",
+                checkInfo: "ReadmeTopLevelTitle: The README.md file should only contain a single top level title.",
                 regex: #"(^|\n)#[^#](.*\n)*\n#[^#]"#,
                 matchingExamples: [
                     """
@@ -60,9 +60,9 @@ enum BlankTemplate: ConfigurationTemplate {
                 includeFilters: [readmeFile]
             )
 
-            // MARK: readme_typo_license
+            // MARK: ReadmeTypoLicense
             try Lint.checkFileContents(
-                checkInfo: "readme_typo_license: Misspelled word 'license'.",
+                checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
                 regex: #"([\s#]L|l)isence([\s\.,:;])"#,
                 matchingExamples: [" lisence:", "## Lisence\n"],
                 nonMatchingExamples: [" license:", "## License\n"],
