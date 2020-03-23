@@ -19,7 +19,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- Added two simple lint check examples in first code sample in README. (Thanks for the pointer, [Dave Verwer](https://github.com/daveverwer)!)
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - Changed `CheckInfo` id casing convention from snake_case to UpperCamelCase in `blank` template.  
   Author: [Cihat Gündüz](https://github.com/Jeehut)

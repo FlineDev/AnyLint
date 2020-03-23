@@ -86,17 +86,38 @@ To initialize AnyLint in a project, run:
 anylint --init blank
 ```
 
-This will create the Swift script file `lint.swift` with the following contents:
+This will create the Swift script file `lint.swift` with something like following contents:
 
 ```swift
 #!/usr/local/bin/swift-sh
 import AnyLint // @Flinesoft ~> 0.1.0
 
 // MARK: - Variables
-// some example variables
+let readmeFile: Regex = #"README\.md"#
 
 // MARK: - Checks
-// some example lint checks
+// MARK: Readme
+try Lint.checkFilePaths(
+    checkInfo: "Readme: Each project should have a README.md file explaining the project.",
+    regex: readmeFile,
+    matchingExamples: ["README.md"],
+    nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
+    violateIfNoMatchesFound: true
+)
+
+// MARK: ReadmeTypoLicense
+try Lint.checkFileContents(
+    checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
+    regex: #"([\s#]L|l)isence([\s\.,:;])"#,
+    matchingExamples: [" license:", "## Lisence\n"],
+    nonMatchingExamples: [" license:", "## License\n"],
+    includeFilters: [readmeFile],
+    autoCorrectReplacement: "$1icense$2",
+    autoCorrectExamples: [
+        AutoCorrection(before: " license:", after: " license:"),
+        AutoCorrection(before: "## Lisence\n", after: "## License\n"),
+    ]
+)
 
 // MARK: - Log Summary & Exit
 Lint.logSummaryAndExit()
