@@ -1,4 +1,9 @@
 <p align="center">
+    <img src="https://raw.githubusercontent.com/Flinesoft/AnyLint/main/Logo.png"
+      width=562 height=115>
+</p>
+
+<p align="center">
     <a href="https://app.bitrise.io/app/b2708c16ab236ff8">
         <img src="https://app.bitrise.io/app/b2708c16ab236ff8/status.svg?token=PuELIpLj_V11GkcIztEgGQ&branch=main"
             alt="Build Status">
@@ -12,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.1.0-blue.svg"
-             alt="Version: 0.1.0">
+        <img src="https://img.shields.io/badge/Version-0.1.1-blue.svg"
+             alt="Version: 0.1.1">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -46,7 +51,7 @@
 
 # AnyLint
 
-Lint anything by combining the power of Swift & regular expressions.
+Lint any project in any language using Swift and regular expressions. With built-in support for matching and non-matching examples validation & autocorrect replacement. Replaces SwiftLint custom rules & works for other languages as well! 🎉
 
 ## Installation
 
@@ -81,17 +86,38 @@ To initialize AnyLint in a project, run:
 anylint --init blank
 ```
 
-This will create the Swift script file `lint.swift` with the following contents:
+This will create the Swift script file `lint.swift` with something like following contents:
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.1.0
+import AnyLint // @Flinesoft ~> 0.1.1
 
 // MARK: - Variables
-// some example variables
+let readmeFile: Regex = #"README\.md"#
 
 // MARK: - Checks
-// some example lint checks
+// MARK: Readme
+try Lint.checkFilePaths(
+    checkInfo: "Readme: Each project should have a README.md file explaining the project.",
+    regex: readmeFile,
+    matchingExamples: ["README.md"],
+    nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
+    violateIfNoMatchesFound: true
+)
+
+// MARK: ReadmeTypoLicense
+try Lint.checkFileContents(
+    checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
+    regex: #"([\s#]L|l)isence([\s\.,:;])"#,
+    matchingExamples: [" license:", "## Lisence\n"],
+    nonMatchingExamples: [" license:", "## License\n"],
+    includeFilters: [readmeFile],
+    autoCorrectReplacement: "$1icense$2",
+    autoCorrectExamples: [
+        AutoCorrection(before: " license:", after: " license:"),
+        AutoCorrection(before: "## Lisence\n", after: "## License\n"),
+    ]
+)
 
 // MARK: - Log Summary & Exit
 Lint.logSummaryAndExit()
@@ -282,7 +308,7 @@ When using the `customCheck`, you might want to also include some Swift packages
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.1.0
+import AnyLint // @Flinesoft ~> 0.1.1
 import Files // @JohnSundell ~> 4.1.1
 import ShellOut // @JohnSundell ~> 2.3.0
 
