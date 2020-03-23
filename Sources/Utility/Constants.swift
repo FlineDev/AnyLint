@@ -9,7 +9,7 @@ public var log = Logger(outputType: .console)
 /// Constants to reference across the project.
 public enum Constants {
     /// The current tool version string. Conforms to SemVer 2.0.
-    public static let currentVersion: String = "0.1.0"
+    public static let currentVersion: String = "0.1.1"
 
     /// The name of this tool.
     public static let toolName: String = "AnyLint"
