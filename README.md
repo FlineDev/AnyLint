@@ -161,7 +161,7 @@ Many parameters in the above mentioned lint check methods are of `Regex` type. A
 
 1. Using a **String**:
   ```swift
-  let regex = Regex(#"(foo|bar)[0-9]+"#) // => /(foo|bar)[0-9]+/`
+  let regex = Regex(#"(foo|bar)[0-9]+"#) // => /(foo|bar)[0-9]+/
   ```
 2. Using a **String Literal**:
   ```swift
@@ -188,6 +188,7 @@ While there is an initializer available, we recommend using a String Literal ins
 ```swift
 // accepted structure: <id>(@<severity>): <hint>
 let checkInfo: CheckInfo = "ReadmePath: The README file should be named exactly `README.md`."
+let checkInfoCustomSeverity: CheckInfo = "ReadmePath@warning: The README file should be named exactly `README.md`."
 ```
 
 ### Check File Contents
@@ -197,7 +198,7 @@ AnyLint has rich support for checking the contents of a file using a regex. The 
 In its simplest form, the method just requires a `checkInfo` and a `regex`:
 
 ```swift
-// MARK: empty_todo
+// MARK: EmptyTodo
 try Lint.checkFileContents(
     checkInfo: "EmptyTodo: TODO comments should not be empty.",
     regex: #"// TODO: *\n"#
