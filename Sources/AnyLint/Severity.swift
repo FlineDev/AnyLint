@@ -41,3 +41,9 @@ public enum Severity: Int, CaseIterable {
         }
     }
 }
+
+extension Severity: Comparable {
+    public static func < (lhs: Severity, rhs: Severity) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}

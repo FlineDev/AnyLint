@@ -36,6 +36,6 @@ public struct Violation {
     func locationMessage() -> String? {
         guard let filePath = filePath else { return nil }
         guard let locationInfo = locationInfo else { return filePath }
-        return "\(filePath):\(locationInfo.line):\(locationInfo.charInLine)"
+        return "\(filePath):\(locationInfo.line):\(locationInfo.charInLine):"
     }
 }

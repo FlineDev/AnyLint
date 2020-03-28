@@ -35,9 +35,12 @@ public final class Logger {
     }
 
     /// The output type.
-    public enum OutputType {
+    public enum OutputType: String {
         /// Output is targeted to a console to be read by developers.
         case console
+
+        /// Output is targeted to Xcodes left pane to be interpreted by it to mark errors & warnings.
+        case xcode
 
         /// Output is targeted for unit tests. Collect into globally accessible TestHelper.
         case test
@@ -62,9 +65,11 @@ public final class Logger {
         }
     }
 
-    let outputType: OutputType
+    /// The output type of the logger.
+    public let outputType: OutputType
 
-    init(outputType: OutputType) {
+    /// Initializes a new Logger object with a given output type.
+    public init(outputType: OutputType) {
         self.outputType = outputType
     }
 
@@ -78,6 +83,9 @@ public final class Logger {
         case .console:
             consoleMessage(message, level: level)
 
+        case .xcode:
+            xcodeMessage(message, level: level)
+
         case .test:
             TestHelper.shared.consoleOutputs.append((message, level))
         }
@@ -86,7 +94,7 @@ public final class Logger {
     /// Exits the current program with the given status.
     public func exit(status: ExitStatus) {
         switch outputType {
-        case .console:
+        case .console, .xcode:
             Darwin.exit(status.statusCode)
 
         case .test:
@@ -107,6 +115,20 @@ public final class Logger {
 
         case .error:
             print(formattedCurrentTime(), "❌", message.red)
+        }
+    }
+
+    /// Reports a message in an Xcode compatible format to be shown in the left pane.
+    ///
+    /// - Parameters:
+    ///   - message: The message to be printed. Don't include `Error!`, `Warning!` or similar information at the beginning.
+    ///   - level: The level of the print statement.
+    ///   - location: The file, line and char in line location string.
+    public func xcodeMessage(_ message: String, level: PrintLevel, location: String? = nil) {
+        if let location = location {
+            print("\(location) \(level.rawValue): \(Constants.toolName): \(message)")
+        } else {
+            print("\(level.rawValue): \(Constants.toolName): \(message)")
         }
     }
 

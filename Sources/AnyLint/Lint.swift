@@ -125,7 +125,11 @@ public enum Lint {
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
-    public static func logSummaryAndExit(failOnWarnings: Bool = false) {
+    public static func logSummaryAndExit(failOnWarnings: Bool = false, arguments: [String] = []) {
+        if arguments.contains(Logger.OutputType.xcode.rawValue) {
+            log = Logger(outputType: .xcode)
+        }
+
         Statistics.shared.logSummary()
 
         if Statistics.shared.violationsBySeverity[.error]!.isFilled {
