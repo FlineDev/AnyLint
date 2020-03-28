@@ -1,6 +1,6 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/Flinesoft/AnyLint/main/Logo.png"
-      width=562 height=115>
+      width=562 />
 </p>
 
 <p align="center">
