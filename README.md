@@ -43,6 +43,7 @@
   <a href="#installation">Installation</a>
   • <a href="#getting-started">Getting Started</a>
   • <a href="#configuration">Configuration</a>
+  • <a href="#xcode-build-script">Xcode Build Script</a>
   • <a href="#donation">Donation</a>
   • <a href="https://github.com/Flinesoft/AnyLint/issues">Issues</a>
   • <a href="#contributing">Contributing</a>
@@ -332,6 +333,20 @@ try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") {
 // MARK: - Log Summary & Exit
 Lint.logSummaryAndExit()
 ```
+
+## Xcode Build Script
+
+If you are using AnyLint for a project in Xcode, you can configure a build script to run it on each build. In order to do this select your target, choose the `Build Phases` tab and click the + button on the top left corner of that pane. Select `New Run Script Phase` and copy the following into the text box below the `Shell: /bin/sh` of your new run script phase:
+
+```shell
+if which anylint > /dev/null; then
+    anylint -x
+else
+    echo "warning: AnyLint not installed, download it from https://github.com/Flinesoft/AnyLint"
+fi
+```
+
+Next, make sure the AnyLint script runs before the steps `Compiling Sources` by moving it per drag & drop, for example right after `Dependencies`. You probably also want to rename it to somethng like `AnyLint`.
 
 ## Donation
 
