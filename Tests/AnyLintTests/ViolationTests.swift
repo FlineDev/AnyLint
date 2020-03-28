@@ -23,6 +23,6 @@ final class ViolationTests: XCTestCase {
             locationInfo: String.LocationInfo(line: 5, charInLine: 15)
         )
 
-        XCTAssertEqual(locationInfoViolation.locationMessage(), "Temp/Souces/World.swift:5:15")
+        XCTAssertEqual(locationInfoViolation.locationMessage(), "Temp/Souces/World.swift:5:15:")
     }
 }
