@@ -121,7 +121,7 @@ try Lint.checkFileContents(
 )
 
 // MARK: - Log Summary & Exit
-Lint.logSummaryAndExit()
+Lint.logSummaryAndExit(arguments: CommandLine.arguments)
 ```
 
 The most important thing to note is that the **first two lines and the last line are required** for AnyLint to work properly.
@@ -331,7 +331,7 @@ try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") {
 }
 
 // MARK: - Log Summary & Exit
-Lint.logSummaryAndExit()
+Lint.logSummaryAndExit(arguments: CommandLine.arguments)
 ```
 
 ## Xcode Build Script
