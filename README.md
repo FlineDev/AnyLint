@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.1.1-blue.svg"
-             alt="Version: 0.1.1">
+        <img src="https://img.shields.io/badge/Version-0.2.0-blue.svg"
+             alt="Version: 0.2.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -91,7 +91,7 @@ This will create the Swift script file `lint.swift` with something like the foll
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.1.1
+import AnyLint // @Flinesoft ~> 0.2.0
 
 // MARK: - Variables
 let readmeFile: Regex = #"README\.md"#
@@ -310,7 +310,7 @@ When using the `customCheck`, you might want to also include some Swift packages
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.1.1
+import AnyLint // @Flinesoft ~> 0.2.0
 import Files // @JohnSundell ~> 4.1.1
 import ShellOut // @JohnSundell ~> 2.3.0
 
