@@ -11,6 +11,6 @@ extension ConfigurationTemplate {
     }
 
     static var commonSuffix: String {
-        "\n\n// MARK: - Log Summary & Exit\nLint.logSummaryAndExit()\n"
+        "\n\n// MARK: - Log Summary & Exit\nLint.logSummaryAndExit(arguments: CommandLine.arguments)\n"
     }
 }

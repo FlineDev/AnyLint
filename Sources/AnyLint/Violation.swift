@@ -33,9 +33,9 @@ public struct Violation {
         self.appliedAutoCorrection = appliedAutoCorrection
     }
 
-    func locationMessage() -> String? {
+    func locationMessage(pathType: String.PathType) -> String? {
         guard let filePath = filePath else { return nil }
-        guard let locationInfo = locationInfo else { return filePath }
-        return "\(filePath):\(locationInfo.line):\(locationInfo.charInLine)"
+        guard let locationInfo = locationInfo else { return filePath.path(type: pathType) }
+        return "\(filePath.path(type: pathType)):\(locationInfo.line):\(locationInfo.charInLine):"
     }
 }

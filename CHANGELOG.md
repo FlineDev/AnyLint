@@ -19,7 +19,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- Added new `-x` / `--xcode` option to print out warnings & errors in an Xcode-compatible manner to improve user experience when used with an Xcode build script. Requires `arguments: CommandLine.arguments` as parameters to `logSummary` in config file.  
+  Issue: [#4](https://github.com/Flinesoft/AnyLint/issues/4) | PR: [#8](https://github.com/Flinesoft/AnyLint/pull/8) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - None.
 ### Deprecated

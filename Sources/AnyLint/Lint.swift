@@ -125,12 +125,17 @@ public enum Lint {
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
-    public static func logSummaryAndExit(failOnWarnings: Bool = false) {
+    public static func logSummaryAndExit(failOnWarnings: Bool = false, arguments: [String] = []) {
+        let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
+        if targetIsXcode {
+            log = Logger(outputType: .xcode)
+        }
+
         Statistics.shared.logSummary()
 
-        if Statistics.shared.violationsBySeverity[.error]!.isFilled {
+        if Statistics.shared.violations(severity: .error, excludeAutocorrected: targetIsXcode).isFilled {
             log.exit(status: .failure)
-        } else if failOnWarnings && Statistics.shared.violationsBySeverity[.warning]!.isFilled {
+        } else if failOnWarnings && Statistics.shared.violations(severity: .warning, excludeAutocorrected: targetIsXcode).isFilled {
             log.exit(status: .failure)
         } else {
             log.exit(status: .success)

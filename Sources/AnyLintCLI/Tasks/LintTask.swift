@@ -23,10 +23,13 @@ extension LintTask: TaskHandler {
 
         do {
             log.message("Start linting using config file at \(configFilePath) ...", level: .info)
-            try Task.run(bash: "\(configFilePath.absolutePath)")
+            try Task.run(bash: "\(configFilePath.absolutePath) \(log.outputType.rawValue)")
             log.message("Linting successful using config file at \(configFilePath). Congrats! 🎉", level: .success)
         } catch is RunError {
-            log.message("Linting failed using config file at \(configFilePath).", level: .error)
+            if log.outputType != .xcode {
+                log.message("Linting failed using config file at \(configFilePath).", level: .error)
+            }
+
             throw LintError.configFileFailed
         }
     }
