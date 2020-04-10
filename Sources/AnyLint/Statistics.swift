@@ -43,6 +43,12 @@ final class Statistics {
         }
     }
 
+    func violations(severity: Severity, excludeAutocorrected: Bool) -> [Violation] {
+        let violations: [Violation] = violationsBySeverity[severity]!
+        guard excludeAutocorrected else { return violations }
+        return violations.filter { $0.appliedAutoCorrection == nil }
+    }
+
     private func logViolationsToConsole() {
         for check in executedChecks {
             if let checkViolations = violationsPerCheck[check], checkViolations.isFilled {
@@ -96,7 +102,7 @@ final class Statistics {
     private func showViolationsInXcode() {
         for severity in violationsBySeverity.keys.sorted().reversed() {
             let severityViolations = violationsBySeverity[severity]!
-            for violation in severityViolations {
+            for violation in severityViolations where violation.appliedAutoCorrection == nil {
                 let check = violation.checkInfo
                 log.xcodeMessage(
                     "[\(check.id)] \(check.hint)",
