@@ -46,7 +46,7 @@ final class Statistics {
     private func logViolationsToConsole() {
         for check in executedChecks {
             if let checkViolations = violationsPerCheck[check], checkViolations.isFilled {
-                let violationsWithLocationMessage = checkViolations.filter { $0.locationMessage() != nil }
+                let violationsWithLocationMessage = checkViolations.filter { $0.locationMessage(pathType: .relative) != nil }
 
                 if violationsWithLocationMessage.isFilled {
                     log.message(
@@ -58,7 +58,7 @@ final class Statistics {
                     for (index, violation) in violationsWithLocationMessage.enumerated() {
                         let violationNumString = String(format: "%0\(numerationDigits)d", index + 1)
                         let prefix = "> \(violationNumString). "
-                        log.message(prefix + violation.locationMessage()!, level: check.severity.logLevel)
+                        log.message(prefix + violation.locationMessage(pathType: .relative)!, level: check.severity.logLevel)
 
                         let prefixLengthWhitespaces = (0 ..< prefix.count).map { _ in " " }.joined()
                         if let appliedAutoCorrection = violation.appliedAutoCorrection {
@@ -98,7 +98,11 @@ final class Statistics {
             let severityViolations = violationsBySeverity[severity]!
             for violation in severityViolations {
                 let check = violation.checkInfo
-                log.xcodeMessage("[\(check.id)] \(check.hint)", level: check.severity.logLevel, location: violation.locationMessage())
+                log.xcodeMessage(
+                    "[\(check.id)] \(check.hint)",
+                    level: check.severity.logLevel,
+                    location: violation.locationMessage(pathType: .absolute)
+                )
             }
         }
     }
