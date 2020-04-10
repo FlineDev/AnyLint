@@ -102,9 +102,9 @@ final class StatisticsTests: XCTestCase {
             "> 2. Hogwarts/Albus.swift",
             ">> Hint: hint2".bold.italic,
             "\("[id3]".bold) Found 3 violation(s) at:",
-            "> 1. Hogwarts/Harry.swift:10:30",
-            "> 2. Hogwarts/Harry.swift:72:17",
-            "> 3. Hogwarts/Albus.swift:40:4",
+            "> 1. Hogwarts/Harry.swift:10:30:",
+            "> 2. Hogwarts/Harry.swift:72:17:",
+            "> 3. Hogwarts/Albus.swift:40:4:",
             ">> Hint: hint3".bold.italic,
             "Performed 3 check(s) and found 3 error(s) & 2 warning(s).",
         ]

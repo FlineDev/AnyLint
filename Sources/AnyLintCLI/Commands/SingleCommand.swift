@@ -11,6 +11,9 @@ class SingleCommand: Command {
     @Flag("-v", "--version", description: "Print the current tool version")
     var version: Bool
 
+    @Flag("-x", "--xcode", description: "Print warnings & errors in a format to be reported right within Xcodes left sidebar")
+    var xcode: Bool
+
     @Key("-i", "--init", description: "Configure AnyLint with a default template. Has to be one of: [\(CLIConstants.initTemplateCases)]")
     var initTemplateName: String?
 
@@ -20,6 +23,10 @@ class SingleCommand: Command {
 
     // MARK: - Execution
     func execute() throws {
+        if xcode {
+            log = Logger(outputType: .xcode)
+        }
+
         // version subcommand
         if version {
             try VersionTask().perform()

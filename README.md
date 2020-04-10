@@ -1,6 +1,6 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/Flinesoft/AnyLint/main/Logo.png"
-      width=562 height=115>
+      width=562 />
 </p>
 
 <p align="center">
@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.1.1-blue.svg"
-             alt="Version: 0.1.1">
+        <img src="https://img.shields.io/badge/Version-0.2.0-blue.svg"
+             alt="Version: 0.2.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -43,6 +43,7 @@
   <a href="#installation">Installation</a>
   • <a href="#getting-started">Getting Started</a>
   • <a href="#configuration">Configuration</a>
+  • <a href="#xcode-build-script">Xcode Build Script</a>
   • <a href="#donation">Donation</a>
   • <a href="https://github.com/Flinesoft/AnyLint/issues">Issues</a>
   • <a href="#contributing">Contributing</a>
@@ -86,11 +87,11 @@ To initialize AnyLint in a project, run:
 anylint --init blank
 ```
 
-This will create the Swift script file `lint.swift` with something like following contents:
+This will create the Swift script file `lint.swift` with something like the following contents:
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.1.1
+import AnyLint // @Flinesoft ~> 0.2.0
 
 // MARK: - Variables
 let readmeFile: Regex = #"README\.md"#
@@ -120,7 +121,7 @@ try Lint.checkFileContents(
 )
 
 // MARK: - Log Summary & Exit
-Lint.logSummaryAndExit()
+Lint.logSummaryAndExit(arguments: CommandLine.arguments)
 ```
 
 The most important thing to note is that the **first two lines and the last line are required** for AnyLint to work properly.
@@ -161,7 +162,7 @@ Many parameters in the above mentioned lint check methods are of `Regex` type. A
 
 1. Using a **String**:
   ```swift
-  let regex = Regex(#"(foo|bar)[0-9]+"#) // => /(foo|bar)[0-9]+/`
+  let regex = Regex(#"(foo|bar)[0-9]+"#) // => /(foo|bar)[0-9]+/
   ```
 2. Using a **String Literal**:
   ```swift
@@ -188,6 +189,7 @@ While there is an initializer available, we recommend using a String Literal ins
 ```swift
 // accepted structure: <id>(@<severity>): <hint>
 let checkInfo: CheckInfo = "ReadmePath: The README file should be named exactly `README.md`."
+let checkInfoCustomSeverity: CheckInfo = "ReadmePath@warning: The README file should be named exactly `README.md`."
 ```
 
 ### Check File Contents
@@ -197,7 +199,7 @@ AnyLint has rich support for checking the contents of a file using a regex. The 
 In its simplest form, the method just requires a `checkInfo` and a `regex`:
 
 ```swift
-// MARK: empty_todo
+// MARK: EmptyTodo
 try Lint.checkFileContents(
     checkInfo: "EmptyTodo: TODO comments should not be empty.",
     regex: #"// TODO: *\n"#
@@ -308,7 +310,7 @@ When using the `customCheck`, you might want to also include some Swift packages
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.1.1
+import AnyLint // @Flinesoft ~> 0.2.0
 import Files // @JohnSundell ~> 4.1.1
 import ShellOut // @JohnSundell ~> 2.3.0
 
@@ -329,8 +331,22 @@ try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") {
 }
 
 // MARK: - Log Summary & Exit
-Lint.logSummaryAndExit()
+Lint.logSummaryAndExit(arguments: CommandLine.arguments)
 ```
+
+## Xcode Build Script
+
+If you are using AnyLint for a project in Xcode, you can configure a build script to run it on each build. In order to do this select your target, choose the `Build Phases` tab and click the + button on the top left corner of that pane. Select `New Run Script Phase` and copy the following into the text box below the `Shell: /bin/sh` of your new run script phase:
+
+```shell
+if which anylint > /dev/null; then
+    anylint -x
+else
+    echo "warning: AnyLint not installed, download it from https://github.com/Flinesoft/AnyLint"
+fi
+```
+
+Next, make sure the AnyLint script runs before the steps `Compiling Sources` by moving it per drag & drop, for example right after `Dependencies`. You probably also want to rename it to somethng like `AnyLint`.
 
 ## Donation
 
