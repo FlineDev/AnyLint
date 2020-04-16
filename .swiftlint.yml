@@ -87,6 +87,7 @@ excluded:
 
 disabled_rules:
   - todo
+  - cyclomatic_complexity
 
 # Rule Configurations
 conditional_returns_on_newline:
