@@ -10,7 +10,7 @@ let readmeFile: Regex = #"README\.md"#
 // MARK: EmptyMethodBody
 try Lint.checkFileContents(
     checkInfo: "EmptyMethodBody: Don't use whitespace or newlines for the body of empty methods.",
-    regex: ["declaration": #"(init|func [^\(\s]+)\([^{]*\)"#, "spacing": #"\s*"#, "body": #"\{\s+\}"#],
+    regex: ["declaration": #"(init|func [^\(\s]+)\([^{}]*\)"#, "spacing": #"\s*"#, "body": #"\{\s+\}"#],
     matchingExamples: [
         "init() { }",
         "init() {\n\n}",

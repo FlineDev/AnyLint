@@ -21,6 +21,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - Made `AutoCorrection` expressible by Dictionary literals and updated the `README.md` accordingly.  
   Issue: [#5](https://github.com/Flinesoft/AnyLint/issues/5) | PR: [#11](https://github.com/Flinesoft/AnyLint/pull/11) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+- Added option to skip checks within file contents by specifying `AnyLint.skipHere: <CheckInfo.ID>` or `AnyLint.skipInFile: <All or CheckInfo.ID>`. Checkout the [Skip file content checks](https://github.com/Flinesoft/AnyLint#skip-file-content-checks) README section for more info.  
+  Issue: [#9](https://github.com/Flinesoft/AnyLint/issues/9) | PR: [#12](https://github.com/Flinesoft/AnyLint/pull/12) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - None.
 ### Deprecated

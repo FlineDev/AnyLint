@@ -7,6 +7,12 @@ import XCTest
 
 // swiftlint:disable line_length file_length
 
+extension ArrayExtTests {
+    static var allTests: [(String, (ArrayExtTests) -> () throws -> Void)] = [
+        ("testContainsLineAtIndexesMatchingRegex", testContainsLineAtIndexesMatchingRegex)
+    ]
+}
+
 extension AutoCorrectionTests {
     static var allTests: [(String, (AutoCorrectionTests) -> () throws -> Void)] = [
         ("testInitWithDictionaryLiteral", testInitWithDictionaryLiteral)
@@ -21,7 +27,9 @@ extension CheckInfoTests {
 
 extension FileContentsCheckerTests {
     static var allTests: [(String, (FileContentsCheckerTests) -> () throws -> Void)] = [
-        ("testPerformCheck", testPerformCheck)
+        ("testPerformCheck", testPerformCheck),
+        ("testSkipInFile", testSkipInFile),
+        ("testSkipHere", testSkipHere)
     ]
 }
 
@@ -67,6 +75,7 @@ extension ViolationTests {
 }
 
 XCTMain([
+    testCase(ArrayExtTests.allTests),
     testCase(AutoCorrectionTests.allTests),
     testCase(CheckInfoTests.allTests),
     testCase(FileContentsCheckerTests.allTests),
