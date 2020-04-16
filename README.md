@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.2.0-blue.svg"
-             alt="Version: 0.2.0">
+        <img src="https://img.shields.io/badge/Version-0.3.0-blue.svg"
+             alt="Version: 0.3.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -91,7 +91,7 @@ This will create the Swift script file `lint.swift` with something like the foll
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.2.0
+import AnyLint // @Flinesoft ~> 0.3.0
 
 // MARK: - Variables
 let readmeFile: Regex = #"README\.md"#
@@ -115,8 +115,8 @@ try Lint.checkFileContents(
     includeFilters: [readmeFile],
     autoCorrectReplacement: "$1icense$2",
     autoCorrectExamples: [
-        AutoCorrection(before: " license:", after: " license:"),
-        AutoCorrection(before: "## Lisence\n", after: "## License\n"),
+        ["before": " lisence:", "after": " license:"],
+        ["before": "## Lisence\n", "after": "## License\n"],
     ]
 )
 
@@ -190,6 +190,22 @@ While there is an initializer available, we recommend using a String Literal ins
 // accepted structure: <id>(@<severity>): <hint>
 let checkInfo: CheckInfo = "ReadmePath: The README file should be named exactly `README.md`."
 let checkInfoCustomSeverity: CheckInfo = "ReadmePath@warning: The README file should be named exactly `README.md`."
+```
+
+#### AutoCorrection
+
+An `AutoCorrection` contains an example `before` and `after` string to validate that a given autocorrection rule behaves correctly.
+
+It can be initialized in two ways, either with the default initializer:
+
+```swift
+let example: AutoCorrection = AutoCorrection(before: "Lisence", after: "License")
+```
+
+Or using a Dictionary literal:
+
+```swift
+let example: AutoCorrection = ["before": "Lisence", "after": "License"]
 ```
 
 ### Check File Contents
@@ -275,11 +291,51 @@ try Lint.checkFileContents(
     excludeFilters: [swiftTestFiles],
     autoCorrectReplacement: "$declaration {}",
     autoCorrectExamples: [
-        AutoCorrection(before: "func foo2bar()  { }", after: "func foo2bar() {}"),
-        AutoCorrection(before: "func foo2bar(x: Int, y: Int)  { }", after: "func foo2bar(x: Int, y: Int) {}"),
-        AutoCorrection(before: "func foo2bar()\n{\n    \n}", after: "func foo2bar() {}"),
+        ["before": "func foo2bar()  { }", "after": "func foo2bar() {}"],
+        ["before": "func foo2bar(x: Int, y: Int)  { }", "after": "func foo2bar(x: Int, y: Int) {}"],
+        ["before": "func foo2bar()\n{\n    \n}", "after": "func foo2bar() {}"],
     ]
 )
+```
+
+#### Skip file content checks
+
+While the `includeFilters` and `excludeFilters` arguments in the config file can be used to skip checks on specified files, sometimes it's necessary to make **exceptions** and specify that within the files themselves. For example this can become handy when there's a check which works 99% of the time, but there might be the 1% of cases where the check is reporting **false positives**.
+
+For such cases, there are **2 ways to skip checks** within the files themselves:
+
+1. `AnyLint.skipHere: <CheckInfo.ID>`: Will skip the specified check(s) on the same line and the next line.
+
+  ```swift
+  var x: Int = 5 // AnyLint.skipHere: MinVarNameLength
+
+  // or
+
+  // AnyLint.skipHere: MinVarNameLength
+  var x: Int = 5
+  ```
+
+2. `AnyLint.skipInFile: <All or CheckInfo.ID>`: Will skip `All` or specificed check(s) in the entire file.
+
+  ```swift
+  // AnyLint.skipInFile: MinVarNameLength
+
+  var x: Int = 5
+  var y: Int = 5
+  ```
+  or
+
+  ```swift
+  // AnyLint.skipInFile: All
+
+  var x: Int = 5
+  var y: Int = 5
+  ```
+
+It is also possible to skip multiple checks at once in a line like so:
+
+```swift
+// AnyLint.skipHere: MinVarNameLength, LineLength, ColonWhitespaces
 ```
 
 ### Check File Paths
@@ -310,7 +366,7 @@ When using the `customCheck`, you might want to also include some Swift packages
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.2.0
+import AnyLint // @Flinesoft ~> 0.3.0
 import Files // @JohnSundell ~> 4.1.1
 import ShellOut // @JohnSundell ~> 2.3.0
 
@@ -357,6 +413,12 @@ Thank you very much for any donation, it really helps out a lot! 💯
 ## Contributing
 
 Contributions are welcome. Feel free to open an issue on GitHub with your ideas or implement an idea yourself and post a pull request. If you want to contribute code, please try to follow the same syntax and semantic in your **commit messages** (see rationale [here](http://chris.beams.io/posts/git-commit/)). Also, please make sure to add an entry to the `CHANGELOG.md` file which explains your change.
+
+To update the Linux tests, run [Sourcery](https://github.com/krzysztofzablocki/Sourcery) like this:
+
+```bash
+sourcery --sources Tests/AnyLintTests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated && mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
+```
 
 ## License
 

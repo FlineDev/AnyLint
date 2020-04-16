@@ -31,6 +31,13 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.3.0] - 2020-04-16
+### Added
+- Made `AutoCorrection` expressible by Dictionary literals and updated the `README.md` accordingly.  
+  Issue: [#5](https://github.com/Flinesoft/AnyLint/issues/5) | PR: [#11](https://github.com/Flinesoft/AnyLint/pull/11) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+- Added option to skip checks within file contents by specifying `AnyLint.skipHere: <CheckInfo.ID>` or `AnyLint.skipInFile: <All or CheckInfo.ID>`. Checkout the [Skip file content checks](https://github.com/Flinesoft/AnyLint#skip-file-content-checks) README section for more info.  
+  Issue: [#9](https://github.com/Flinesoft/AnyLint/issues/9) | PR: [#12](https://github.com/Flinesoft/AnyLint/pull/12) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.2.0] - 2020-04-10
 ### Added
 - Added new `-x` / `--xcode` option to print out warnings & errors in an Xcode-compatible manner to improve user experience when used with an Xcode build script. Requires `arguments: CommandLine.arguments` as parameters to `logSummary` in config file.  

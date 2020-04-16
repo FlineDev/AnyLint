@@ -10,12 +10,8 @@ public enum FilesSearch {
             return [] // only reachable in unit tests
         }
 
-        guard let enumerator = fileManager.enumerator(
-            at: url,
-            includingPropertiesForKeys: [URLResourceKey.isRegularFileKey, URLResourceKey.isHiddenKey],
-            options: [],
-            errorHandler: nil
-        ) else {
+        let propKeys = [URLResourceKey.isRegularFileKey, URLResourceKey.isHiddenKey]
+        guard let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: propKeys, options: [], errorHandler: nil) else {
             log.message("Couldn't create enumerator for path '\(path)'.", level: .error)
             log.exit(status: .failure)
             return [] // only reachable in unit tests
@@ -43,12 +39,21 @@ public enum FilesSearch {
             }
 
             // skip hidden files and directories
-            if isHiddenFilePath {
-                if !isRegularFilePath {
-                    enumerator.skipDescendants()
+            #if os(Linux)
+                if isHiddenFilePath || fileUrl.path.contains("/.") || fileUrl.path.starts(with: ".") {
+                    if !isRegularFilePath {
+                        enumerator.skipDescendants()
+                    }
+                    continue
                 }
-                continue
-            }
+            #else
+                if isHiddenFilePath {
+                    if !isRegularFilePath {
+                        enumerator.skipDescendants()
+                    }
+                    continue
+                }
+            #endif
 
             if isRegularFilePath, includeFilters.contains(where: { $0.matches(fileUrl.relativePathFromCurrent) }) {
                 filePaths.append(fileUrl.relativePathFromCurrent)
