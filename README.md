@@ -298,6 +298,46 @@ try Lint.checkFileContents(
 )
 ```
 
+#### Skip file content checks
+
+While the `includeFilters` and `excludeFilters` arguments in the config file can be used to skip checks on specified files, sometimes it's necessary to make **exceptions** and specify that within the files themselves. For example this can become handy when there's a check which works 99% of the time, but there might be the 1% of cases where the check is reporting **false positives**.
+
+For such cases, there are **2 ways to skip checks** within the files themselves:
+
+1. `AnyLint.skipHere: <CheckInfo.ID>`: Will skip the specified check(s) on the same line and the next line.
+
+  ```swift
+  var x: Int = 5 // AnyLint.skipHere: MinVarNameLength
+
+  // or
+
+  // AnyLint.skipHere: MinVarNameLength
+  var x: Int = 5
+  ```
+
+2. `AnyLint.skipInFile: <All or CheckInfo.ID>`: Will skip `All` or specificed check(s) in the entire file.
+
+  ```swift
+  // AnyLint.skipInFile: MinVarNameLength
+
+  var x: Int = 5
+  var y: Int = 5
+  ```
+  or
+
+  ```swift
+  // AnyLint.skipInFile: All
+
+  var x: Int = 5
+  var y: Int = 5
+  ```
+
+It is also possible to skip multiple checks at once in a line like so:
+
+```swift
+// AnyLint.skipHere: MinVarNameLength, LineLength, ColonWhitespaces
+```
+
 ### Check File Paths
 
 The `checkFilePaths` method has all the same parameters like the `checkFileContents` method, so please read the above section to learn more about them. There's only one difference and one additional parameter:
