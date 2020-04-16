@@ -377,7 +377,7 @@ Contributions are welcome. Feel free to open an issue on GitHub with your ideas 
 To update the Linux tests, run [Sourcery](https://github.com/krzysztofzablocki/Sourcery) like this:
 
 ```bash
-sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated && mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
+sourcery --sources Tests/AnyLintTests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated && mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
 ```
 
 ## License

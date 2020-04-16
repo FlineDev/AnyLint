@@ -7,12 +7,6 @@ import XCTest
 
 // swiftlint:disable line_length file_length
 
-extension AnyLintCLITests {
-    static var allTests: [(String, (AnyLintCLITests) -> () throws -> Void)] = [
-        ("testExample", testExample)
-    ]
-}
-
 extension AutoCorrectionTests {
     static var allTests: [(String, (AutoCorrectionTests) -> () throws -> Void)] = [
         ("testInitWithDictionaryLiteral", testInitWithDictionaryLiteral)
@@ -52,17 +46,10 @@ extension LintTests {
     ]
 }
 
-extension LoggerTests {
-    static var allTests: [(String, (LoggerTests) -> () throws -> Void)] = [
-        ("testMessage", testMessage)
-    ]
-}
-
 extension RegexExtTests {
     static var allTests: [(String, (RegexExtTests) -> () throws -> Void)] = [
         ("testInitWithStringLiteral", testInitWithStringLiteral),
-        ("testInitWithDictionaryLiteral", testInitWithDictionaryLiteral),
-        ("testStringLiteralInit", testStringLiteralInit)
+        ("testInitWithDictionaryLiteral", testInitWithDictionaryLiteral)
     ]
 }
 
@@ -80,14 +67,12 @@ extension ViolationTests {
 }
 
 XCTMain([
-    testCase(AnyLintCLITests.allTests),
     testCase(AutoCorrectionTests.allTests),
     testCase(CheckInfoTests.allTests),
     testCase(FileContentsCheckerTests.allTests),
     testCase(FilePathsCheckerTests.allTests),
     testCase(FilesSearchTests.allTests),
     testCase(LintTests.allTests),
-    testCase(LoggerTests.allTests),
     testCase(RegexExtTests.allTests),
     testCase(StatisticsTests.allTests),
     testCase(ViolationTests.allTests)
