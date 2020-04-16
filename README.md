@@ -115,8 +115,8 @@ try Lint.checkFileContents(
     includeFilters: [readmeFile],
     autoCorrectReplacement: "$1icense$2",
     autoCorrectExamples: [
-        AutoCorrection(before: " license:", after: " license:"),
-        AutoCorrection(before: "## Lisence\n", after: "## License\n"),
+        ["before": " lisence:", "after": " license:"],
+        ["before": "## Lisence\n", "after": "## License\n"],
     ]
 )
 
@@ -190,6 +190,22 @@ While there is an initializer available, we recommend using a String Literal ins
 // accepted structure: <id>(@<severity>): <hint>
 let checkInfo: CheckInfo = "ReadmePath: The README file should be named exactly `README.md`."
 let checkInfoCustomSeverity: CheckInfo = "ReadmePath@warning: The README file should be named exactly `README.md`."
+```
+
+#### AutoCorrection
+
+An `AutoCorrection` contains an example `before` and `after` string to validate that a given autocorrection rule behaves correctly.
+
+It can be initialized in two ways, either with the default initializer:
+
+```swift
+let example: AutoCorrection = AutoCorrection(before: "Lisence", after: "License")
+```
+
+Or using a Dictionary literal:
+
+```swift
+let example: AutoCorrection = ["before": "Lisence", "after": "License"]
 ```
 
 ### Check File Contents
@@ -275,9 +291,9 @@ try Lint.checkFileContents(
     excludeFilters: [swiftTestFiles],
     autoCorrectReplacement: "$declaration {}",
     autoCorrectExamples: [
-        AutoCorrection(before: "func foo2bar()  { }", after: "func foo2bar() {}"),
-        AutoCorrection(before: "func foo2bar(x: Int, y: Int)  { }", after: "func foo2bar(x: Int, y: Int) {}"),
-        AutoCorrection(before: "func foo2bar()\n{\n    \n}", after: "func foo2bar() {}"),
+        ["before": "func foo2bar()  { }", "after": "func foo2bar() {}"],
+        ["before": "func foo2bar(x: Int, y: Int)  { }", "after": "func foo2bar(x: Int, y: Int) {}"],
+        ["before": "func foo2bar()\n{\n    \n}", "after": "func foo2bar() {}"],
     ]
 )
 ```
@@ -357,6 +373,12 @@ Thank you very much for any donation, it really helps out a lot! 💯
 ## Contributing
 
 Contributions are welcome. Feel free to open an issue on GitHub with your ideas or implement an idea yourself and post a pull request. If you want to contribute code, please try to follow the same syntax and semantic in your **commit messages** (see rationale [here](http://chris.beams.io/posts/git-commit/)). Also, please make sure to add an entry to the `CHANGELOG.md` file which explains your change.
+
+To update the Linux tests, run [Sourcery](https://github.com/krzysztofzablocki/Sourcery) like this:
+
+```bash
+sourcery --sources Tests/AnyLintTests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated && mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
+```
 
 ## License
 

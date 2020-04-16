@@ -27,9 +27,9 @@ enum BlankTemplate: ConfigurationTemplate {
                 nonMatchingExamples: ["README.md", "CHANGELOG.md", "CONTRIBUTING.md", "api/help.md"],
                 autoCorrectReplacement: "$1README.md",
                 autoCorrectExamples: [
-                    AutoCorrection(before: "api/readme.md", after: "api/README.md"),
-                    AutoCorrection(before: "ReadMe.md", after: "README.md"),
-                    AutoCorrection(before: "README.markdown", after: "README.md"),
+                    ["before": "api/readme.md", "after": "api/README.md"],
+                    ["before": "ReadMe.md", "after": "README.md"],
+                    ["before": "README.markdown", "after": "README.md"],
                 ]
             )
 
@@ -69,8 +69,8 @@ enum BlankTemplate: ConfigurationTemplate {
                 includeFilters: [readmeFile],
                 autoCorrectReplacement: "$1icense$2",
                 autoCorrectExamples: [
-                    AutoCorrection(before: " lisence:", after: " license:"),
-                    AutoCorrection(before: "## Lisence\n", after: "## License\n"),
+                    ["before": " lisence:", "after": " license:"],
+                    ["before": "## Lisence\n", "after": "## License\n"],
                 ]
             )
             """# + commonSuffix

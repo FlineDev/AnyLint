@@ -23,14 +23,14 @@ try Lint.checkFileContents(
     includeFilters: [swiftSourceFiles, swiftTestFiles],
     autoCorrectReplacement: "$declaration {}",
     autoCorrectExamples: [
-        AutoCorrection(before: "init()  { }", after: "init() {}"),
-        AutoCorrection(before: "init(x: Int, y: Int)  { }", after: "init(x: Int, y: Int) {}"),
-        AutoCorrection(before: "init()\n{\n    \n}", after: "init() {}"),
-        AutoCorrection(before: "init(\n    x: Int,\n    y: Int\n) {\n    \n}", after: "init(\n    x: Int,\n    y: Int\n) {}"),
-        AutoCorrection(before: "func foo2bar()  { }", after: "func foo2bar() {}"),
-        AutoCorrection(before: "func foo2bar(x: Int, y: Int)  { }", after: "func foo2bar(x: Int, y: Int) {}"),
-        AutoCorrection(before: "func foo2bar()\n{\n    \n}", after: "func foo2bar() {}"),
-        AutoCorrection(before: "func foo2bar(\n    x: Int,\n    y: Int\n) {\n    \n}", after: "func foo2bar(\n    x: Int,\n    y: Int\n) {}"),
+        ["before": "init()  { }", "after": "init() {}"],
+        ["before": "init(x: Int, y: Int)  { }", "after": "init(x: Int, y: Int) {}"],
+        ["before": "init()\n{\n    \n}", "after": "init() {}"],
+        ["before": "init(\n    x: Int,\n    y: Int\n) {\n    \n}", "after": "init(\n    x: Int,\n    y: Int\n) {}"],
+        ["before": "func foo2bar()  { }", "after": "func foo2bar() {}"],
+        ["before": "func foo2bar(x: Int, y: Int)  { }", "after": "func foo2bar(x: Int, y: Int) {}"],
+        ["before": "func foo2bar()\n{\n    \n}", "after": "func foo2bar() {}"],
+        ["before": "func foo2bar(\n    x: Int,\n    y: Int\n) {\n    \n}", "after": "func foo2bar(\n    x: Int,\n    y: Int\n) {}"],
     ]
 )
 
@@ -100,15 +100,15 @@ try Lint.checkFileContents(
         $guardIndent\u{0020}\u{0020}\u{0020}\u{0020}
         """,
     autoCorrectExamples: [
-        AutoCorrection(
-            before: """
+        [
+            "before": """
                     let x = 15
                     guard let x1 = y1?.imagePath,
                         let z = EnumType(rawValue: 15) else {
                         return 2
                     }
             """,
-            after: """
+            "after": """
                     let x = 15
                     guard
                         let x1 = y1?.imagePath,
@@ -117,7 +117,7 @@ try Lint.checkFileContents(
                         return 2
                     }
             """
-        ),
+        ],
     ]
 )
 
@@ -174,8 +174,8 @@ try Lint.checkFileContents(
         $guardIndent\u{0020}\u{0020}\u{0020}\u{0020}
         """,
     autoCorrectExamples: [
-        AutoCorrection(
-            before: """
+        [
+            "before": """
                     let x = 15
                     guard let x1 = y1?.imagePath,
                         let x2 = y2?.imagePath,
@@ -183,7 +183,7 @@ try Lint.checkFileContents(
                         return 2
                     }
             """,
-            after: """
+            "after": """
                     let x = 15
                     guard
                         let x1 = y1?.imagePath,
@@ -193,7 +193,7 @@ try Lint.checkFileContents(
                         return 2
                     }
             """
-        ),
+        ],
     ]
 )
 
@@ -255,8 +255,8 @@ try Lint.checkFileContents(
         $guardIndent\u{0020}\u{0020}\u{0020}\u{0020}
         """,
     autoCorrectExamples: [
-        AutoCorrection(
-            before: """
+        [
+            "before": """
                     let x = 15
                     guard let x1 = y1?.imagePath,
                         let x2 = y2?.imagePath,
@@ -265,7 +265,7 @@ try Lint.checkFileContents(
                         return 2
                     }
             """,
-            after: """
+            "after": """
                     let x = 15
                     guard
                         let x1 = y1?.imagePath,
@@ -276,7 +276,7 @@ try Lint.checkFileContents(
                         return 2
                     }
             """
-        ),
+        ],
     ]
 )
 
@@ -349,7 +349,7 @@ try Lint.checkFileContents(
     includeFilters: [swiftSourceFiles, swiftTestFiles],
     autoCorrectReplacement: "$callPart1!.$callPart2!.$callPart3!.$callPart4",
     autoCorrectExamples: [
-        AutoCorrection(before: "let x = (viewModel?.user?.profile?.imagePath)!\n", after: "let x = viewModel!.user!.profile!.imagePath\n"),
+        ["before": "let x = (viewModel?.user?.profile?.imagePath)!\n", "after": "let x = viewModel!.user!.profile!.imagePath\n"],
     ]
 )
 
@@ -370,7 +370,7 @@ try Lint.checkFileContents(
     includeFilters: [swiftSourceFiles, swiftTestFiles],
     autoCorrectReplacement: "$callPart1!.$callPart2!.$callPart3",
     autoCorrectExamples: [
-        AutoCorrection(before: "let x = (viewModel?.profile?.imagePath)!\n", after: "let x = viewModel!.profile!.imagePath\n"),
+        ["before": "let x = (viewModel?.profile?.imagePath)!\n", "after": "let x = viewModel!.profile!.imagePath\n"],
     ]
 )
 
@@ -389,7 +389,7 @@ try Lint.checkFileContents(
     includeFilters: [swiftSourceFiles, swiftTestFiles],
     autoCorrectReplacement: "$callPart1!.$callPart2",
     autoCorrectExamples: [
-        AutoCorrection(before: "call(x: (viewModel?.username)!)", after: "call(x: viewModel!.username)"),
+        ["before": "call(x: (viewModel?.username)!)", "after": "call(x: viewModel!.username)"],
     ]
 )
 
@@ -420,9 +420,9 @@ try Lint.checkFilePaths(
     nonMatchingExamples: ["README.md", "CHANGELOG.md", "CONTRIBUTING.md", "api/help.md"],
     autoCorrectReplacement: "$1README.md",
     autoCorrectExamples: [
-        AutoCorrection(before: "api/readme.md", after: "api/README.md"),
-        AutoCorrection(before: "ReadMe.md", after: "README.md"),
-        AutoCorrection(before: "README.markdown", after: "README.md"),
+        ["before": "api/readme.md", "after": "api/README.md"],
+        ["before": "ReadMe.md", "after": "README.md"],
+        ["before": "README.markdown", "after": "README.md"],
     ]
 )
 
