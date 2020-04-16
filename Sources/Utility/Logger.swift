@@ -95,7 +95,11 @@ public final class Logger {
     public func exit(status: ExitStatus) {
         switch outputType {
         case .console, .xcode:
-            Darwin.exit(status.statusCode)
+            #if os(Linux)
+                Glibc.exit(status.statusCode)
+            #else
+                Darwin.exit(status.statusCode)
+            #endif
 
         case .test:
             TestHelper.shared.exitStatus = status
