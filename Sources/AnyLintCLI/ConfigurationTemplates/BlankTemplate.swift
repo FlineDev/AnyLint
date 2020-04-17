@@ -7,13 +7,13 @@ enum BlankTemplate: ConfigurationTemplate {
     static func fileContents() -> String {
         commonPrefix + #"""
             // MARK: - Variables
-            let readmeFile: Regex = #"README\.md"#
+            let readmeFile: Regex = #"^README\.md$"#
 
             // MARK: - Checks
             // MARK: Readme
             try Lint.checkFilePaths(
                 checkInfo: "Readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
-                regex: #"^README\.md$"#,
+                regex: readmeFile,
                 matchingExamples: ["README.md"],
                 nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
                 violateIfNoMatchesFound: true
