@@ -194,9 +194,9 @@ public enum Lint {
                 log.message(
                     """
                     Autocorrecting example for \(checkInfo.id) did not result in expected output.
-                    Before:   '\(autocorrect.before.showNewlines())'
-                    After:    '\(autocorrected.showNewlines())'
-                    Expected: '\(autocorrect.after.showNewlines())'
+                    Before:   '\(autocorrect.before.showWhitespacesAndNewlines())'
+                    After:    '\(autocorrected.showWhitespacesAndNewlines())'
+                    Expected: '\(autocorrect.after.showWhitespacesAndNewlines())'
                     """,
                     level: .error
                 )
