@@ -93,40 +93,40 @@ This will create the Swift script file `lint.swift` with something like the foll
 #!/usr/local/bin/swift-sh
 import AnyLint // @Flinesoft ~> 0.3.0
 
-// MARK: - Variables
-let readmeFile: Regex = #"README\.md"#
+Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
+    // MARK: - Variables
+    let readmeFile: Regex = #"README\.md"#
 
-// MARK: - Checks
-// MARK: Readme
-try Lint.checkFilePaths(
-    checkInfo: "Readme: Each project should have a README.md file explaining the project.",
-    regex: readmeFile,
-    matchingExamples: ["README.md"],
-    nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
-    violateIfNoMatchesFound: true
-)
+    // MARK: - Checks
+    // MARK: Readme
+    try Lint.checkFilePaths(
+        checkInfo: "Readme: Each project should have a README.md file explaining the project.",
+        regex: readmeFile,
+        matchingExamples: ["README.md"],
+        nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
+        violateIfNoMatchesFound: true
+    )
 
-// MARK: ReadmeTypoLicense
-try Lint.checkFileContents(
-    checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
-    regex: #"([\s#]L|l)isence([\s\.,:;])"#,
-    matchingExamples: [" license:", "## Lisence\n"],
-    nonMatchingExamples: [" license:", "## License\n"],
-    includeFilters: [readmeFile],
-    autoCorrectReplacement: "$1icense$2",
-    autoCorrectExamples: [
-        ["before": " lisence:", "after": " license:"],
-        ["before": "## Lisence\n", "after": "## License\n"],
-    ]
-)
+    // MARK: ReadmeTypoLicense
+    try Lint.checkFileContents(
+        checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
+        regex: #"([\s#]L|l)isence([\s\.,:;])"#,
+        matchingExamples: [" license:", "## Lisence\n"],
+        nonMatchingExamples: [" license:", "## License\n"],
+        includeFilters: [readmeFile],
+        autoCorrectReplacement: "$1icense$2",
+        autoCorrectExamples: [
+            ["before": " lisence:", "after": " license:"],
+            ["before": "## Lisence\n", "after": "## License\n"],
+        ]
+    )
+}
 
-// MARK: - Log Summary & Exit
-Lint.logSummaryAndExit(arguments: CommandLine.arguments)
 ```
 
-The most important thing to note is that the **first two lines and the last line are required** for AnyLint to work properly.
+The most important thing to note is that the **first three lines are required** for AnyLint to work properly.
 
-Other than that, all the other code in between can be adjusted and that's actually where you configure your lint checks (a few examples are provided by default in the `blank` template). Note that the first two lines declare the file to be a Swift script using [swift-sh](https://github.com/mxcl/swift-sh). Thus, you can run any Swift code and even import Swift packages (see the [swift-sh docs](https://github.com/mxcl/swift-sh#usage)) if you need to. The last line makes sure that all violations found in the process of running the previous code are reported properly and exits the script with the proper exit code.
+All the other code can be adjusted and that's actually where you configure your lint checks (a few examples are provided by default in the `blank` template). Note that the first two lines declare the file to be a Swift script using [swift-sh](https://github.com/mxcl/swift-sh). Thus, you can run any Swift code and even import Swift packages (see the [swift-sh docs](https://github.com/mxcl/swift-sh#usage)) if you need to. The third line makes sure that all violations found in the process of running the code in the completion block are reported properly and exits the script with the proper exit code at the end.
 
 Having this configuration file, you can now run `anylint` to run your lint checks. By default, if any check fails, the entire command fails and reports the violation reason. To learn more about how to configure your own checks, see the [Configuration](#configuration) section below.
 
@@ -370,24 +370,24 @@ import AnyLint // @Flinesoft ~> 0.3.0
 import Files // @JohnSundell ~> 4.1.1
 import ShellOut // @JohnSundell ~> 2.3.0
 
-// MARK: echo
-try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") {
-    var violations: [Violation] = []
+Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
+    // MARK: echo
+    try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") {
+        var violations: [Violation] = []
 
-    // use ShellOut package
-    let output = try shellOut(to: "echo", arguments: ["Hello world"])
-    // ...
-
-    // use Files package
-    try Folder(path: "MyFolder").files.forEach { file in
+        // use ShellOut package
+        let output = try shellOut(to: "echo", arguments: ["Hello world"])
         // ...
-    }
 
-    return violations
+        // use Files package
+        try Folder(path: "MyFolder").files.forEach { file in
+            // ...
+        }
+
+        return violations
+    }
 }
 
-// MARK: - Log Summary & Exit
-Lint.logSummaryAndExit(arguments: CommandLine.arguments)
 ```
 
 ## Xcode Build Script
