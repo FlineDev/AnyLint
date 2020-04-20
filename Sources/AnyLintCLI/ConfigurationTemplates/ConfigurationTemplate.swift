@@ -7,10 +7,20 @@ protocol ConfigurationTemplate {
 
 extension ConfigurationTemplate {
     static var commonPrefix: String {
-        "#!\(CLIConstants.swiftShPath)\nimport AnyLint // @Flinesoft ~> \(Constants.currentVersion)\n\n"
+        """
+        #!\(CLIConstants.swiftShPath)
+        import AnyLint // @Flinesoft ~> \(Constants.currentVersion)
+
+        try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
+
+        """
     }
 
     static var commonSuffix: String {
-        "\n\n// MARK: - Log Summary & Exit\nLint.logSummaryAndExit(arguments: CommandLine.arguments)\n"
+        """
+        
+        }
+
+        """
     }
 }

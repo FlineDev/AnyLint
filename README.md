@@ -394,7 +394,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments)
 
 If you are using AnyLint for a project in Xcode, you can configure a build script to run it on each build. In order to do this select your target, choose the `Build Phases` tab and click the + button on the top left corner of that pane. Select `New Run Script Phase` and copy the following into the text box below the `Shell: /bin/sh` of your new run script phase:
 
-```shell
+```bash
 if which anylint > /dev/null; then
     anylint -x
 else
@@ -403,6 +403,14 @@ fi
 ```
 
 Next, make sure the AnyLint script runs before the steps `Compiling Sources` by moving it per drag & drop, for example right after `Dependencies`. You probably also want to rename it to somethng like `AnyLint`.
+
+## Debugging Checks
+
+If one of your checks isn't working as expected, besides adding examples (`matchingExamples`, `nonMatchingExamples`, `autoCorrectExamples`) to validate your regex, you can also turn on the `--debug` output mode to understand better what AnyLint is actually doing. For example, you could use this to understand which files your `includeFilters` and `excludeFilters` are matching as AnyLint will print each file it's checking. You can use it like this:
+
+```bash
+anylint -d
+```
 
 ## Donation
 

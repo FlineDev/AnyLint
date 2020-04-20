@@ -4,6 +4,8 @@ import Utility
 /// Helper to search for files and filter using Regexes.
 public enum FilesSearch {
     static func allFiles(within path: String, includeFilters: [Regex], excludeFilters: [Regex] = []) -> [String] {
+        log.message("Start searching for matching files in path \(path) ...", level: .debug)
+
         guard let url = URL(string: path, relativeTo: fileManager.currentDirectoryUrl) else {
             log.message("Could not convert path '\(path)' to type URL.", level: .error)
             log.exit(status: .failure)
@@ -35,6 +37,7 @@ public enum FilesSearch {
                 if !isRegularFilePath {
                     enumerator.skipDescendants()
                 }
+
                 continue
             }
 
@@ -44,6 +47,7 @@ public enum FilesSearch {
                     if !isRegularFilePath {
                         enumerator.skipDescendants()
                     }
+
                     continue
                 }
             #else
@@ -51,13 +55,14 @@ public enum FilesSearch {
                     if !isRegularFilePath {
                         enumerator.skipDescendants()
                     }
+
                     continue
                 }
             #endif
 
-            if isRegularFilePath, includeFilters.contains(where: { $0.matches(fileUrl.relativePathFromCurrent) }) {
-                filePaths.append(fileUrl.relativePathFromCurrent)
-            }
+            guard isRegularFilePath, includeFilters.contains(where: { $0.matches(fileUrl.relativePathFromCurrent) }) else { continue }
+
+            filePaths.append(fileUrl.relativePathFromCurrent)
         }
 
         return filePaths

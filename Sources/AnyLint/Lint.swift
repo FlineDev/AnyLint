@@ -26,6 +26,7 @@ public enum Lint {
     ) throws {
         validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
         validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
+
         validateParameterCombinations(
             checkInfo: checkInfo,
             autoCorrectReplacement: autoCorrectReplacement,
@@ -54,6 +55,7 @@ public enum Lint {
             filePathsToCheck: filePathsToCheck,
             autoCorrectReplacement: autoCorrectReplacement
         ).performCheck()
+
         Statistics.shared.found(violations: violations, in: checkInfo)
     }
 
@@ -125,11 +127,16 @@ public enum Lint {
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
-    public static func logSummaryAndExit(failOnWarnings: Bool = false, arguments: [String] = []) {
+    public static func logSummaryAndExit(failOnWarnings: Bool = false, arguments: [String] = [], afterPerformingChecks checksToPerform: () throws -> Void = {}) throws {
         let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
+
         if targetIsXcode {
             log = Logger(outputType: .xcode)
         }
+
+        log.logDebugLevel = arguments.contains(Constants.debugArgument)
+
+        try checksToPerform()
 
         Statistics.shared.logSummary()
 
@@ -143,6 +150,10 @@ public enum Lint {
     }
 
     static func validate(regex: Regex, matchesForEach matchingExamples: [String], checkInfo: CheckInfo) {
+        if matchingExamples.isFilled {
+            log.message("Validating 'matchingExamples' for \(checkInfo) ...", level: .debug)
+        }
+
         for example in matchingExamples {
             if !regex.matches(example) {
                 // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
@@ -156,6 +167,10 @@ public enum Lint {
     }
 
     static func validate(regex: Regex, doesNotMatchAny nonMatchingExamples: [String], checkInfo: CheckInfo) {
+        if nonMatchingExamples.isFilled {
+            log.message("Validating 'nonMatchingExamples' for \(checkInfo) ...", level: .debug)
+        }
+
         for example in nonMatchingExamples {
             if regex.matches(example) {
                 // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
@@ -169,6 +184,10 @@ public enum Lint {
     }
 
     static func validateAutocorrectsAll(checkInfo: CheckInfo, examples: [AutoCorrection], regex: Regex, autocorrectReplacement: String) {
+        if examples.isFilled {
+            log.message("Validating 'autoCorrectExamples' for \(checkInfo) ...", level: .debug)
+        }
+
         for autocorrect in examples {
             let autocorrected = regex.replaceAllCaptures(in: autocorrect.before, with: autocorrectReplacement)
             if autocorrected != autocorrect.after {
