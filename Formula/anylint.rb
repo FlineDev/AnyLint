@@ -5,6 +5,7 @@ class Anylint < Formula
   head "https://github.com/Flinesoft/AnyLint.git"
 
   depends_on :xcode => ["11.4", :build]
+  depends_on "swift-sh"
 
   def install
     system "make", "install", "prefix=#{prefix}"
