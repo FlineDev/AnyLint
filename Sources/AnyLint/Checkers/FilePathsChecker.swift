@@ -16,12 +16,15 @@ extension FilePathsChecker: Checker {
         if violateIfNoMatchesFound {
             let matchingFilePathsCount = filePathsToCheck.filter { regex.matches($0) }.count
             if matchingFilePathsCount <= 0 {
+                log.message("Reporting violation for \(checkInfo) as no matching file was found ...", level: .debug)
                 violations.append(
                     Violation(checkInfo: checkInfo, filePath: nil, locationInfo: nil, appliedAutoCorrection: nil)
                 )
             }
         } else {
             for filePath in filePathsToCheck where regex.matches(filePath) {
+                log.message("Found violating match for \(checkInfo) ...", level: .debug)
+
                 let appliedAutoCorrection: AutoCorrection? = try {
                     guard let autoCorrectReplacement = autoCorrectReplacement else { return nil }
 
@@ -31,6 +34,11 @@ extension FilePathsChecker: Checker {
                     return AutoCorrection(before: filePath, after: newFilePath)
                 }()
 
+                if appliedAutoCorrection != nil {
+                    log.message("Applied autocorrection for last match ...", level: .debug)
+                }
+
+                log.message("Reporting violation for \(checkInfo) in file \(filePath) ...", level: .debug)
                 violations.append(
                     Violation(checkInfo: checkInfo, filePath: filePath, locationInfo: nil, appliedAutoCorrection: appliedAutoCorrection)
                 )

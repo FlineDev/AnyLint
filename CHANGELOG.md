@@ -31,6 +31,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.4.0] - 2020-04-20
+### Added
+- New `-d` / `--debug` option to log more info about what AnyLint is doing. Required to add a checks completion block in `logSummaryAndExit` and moved it up in the blank template.  
+  PR: [#13](https://github.com/Flinesoft/AnyLint/pull/13) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.3.0] - 2020-04-16
 ### Added
 - Made `AutoCorrection` expressible by Dictionary literals and updated the `README.md` accordingly.  

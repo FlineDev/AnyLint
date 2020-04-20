@@ -20,4 +20,12 @@ extension String {
     func showNewlines() -> String {
         components(separatedBy: .newlines).joined(separator: #"\n"#)
     }
+
+    func showWhitespaces() -> String {
+        components(separatedBy: .whitespaces).joined(separator: "␣")
+    }
+
+    func showWhitespacesAndNewlines() -> String {
+        showNewlines().showWhitespaces()
+    }
 }
