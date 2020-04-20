@@ -18,7 +18,7 @@ extension ConfigurationTemplate {
 
     static var commonSuffix: String {
         """
-        
+
         }
 
         """

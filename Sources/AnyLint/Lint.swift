@@ -127,7 +127,11 @@ public enum Lint {
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
-    public static func logSummaryAndExit(failOnWarnings: Bool = false, arguments: [String] = [], afterPerformingChecks checksToPerform: () throws -> Void = {}) throws {
+    public static func logSummaryAndExit(
+        failOnWarnings: Bool = false,
+        arguments: [String] = [],
+        afterPerformingChecks checksToPerform: () throws -> Void = {}
+    ) throws {
         let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
 
         if targetIsXcode {

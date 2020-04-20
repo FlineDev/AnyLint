@@ -9,7 +9,7 @@ struct FileContentsChecker {
 }
 
 extension FileContentsChecker: Checker {
-    func performCheck() throws -> [Violation] {
+    func performCheck() throws -> [Violation] { // swiftlint:disable:this function_body_length
         log.message("Start checking \(checkInfo) ...", level: .debug)
         var violations: [Violation] = []
 
