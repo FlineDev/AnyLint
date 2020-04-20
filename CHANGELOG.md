@@ -19,7 +19,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- New `-d` / `--debug` option to log more info about what AnyLint is doing. Required to add a checks completion block in `logSummaryAndExit` and moved it up in the blank template.  
+  PR: [#13](https://github.com/Flinesoft/AnyLint/pull/13) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - None.
 ### Deprecated

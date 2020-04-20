@@ -73,6 +73,6 @@ enum BlankTemplate: ConfigurationTemplate {
                     ["before": "## Lisence\n", "after": "## License\n"],
                 ]
             )
-            """# + commonSuffix
+        """# + commonSuffix
     }
 }

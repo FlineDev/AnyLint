@@ -14,6 +14,9 @@ class SingleCommand: Command {
     @Flag("-x", "--xcode", description: "Print warnings & errors in a format to be reported right within Xcodes left sidebar")
     var xcode: Bool
 
+    @Flag("-d", "--debug", description: "Logs much more detailed information about what AnyLint is doing for debugging purposes.")
+    var debug: Bool
+
     @Key("-i", "--init", description: "Configure AnyLint with a default template. Has to be one of: [\(CLIConstants.initTemplateCases)]")
     var initTemplateName: String?
 
@@ -26,6 +29,8 @@ class SingleCommand: Command {
         if xcode {
             log = Logger(outputType: .xcode)
         }
+
+        log.logDebugLevel = debug
 
         // version subcommand
         if version {

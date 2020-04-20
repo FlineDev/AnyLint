@@ -12,9 +12,9 @@ public struct AutoCorrection {
     var appliedMessageLines: [String] {
         [
             "Autocorrection applied (before >>> after):",
-            "> ✗ \(before.showNewlines())",
+            "> ✗ \(before.showWhitespacesAndNewlines())",
             ">>>",
-            "> ✓ \(after.showNewlines())",
+            "> ✓ \(after.showWhitespacesAndNewlines())",
         ]
     }
 

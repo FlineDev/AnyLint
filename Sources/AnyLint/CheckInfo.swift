@@ -26,6 +26,12 @@ extension CheckInfo: Hashable {
     }
 }
 
+extension CheckInfo: CustomStringConvertible {
+    public var description: String {
+        "check '\(id)'"
+    }
+}
+
 extension CheckInfo: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
         let customSeverityRegex: Regex = [

@@ -17,6 +17,9 @@ public final class Logger {
         /// Print information that probably is problematic.
         case error
 
+        /// Print detailed information for debugging purposes.
+        case debug
+
         var color: Color {
             switch self {
             case .success:
@@ -30,6 +33,9 @@ public final class Logger {
 
             case .error:
                 return Color.red
+
+            case .debug:
+                return Color.default
             }
         }
     }
@@ -68,6 +74,9 @@ public final class Logger {
     /// The output type of the logger.
     public let outputType: OutputType
 
+    /// Defines if the log should include debug logs.
+    public var logDebugLevel: Bool = false
+
     /// Initializes a new Logger object with a given output type.
     public init(outputType: OutputType) {
         self.outputType = outputType
@@ -79,6 +88,8 @@ public final class Logger {
     ///   - message: The message to be printed. Don't include `Error!`, `Warning!` or similar information at the beginning.
     ///   - level: The level of the print statement.
     public func message(_ message: String, level: PrintLevel) {
+        guard level != .debug || logDebugLevel else { return }
+
         switch outputType {
         case .console:
             consoleMessage(message, level: level)
@@ -119,6 +130,9 @@ public final class Logger {
 
         case .error:
             print(formattedCurrentTime(), "❌", message.red)
+
+        case .debug:
+            print(formattedCurrentTime(), "💬", message)
         }
     }
 

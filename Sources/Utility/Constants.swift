@@ -13,4 +13,7 @@ public enum Constants {
 
     /// The name of this tool.
     public static let toolName: String = "AnyLint"
+
+    /// The debug mode argument for command line pass-through.
+    public static let debugArgument: String = "debug"
 }
