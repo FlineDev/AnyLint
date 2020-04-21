@@ -4,6 +4,8 @@ import Utility
 
 struct LintTask {
     let configFilePath: String
+    let logDebugLevel: Bool
+    let failOnWarnings: Bool
 }
 
 extension LintTask: TaskHandler {
@@ -25,8 +27,13 @@ extension LintTask: TaskHandler {
             log.message("Start linting using config file at \(configFilePath) ...", level: .info)
 
             var command = "\(configFilePath.absolutePath) \(log.outputType.rawValue)"
-            if log.logDebugLevel {
+
+            if logDebugLevel {
                 command += " \(Constants.debugArgument)"
+            }
+
+            if failOnWarnings {
+                command += " \(Constants.strictArgument)"
             }
 
             try Task.run(bash: command)

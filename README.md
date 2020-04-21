@@ -142,6 +142,13 @@ Runs the lint checks for both configuration files:
 anylint --path Sources/lint.swift --path Tests/lint.swift
 ```
 
+There are also several flags you can pass to `anylint`:
+
+1. `-v` / `--version`: Prints the current tool version. (Does not run any lint checks.)
+2. `-x` / `--xcode`: Prints warnings & errors in a format to be reported right within Xcodes left sidebar.
+3. `-d` / `--debug`: Logs much more detailed information about what AnyLint is doing for debugging purposes.
+4. `-s` / `--strict`: Fails on warnings as well. (By default, the command only fails on errors.)
+
 ## Configuration
 
 AnyLint provides three different kinds of lint checks:
@@ -403,14 +410,6 @@ fi
 ```
 
 Next, make sure the AnyLint script runs before the steps `Compiling Sources` by moving it per drag & drop, for example right after `Dependencies`. You probably also want to rename it to somethng like `AnyLint`.
-
-## Debugging Checks
-
-If one of your checks isn't working as expected, besides adding examples (`matchingExamples`, `nonMatchingExamples`, `autoCorrectExamples`) to validate your regex, you can also turn on the `--debug` output mode to understand better what AnyLint is actually doing. For example, you could use this to understand which files your `includeFilters` and `excludeFilters` are matching as AnyLint will print each file it's checking. You can use it like this:
-
-```bash
-anylint -d
-```
 
 ## Donation
 
