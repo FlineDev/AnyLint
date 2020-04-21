@@ -16,4 +16,7 @@ public enum Constants {
 
     /// The debug mode argument for command line pass-through.
     public static let debugArgument: String = "debug"
+
+    /// The strict mode argument for command-line pass-through.
+    public static let strictArgument: String = "strict"
 }

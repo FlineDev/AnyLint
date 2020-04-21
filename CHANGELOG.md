@@ -19,7 +19,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- New `-s` / `--strict` option to fail on warnings as well (by default fails only on errors).  
+  PR: [#15](https://github.com/Flinesoft/AnyLint/pull/15) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - None.
 ### Deprecated
