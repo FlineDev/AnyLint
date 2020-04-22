@@ -20,6 +20,6 @@ public enum Constants {
     /// The strict mode argument for command-line pass-through.
     public static let strictArgument: String = "strict"
 
-    // The validate-only mode argument for command-line pass-through.
+    /// The validate-only mode argument for command-line pass-through.
     public static let validateArgument: String = "validate"
 }
