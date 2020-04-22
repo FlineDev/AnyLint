@@ -55,7 +55,7 @@ final class StatisticsTests: XCTestCase {
     }
 
     func testLogSummary() { // swiftlint:disable:this function_body_length
-        Statistics.shared.logSummary()
+        Statistics.shared.logCheckSummary()
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .warning)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].message, "No checks found to perform.")
@@ -87,7 +87,7 @@ final class StatisticsTests: XCTestCase {
             in: CheckInfo(id: "id3", hint: "hint3", severity: .error)
         )
 
-        Statistics.shared.logSummary()
+        Statistics.shared.logCheckSummary()
 
         XCTAssertEqual(
             TestHelper.shared.consoleOutputs.map { $0.level },

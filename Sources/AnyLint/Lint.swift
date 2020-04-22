@@ -43,6 +43,11 @@ public enum Lint {
             )
         }
 
+        guard !Options.validateOnly else {
+            Statistics.shared.executedChecks.append(checkInfo)
+            return
+        }
+
         let filePathsToCheck: [String] = FilesSearch.allFiles(
             within: fileManager.currentDirectoryPath,
             includeFilters: includeFilters,
@@ -100,6 +105,11 @@ public enum Lint {
             )
         }
 
+        guard !Options.validateOnly else {
+            Statistics.shared.executedChecks.append(checkInfo)
+            return
+        }
+
         let filePathsToCheck: [String] = FilesSearch.allFiles(
             within: fileManager.currentDirectoryPath,
             includeFilters: includeFilters,
@@ -122,16 +132,18 @@ public enum Lint {
     /// - Parameters:
     ///   - checkInfo: The info object providing some general information on the lint check.
     ///   - customClosure: The custom logic to run which produces an array of `Violation` objects for any violations.
-    public static func customCheck(checkInfo: CheckInfo, customClosure: () -> [Violation]) {
-        Statistics.shared.found(violations: customClosure(), in: checkInfo)
+    public static func customCheck(checkInfo: CheckInfo, customClosure: (CheckInfo) -> [Violation]) {
+        guard !Options.validateOnly else {
+            Statistics.shared.executedChecks.append(checkInfo)
+            return
+        }
+
+        Statistics.shared.found(violations: customClosure(checkInfo), in: checkInfo)
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
-    public static func logSummaryAndExit(
-        failOnWarnings: Bool = false,
-        arguments: [String] = [],
-        afterPerformingChecks checksToPerform: () throws -> Void = {}
-    ) throws {
+    public static func logSummaryAndExit(arguments: [String] = [], afterPerformingChecks checksToPerform: () throws -> Void = {}) throws {
+        let failOnWarnings = arguments.contains(Constants.strictArgument)
         let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
 
         if targetIsXcode {
@@ -139,10 +151,17 @@ public enum Lint {
         }
 
         log.logDebugLevel = arguments.contains(Constants.debugArgument)
+        Options.validateOnly = arguments.contains(Constants.validateArgument)
 
         try checksToPerform()
 
-        Statistics.shared.logSummary()
+        guard !Options.validateOnly else {
+            Statistics.shared.logValidationSummary()
+            log.exit(status: .success)
+            return // only reachable in unit tests
+        }
+
+        Statistics.shared.logCheckSummary()
 
         if Statistics.shared.violations(severity: .error, excludeAutocorrected: targetIsXcode).isFilled {
             log.exit(status: .failure)

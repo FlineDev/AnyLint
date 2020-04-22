@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.4.0-blue.svg"
-             alt="Version: 0.4.0">
+        <img src="https://img.shields.io/badge/Version-0.5.0-blue.svg"
+             alt="Version: 0.5.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -91,7 +91,7 @@ This will create the Swift script file `lint.swift` with something like the foll
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.4.0
+import AnyLint // @Flinesoft ~> 0.5.0
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: - Variables
@@ -141,6 +141,14 @@ Runs the lint checks for both configuration files:
 ```bash
 anylint --path Sources/lint.swift --path Tests/lint.swift
 ```
+
+There are also several flags you can pass to `anylint`:
+
+1. `-s` / `--strict`: Fails on warnings as well. (By default, the command only fails on errors.)
+2. `-x` / `--xcode`: Prints warnings & errors in a format to be reported right within Xcodes left sidebar.
+3. `-l` / `--validate`: Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.
+4. `-v` / `--version`: Prints the current tool version. (Does not run any lint checks.)
+5. `-d` / `--debug`: Logs much more detailed information about what AnyLint is doing for debugging purposes.
 
 ## Configuration
 
@@ -347,11 +355,11 @@ The `checkFilePaths` method has all the same parameters like the `checkFileConte
 
 As this method is about file paths and not file contents, the `autoCorrectReplacement` actually also fixes the paths, which corresponds to moving files from the `before` state to the `after` state. Note that moving/renaming files here is done safely, which means that if a file already exists at the resulting path, the command will fail.
 
-By default, `checkFilePaths` will fail if the given `regex` matches a file. If you want to check for the _existence_ of a file though, you can set `violateIfNoMatchesFound` to `true` instead, then the method will fail if it does _not_ matchn any file.
+By default, `checkFilePaths` will fail if the given `regex` matches a file. If you want to check for the _existence_ of a file though, you can set `violateIfNoMatchesFound` to `true` instead, then the method will fail if it does _not_ match any file.
 
 ### Custom Checks
 
-AnyLint allows you to do any kind of lint checks (thus its name) as it gives you the full power of the Swift programming language and it's packages ecosystem. The `customCheck` method needs to be used to profit from this flexibility. And it's actually the simplest of the three methods, consisting of only two parameters:
+AnyLint allows you to do any kind of lint checks (thus its name) as it gives you the full power of the Swift programming language and it's packages [ecosystem](https://swiftpm.co/). The `customCheck` method needs to be used to profit from this flexibility. And it's actually the simplest of the three methods, consisting of only two parameters:
 
 1. `checkInfo`: Provides some general information on the lint check.
 2. `customClosure`: Your custom logic which produces an array of `Violation` objects.
@@ -366,13 +374,13 @@ When using the `customCheck`, you might want to also include some Swift packages
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.4.0
+import AnyLint // @Flinesoft ~> 0.5.0
 import Files // @JohnSundell ~> 4.1.1
 import ShellOut // @JohnSundell ~> 2.3.0
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: echo
-    try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") {
+    try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") { checkInfo in
         var violations: [Violation] = []
 
         // use ShellOut package
@@ -382,6 +390,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
         // use Files package
         try Folder(path: "MyFolder").files.forEach { file in
             // ...
+            violations.append(Violation(checkInfo: checkInfo))
         }
 
         return violations
@@ -404,13 +413,7 @@ fi
 
 Next, make sure the AnyLint script runs before the steps `Compiling Sources` by moving it per drag & drop, for example right after `Dependencies`. You probably also want to rename it to somethng like `AnyLint`.
 
-## Debugging Checks
-
-If one of your checks isn't working as expected, besides adding examples (`matchingExamples`, `nonMatchingExamples`, `autoCorrectExamples`) to validate your regex, you can also turn on the `--debug` output mode to understand better what AnyLint is actually doing. For example, you could use this to understand which files your `includeFilters` and `excludeFilters` are matching as AnyLint will print each file it's checking. You can use it like this:
-
-```bash
-anylint -d
-```
+> **_Note_**: There's a [known bug](https://github.com/mxcl/swift-sh/issues/113) when the build script is used in non-macOS platforms targets.
 
 ## Donation
 

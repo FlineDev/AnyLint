@@ -8,14 +8,20 @@ class SingleCommand: Command {
     var shortDescription: String = "Lint anything by combining the power of Swift & regular expressions."
 
     // MARK: - Subcommands
-    @Flag("-v", "--version", description: "Print the current tool version")
+    @Flag("-v", "--version", description: "Prints the current tool version")
     var version: Bool
 
-    @Flag("-x", "--xcode", description: "Print warnings & errors in a format to be reported right within Xcodes left sidebar")
+    @Flag("-x", "--xcode", description: "Prints warnings & errors in a format to be reported right within Xcodes left sidebar")
     var xcode: Bool
 
-    @Flag("-d", "--debug", description: "Logs much more detailed information about what AnyLint is doing for debugging purposes.")
+    @Flag("-d", "--debug", description: "Logs much more detailed information about what AnyLint is doing for debugging purposes")
     var debug: Bool
+
+    @Flag("-s", "--strict", description: "Fails on warnings as well - by default, the command only fails on errors)")
+    var strict: Bool
+
+    @Flag("-l", "--validate", description: "Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.")
+    var validate: Bool
 
     @Key("-i", "--init", description: "Configure AnyLint with a default template. Has to be one of: [\(CLIConstants.initTemplateCases)]")
     var initTemplateName: String?
@@ -60,7 +66,7 @@ class SingleCommand: Command {
         var anyConfigFileFailed = false
         for configPath in configurationPaths {
             do {
-                try LintTask(configFilePath: configPath).perform()
+                try LintTask(configFilePath: configPath, logDebugLevel: debug, failOnWarnings: strict, validateOnly: validate).perform()
             } catch LintTask.LintError.configFileFailed {
                 anyConfigFileFailed = true
             }
