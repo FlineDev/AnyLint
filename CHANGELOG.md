@@ -19,10 +19,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- New `-s` / `--strict` option to fail on warnings as well (by default fails only on errors).  
-  PR: [#15](https://github.com/Flinesoft/AnyLint/pull/15) | Author: [Cihat Gündüz](https://github.com/Jeehut)
-- New `-l` / `--validate` option to only runs validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.  
-  PR: [#17](https://github.com/Flinesoft/AnyLint/pull/17) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+- None.
 ### Changed
 - None.
 ### Deprecated
@@ -33,6 +30,13 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 - None.
 ### Security
 - None.
+
+## [0.5.0] - 2020-04-22
+### Added
+- New `-s` / `--strict` option to fail on warnings as well (by default fails only on errors).  
+  PR: [#15](https://github.com/Flinesoft/AnyLint/pull/15) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+- New `-l` / `--validate` option to only runs validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.  
+  PR: [#17](https://github.com/Flinesoft/AnyLint/pull/17) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 
 ## [0.4.0] - 2020-04-20
 ### Added

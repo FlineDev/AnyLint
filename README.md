@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.4.0-blue.svg"
-             alt="Version: 0.4.0">
+        <img src="https://img.shields.io/badge/Version-0.5.0-blue.svg"
+             alt="Version: 0.5.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -91,7 +91,7 @@ This will create the Swift script file `lint.swift` with something like the foll
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.4.0
+import AnyLint // @Flinesoft ~> 0.5.0
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: - Variables
@@ -146,9 +146,9 @@ There are also several flags you can pass to `anylint`:
 
 1. `-s` / `--strict`: Fails on warnings as well. (By default, the command only fails on errors.)
 2. `-x` / `--xcode`: Prints warnings & errors in a format to be reported right within Xcodes left sidebar.
-3. `-l` / `--validate`: Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`. 
+3. `-l` / `--validate`: Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.
 4. `-v` / `--version`: Prints the current tool version. (Does not run any lint checks.)
-5. `-d` / `--debug`: Logs much more detailed information about what AnyLint is doing for debugging purposes. 
+5. `-d` / `--debug`: Logs much more detailed information about what AnyLint is doing for debugging purposes.
 
 ## Configuration
 
@@ -374,7 +374,7 @@ When using the `customCheck`, you might want to also include some Swift packages
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.4.0
+import AnyLint // @Flinesoft ~> 0.5.0
 import Files // @JohnSundell ~> 4.1.1
 import ShellOut // @JohnSundell ~> 2.3.0
 
