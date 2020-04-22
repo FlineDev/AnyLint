@@ -27,7 +27,20 @@ final class Statistics {
         violationsBySeverity = [.info: [], .warning: [], .error: []]
     }
 
-    func logSummary() {
+    func logValidationSummary() {
+        guard log.outputType != .xcode else {
+            log.message("Performing validations only while reporting for Xcode is probably misuse of the `-l` / `--validate` option.", level: .warning)
+            return
+        }
+
+        if executedChecks.isEmpty {
+            log.message("No checks found to validate.", level: .warning)
+        } else {
+            log.message("Performed \(executedChecks.count) validation(s) without any issues.", level: .success)
+        }
+    }
+
+    func logCheckSummary() {
         if executedChecks.isEmpty {
             log.message("No checks found to perform.", level: .warning)
         } else if violationsBySeverity.values.contains(where: { $0.isFilled }) {
