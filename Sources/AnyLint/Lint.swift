@@ -122,8 +122,8 @@ public enum Lint {
     /// - Parameters:
     ///   - checkInfo: The info object providing some general information on the lint check.
     ///   - customClosure: The custom logic to run which produces an array of `Violation` objects for any violations.
-    public static func customCheck(checkInfo: CheckInfo, customClosure: () -> [Violation]) {
-        Statistics.shared.found(violations: customClosure(), in: checkInfo)
+    public static func customCheck(checkInfo: CheckInfo, customClosure: (CheckInfo) -> [Violation]) {
+        Statistics.shared.found(violations: customClosure(checkInfo), in: checkInfo)
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.

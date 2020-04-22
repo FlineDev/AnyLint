@@ -354,11 +354,11 @@ The `checkFilePaths` method has all the same parameters like the `checkFileConte
 
 As this method is about file paths and not file contents, the `autoCorrectReplacement` actually also fixes the paths, which corresponds to moving files from the `before` state to the `after` state. Note that moving/renaming files here is done safely, which means that if a file already exists at the resulting path, the command will fail.
 
-By default, `checkFilePaths` will fail if the given `regex` matches a file. If you want to check for the _existence_ of a file though, you can set `violateIfNoMatchesFound` to `true` instead, then the method will fail if it does _not_ matchn any file.
+By default, `checkFilePaths` will fail if the given `regex` matches a file. If you want to check for the _existence_ of a file though, you can set `violateIfNoMatchesFound` to `true` instead, then the method will fail if it does _not_ match any file.
 
 ### Custom Checks
 
-AnyLint allows you to do any kind of lint checks (thus its name) as it gives you the full power of the Swift programming language and it's packages ecosystem. The `customCheck` method needs to be used to profit from this flexibility. And it's actually the simplest of the three methods, consisting of only two parameters:
+AnyLint allows you to do any kind of lint checks (thus its name) as it gives you the full power of the Swift programming language and it's packages [ecosystem](https://swiftpm.co/). The `customCheck` method needs to be used to profit from this flexibility. And it's actually the simplest of the three methods, consisting of only two parameters:
 
 1. `checkInfo`: Provides some general information on the lint check.
 2. `customClosure`: Your custom logic which produces an array of `Violation` objects.
@@ -379,7 +379,7 @@ import ShellOut // @JohnSundell ~> 2.3.0
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: echo
-    try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") {
+    try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") { checkInfo in
         var violations: [Violation] = []
 
         // use ShellOut package
@@ -389,6 +389,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
         // use Files package
         try Folder(path: "MyFolder").files.forEach { file in
             // ...
+            violations.append(Violation(checkInfo: checkInfo))
         }
 
         return violations
@@ -410,6 +411,8 @@ fi
 ```
 
 Next, make sure the AnyLint script runs before the steps `Compiling Sources` by moving it per drag & drop, for example right after `Dependencies`. You probably also want to rename it to somethng like `AnyLint`.
+
+> **_Note_**: There's a [known bug](https://github.com/mxcl/swift-sh/issues/113) when the build script is used in non-macOS platforms targets.
 
 ## Donation
 
