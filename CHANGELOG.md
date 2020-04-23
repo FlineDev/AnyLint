@@ -19,7 +19,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- Added a way to specify Regex options for literal initialization via `/i`, `/m` (String) or `#"\"#: "im"` (Dictionary).  
+  PR: [#18](https://github.com/Flinesoft/AnyLint/pull/18) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - None.
 ### Deprecated
