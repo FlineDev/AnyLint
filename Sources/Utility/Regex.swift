@@ -4,11 +4,17 @@ import Foundation
 
 /// `Regex` is a swifty regex engine built on top of the NSRegularExpression api.
 public struct Regex {
+    /// The recommended default options passed to any Regex if not otherwise specified.
+    public static let defaultOptions: Options = [.anchorsMatchLines]
+
     // MARK: - Properties
     private let regularExpression: NSRegularExpression
 
     /// The regex patterns string.
     public let pattern: String
+
+    /// The regex options.
+    public let options: Options
 
     // MARK: - Initializers
     /// Create a `Regex` based on a pattern string.
@@ -22,8 +28,9 @@ public struct Regex {
     ///       For details, see `Regex.Options`.
     ///
     /// - throws: A value of `ErrorType` describing the invalid regular expression.
-    public init(_ pattern: String, options: Options = []) throws {
+    public init(_ pattern: String, options: Options = defaultOptions) throws {
         self.pattern = pattern
+        self.options = options
         regularExpression = try NSRegularExpression(
             pattern: pattern,
             options: options.toNSRegularExpressionOptions
@@ -102,7 +109,7 @@ public struct Regex {
 extension Regex: CustomStringConvertible {
     /// Returns a string describing the regex using its pattern string.
     public var description: String {
-        "/\(regularExpression.pattern)/"
+        "/\(regularExpression.pattern)/\(options)"
     }
 }
 
@@ -166,6 +173,17 @@ extension Regex {
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }
+    }
+}
+
+extension Regex.Options: CustomStringConvertible {
+    public var description: String {
+        var description = ""
+        if contains(.ignoreCase) { description += "i" }
+        if contains(.ignoreMetacharacters) { description += "x" }
+        if !contains(.anchorsMatchLines) { description += "a" }
+        if contains(.dotMatchesLineSeparators) { description += "m" }
+        return description
     }
 }
 

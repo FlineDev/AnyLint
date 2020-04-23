@@ -22,4 +22,13 @@ public enum Constants {
 
     /// The validate-only mode argument for command-line pass-through.
     public static let validateArgument: String = "validate"
+
+    /// The separator indicating that next come regex options.
+    public static let regexOptionsSeparator: String = #"\"#
+
+    /// Hint that the case insensitive option should be active on a Regex.
+    public static let caseInsensitiveRegexOption: String = "i"
+
+    /// Hint that the case dot matches newline option should be active on a Regex.
+    public static let dotMatchesNewlinesRegexOption: String = "m"
 }
