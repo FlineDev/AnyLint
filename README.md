@@ -171,18 +171,32 @@ Many parameters in the above mentioned lint check methods are of `Regex` type. A
 1. Using a **String**:
   ```swift
   let regex = Regex(#"(foo|bar)[0-9]+"#) // => /(foo|bar)[0-9]+/
+  let regexWithOptions = Regex(#"(foo|bar)[0-9]+"#, options: [.ignoreCase, .dotMatchesLineSeparators, .anchorsMatchLines]) // => /(foo|bar)[0-9]+/im
   ```
 2. Using a **String Literal**:
   ```swift
   let regex: Regex = #"(foo|bar)[0-9]+"#  // => /(foo|bar)[0-9]+/
+  let regexWithOptions: Regex = #"(foo|bar)[0-9]+\im"#  // => /(foo|bar)[0-9]+/im
   ```
 3. Using a **Dictionary Literal**: (use for [named capture groups](https://www.regular-expressions.info/named.html))
   ```swift
-  let regex: Regex = ["key": #"foo|bar"#, "num": "[0-9]+"]
-  // => /(?<key>foo|bar)(?<num>[0-9]+)/
+  let regex: Regex = ["key": #"foo|bar"#, "num": "[0-9]+"] // => /(?<key>foo|bar)(?<num>[0-9]+)/
+  let regexWithOptions: Regex = ["key": #"foo|bar"#, "num": "[0-9]+", #"\"#: "im"] // => /(?<key>foo|bar)(?<num>[0-9]+)/im
   ```
 
-Note that we recommend using [raw strings](https://www.hackingwithswift.com/articles/162/how-to-use-raw-strings-in-swift) (`#"foo"#` instead of `"foo"`) for all regexes to get rid of double escaping backslashes (e.g. `\\s` becomes `\s`). This also allows for testing regexes in online regex editors like [rubular](https://rubular.com/) first and then copy & pasting from them without any additional escaping.
+Note that we recommend using [raw strings](https://www.hackingwithswift.com/articles/162/how-to-use-raw-strings-in-swift) (`#"foo"#` instead of `"foo"`) for all regexes to get rid of double escaping backslashes (e.g. `\\s` becomes `\s`). This also allows for testing regexes in online regex editors like [Rubular](https://rubular.com/) first and then copy & pasting from them without any additional escaping.
+
+<details>
+<summary>Regex Options</summary>
+
+Specifying Regex options in literals is done via the `\` separator as shown in the examples above. The available options are:
+
+1.  `i` for `.ignoreCase`: Any specified characters will both match uppercase and lowercase variants.
+2. `m` for `.dotMatchesLineSeparators`: All appearances of `.` in regexes will also match newlines (which are not matched against by default).
+
+The `.anchorsMatchLines` option is always activated on literal usage as we strongly recommend it. It ensures that `^` can be used to match the start of a line and `$` for the end of a line. By default they would match the start & end of the _entire string_. If that's actually what you want, you can still use `\A` and `\z` for that. This makes the default literal Regex behavior more in line with sites like [Rubular](https://rubular.com/).
+
+</details>
 
 #### CheckInfo
 
