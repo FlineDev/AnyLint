@@ -31,6 +31,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.6.0] - 2020-04-23
+### Added
+- Added a way to specify Regex options for literal initialization via `/i`, `/m` (String) or `#"\"#: "im"` (Dictionary).  
+  PR: [#18](https://github.com/Flinesoft/AnyLint/pull/18) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.5.0] - 2020-04-22
 ### Added
 - New `-s` / `--strict` option to fail on warnings as well (by default fails only on errors).  

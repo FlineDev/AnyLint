@@ -2,8 +2,27 @@ import Foundation
 
 extension Regex: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
+        var pattern = value
+        let options: Options = {
+            if
+                value.hasSuffix(Constants.regexOptionsSeparator + Constants.caseInsensitiveRegexOption + Constants.dotMatchesNewlinesRegexOption)
+                || value.hasSuffix(Constants.regexOptionsSeparator + Constants.dotMatchesNewlinesRegexOption + Constants.caseInsensitiveRegexOption)
+            {
+                pattern.removeLast((Constants.regexOptionsSeparator + Constants.dotMatchesNewlinesRegexOption + Constants.caseInsensitiveRegexOption).count)
+                return Regex.defaultOptions.union([.ignoreCase, .dotMatchesLineSeparators])
+            } else if value.hasSuffix(Constants.regexOptionsSeparator + Constants.caseInsensitiveRegexOption) {
+                pattern.removeLast((Constants.regexOptionsSeparator + Constants.caseInsensitiveRegexOption).count)
+                return Regex.defaultOptions.union([.ignoreCase])
+            } else if value.hasSuffix(Constants.regexOptionsSeparator + Constants.dotMatchesNewlinesRegexOption) {
+                pattern.removeLast((Constants.regexOptionsSeparator + Constants.dotMatchesNewlinesRegexOption).count)
+                return Regex.defaultOptions.union([.dotMatchesLineSeparators])
+            } else {
+                return Regex.defaultOptions
+            }
+        }()
+
         do {
-            self = try Regex(value)
+            self = try Regex(pattern, options: options)
         } catch {
             log.message("Failed to convert String literal '\(value)' to type Regex.", level: .error)
             log.exit(status: .failure)
@@ -14,8 +33,24 @@ extension Regex: ExpressibleByStringLiteral {
 
 extension Regex: ExpressibleByDictionaryLiteral {
     public init(dictionaryLiteral elements: (String, String)...) {
+        var patternElements = elements
+        var options: Options = Regex.defaultOptions
+
+        if let regexOptionsValue = elements.last(where: { $0.0 == Constants.regexOptionsSeparator })?.1 {
+            patternElements.removeAll { $0.0 == Constants.regexOptionsSeparator }
+
+            if regexOptionsValue.contains(Constants.caseInsensitiveRegexOption) {
+                options.insert(.ignoreCase)
+            }
+
+            if regexOptionsValue.contains(Constants.dotMatchesNewlinesRegexOption) {
+                options.insert(.dotMatchesLineSeparators)
+            }
+        }
+
         do {
-            self = try Regex(elements.reduce(into: "") { result, element in result.append("(?<\(element.0)>\(element.1))") })
+            let pattern: String = patternElements.reduce(into: "") { result, element in result.append("(?<\(element.0)>\(element.1))") }
+            self = try Regex(pattern, options: options)
         } catch {
             log.message("Failed to convert Dictionary literal '\(elements)' to type Regex.", level: .error)
             log.exit(status: .failure)
