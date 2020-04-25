@@ -21,8 +21,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- Hugely improved performance of subsequent file searches with the same combination of `includeFilters` and `excludeFilters`. For example, if 30 checks were sharing the same filters, each file search is now ~8x faster.  
-  Issue: [#20](https://github.com/Flinesoft/AnyLint/issues/20) | PR: [#21](https://github.com/Flinesoft/AnyLint/pull/21) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+- None.
 ### Deprecated
 - None.
 ### Removed
@@ -31,6 +30,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 - None.
 ### Security
 - None.
+
+## [0.6.1] - 2020-04-25
+### Changed
+- Hugely improved performance of subsequent file searches with the same combination of `includeFilters` and `excludeFilters`. For example, if 30 checks were sharing the same filters, each file search is now ~8x faster.  
+  Issue: [#20](https://github.com/Flinesoft/AnyLint/issues/20) | PR: [#21](https://github.com/Flinesoft/AnyLint/pull/21) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 
 ## [0.6.0] - 2020-04-23
 ### Added
