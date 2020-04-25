@@ -2,6 +2,8 @@
 @testable import Utility
 import XCTest
 
+// swiftlint:disable force_try
+
 final class FilesSearchTests: XCTestCase {
     override func setUp() {
         log = Logger(outputType: .test)
@@ -46,7 +48,6 @@ final class FilesSearchTests: XCTestCase {
                     excludeFilters: [try! Regex(#"\#(self.tempDir)/.*\.storyboard"#)]
                 )
             }
-
 
             measure {
                 // first run

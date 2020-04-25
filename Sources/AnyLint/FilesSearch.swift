@@ -20,7 +20,7 @@ public final class FilesSearch {
         cachedFilePaths = [:]
     }
 
-    func allFiles(within path: String, includeFilters: [Regex], excludeFilters: [Regex] = []) -> [String] {
+    func allFiles(within path: String, includeFilters: [Regex], excludeFilters: [Regex] = []) -> [String] { // swiftlint:disable:this function_body_length
         log.message(
             "Start searching for matching files in path \(path) with includeFilters \(includeFilters) and excludeFilters \(excludeFilters) ...",
             level: .debug
