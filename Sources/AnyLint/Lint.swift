@@ -48,7 +48,7 @@ public enum Lint {
             return
         }
 
-        let filePathsToCheck: [String] = FilesSearch.allFiles(
+        let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
             within: fileManager.currentDirectoryPath,
             includeFilters: includeFilters,
             excludeFilters: excludeFilters
@@ -110,7 +110,7 @@ public enum Lint {
             return
         }
 
-        let filePathsToCheck: [String] = FilesSearch.allFiles(
+        let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
             within: fileManager.currentDirectoryPath,
             includeFilters: includeFilters,
             excludeFilters: excludeFilters

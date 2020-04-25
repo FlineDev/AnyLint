@@ -129,6 +129,7 @@ extension Regex: Hashable {
     /// Manages hashing of the `Regex` instance.
     public func hash(into hasher: inout Hasher) {
         hasher.combine(regularExpression)
+        hasher.combine(options)
     }
 }
 
@@ -186,6 +187,8 @@ extension Regex.Options: CustomStringConvertible {
         return description
     }
 }
+
+extension Regex.Options: Equatable, Hashable {}
 
 // MARK: - Match
 extension Regex {
