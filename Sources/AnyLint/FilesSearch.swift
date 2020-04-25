@@ -2,9 +2,35 @@ import Foundation
 import Utility
 
 /// Helper to search for files and filter using Regexes.
-public enum FilesSearch {
-    static func allFiles(within path: String, includeFilters: [Regex], excludeFilters: [Regex] = []) -> [String] {
-        log.message("Start searching for matching files in path \(path) ...", level: .debug)
+public final class FilesSearch {
+    struct SearchOptions: Equatable, Hashable {
+        let pathToSearch: String
+        let includeFilters: [Regex]
+        let excludeFilters: [Regex]
+    }
+
+    static let shared = FilesSearch()
+
+    private var cachedFilePaths: [SearchOptions: [String]] = [:]
+
+    private init() {}
+
+    /// Should be called whenever files within the current directory are renamed, moved, added or deleted.
+    func invalidateCache() {
+        cachedFilePaths = [:]
+    }
+
+    func allFiles(within path: String, includeFilters: [Regex], excludeFilters: [Regex] = []) -> [String] {
+        log.message(
+            "Start searching for matching files in path \(path) with includeFilters \(includeFilters) and excludeFilters \(excludeFilters) ...",
+            level: .debug
+        )
+
+        let searchOptions = SearchOptions(pathToSearch: path, includeFilters: includeFilters, excludeFilters: excludeFilters)
+        if let cachedFilePaths: [String] = cachedFilePaths[searchOptions] {
+            log.message("A file search with exactly the above search options was already done and was not invalidated, using cached results ...", level: .debug)
+            return cachedFilePaths
+        }
 
         guard let url = URL(string: path, relativeTo: fileManager.currentDirectoryUrl) else {
             log.message("Could not convert path '\(path)' to type URL.", level: .error)
@@ -65,6 +91,7 @@ public enum FilesSearch {
             filePaths.append(fileUrl.relativePathFromCurrent)
         }
 
+        cachedFilePaths[searchOptions] = filePaths
         return filePaths
     }
 }
