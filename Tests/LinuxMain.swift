@@ -41,7 +41,8 @@ extension FilePathsCheckerTests {
 
 extension FilesSearchTests {
     static var allTests: [(String, (FilesSearchTests) -> () throws -> Void)] = [
-        ("testAllFilesWithinPath", testAllFilesWithinPath)
+        ("testAllFilesWithinPath", testAllFilesWithinPath),
+        ("testPerformanceOfSameSearchOptions", testPerformanceOfSameSearchOptions)
     ]
 }
 
