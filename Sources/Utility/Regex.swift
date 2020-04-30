@@ -188,7 +188,15 @@ extension Regex.Options: CustomStringConvertible {
     }
 }
 
-extension Regex.Options: Equatable, Hashable {}
+extension Regex.Options: Equatable, Hashable {
+    public static func == (lhs: Regex.Options, rhs: Regex.Options) -> Bool {
+        return lhs.rawValue == rhs.rawValue
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
+}
 
 // MARK: - Match
 extension Regex {
