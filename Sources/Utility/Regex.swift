@@ -128,7 +128,7 @@ extension Regex: Equatable {
 extension Regex: Hashable {
     /// Manages hashing of the `Regex` instance.
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(regularExpression)
+        hasher.combine(pattern)
         hasher.combine(options)
     }
 }
