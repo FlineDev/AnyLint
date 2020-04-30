@@ -31,6 +31,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.6.2] - 2020-04-30
+### Fixed
+- Attempt to fix an issue that lead to failed builds with an error on Linux CI servers.  
+  Issue: [#22](https://github.com/Flinesoft/AnyLint/issues/22) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.6.1] - 2020-04-25
 ### Changed
 - Hugely improved performance of subsequent file searches with the same combination of `includeFilters` and `excludeFilters`. For example, if 30 checks were sharing the same filters, each file search is now ~8x faster.  
