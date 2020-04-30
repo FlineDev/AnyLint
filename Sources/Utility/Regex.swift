@@ -128,7 +128,7 @@ extension Regex: Equatable {
 extension Regex: Hashable {
     /// Manages hashing of the `Regex` instance.
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(regularExpression)
+        hasher.combine(pattern)
         hasher.combine(options)
     }
 }
@@ -188,7 +188,15 @@ extension Regex.Options: CustomStringConvertible {
     }
 }
 
-extension Regex.Options: Equatable, Hashable {}
+extension Regex.Options: Equatable, Hashable {
+    public static func == (lhs: Regex.Options, rhs: Regex.Options) -> Bool {
+        return lhs.rawValue == rhs.rawValue
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
+}
 
 // MARK: - Match
 extension Regex {
