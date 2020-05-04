@@ -91,7 +91,7 @@ This will create the Swift script file `lint.swift` with something like the foll
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.6.2
+import AnyLint // @Flinesoft
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: - Variables
@@ -388,9 +388,9 @@ When using the `customCheck`, you might want to also include some Swift packages
 
 ```swift
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft ~> 0.6.2
-import Files // @JohnSundell ~> 4.1.1
-import ShellOut // @JohnSundell ~> 2.3.0
+import AnyLint // @Flinesoft
+import Files // @JohnSundell
+import ShellOut // @JohnSundell
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: echo

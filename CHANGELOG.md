@@ -21,7 +21,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- None.
+- Removed version specifier from `lint.swift` file to get always latest `AnyLint` library.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Deprecated
 - None.
 ### Removed
