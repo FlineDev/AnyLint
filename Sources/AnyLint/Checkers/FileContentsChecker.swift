@@ -76,6 +76,8 @@ extension FileContentsChecker: Checker {
                     level: .warning
                 )
             }
+
+            Statistics.shared.checkedFiles(at: [filePath])
         }
 
         return violations.reversed()
