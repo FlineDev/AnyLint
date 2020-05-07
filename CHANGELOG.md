@@ -31,6 +31,17 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+
+## [0.6.3] - 2020-05-07
+### Added
+- Summary output states how many files have been checked to make it easier to find include/exclude regexes.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+- Made `Violation` public for usage in `customCheck` methods.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+### Changed
+- Removed version specifier from `lint.swift` file to get always latest `AnyLint` library.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.6.2] - 2020-04-30
 ### Fixed
 - Attempt to fix an issue that lead to failed builds with an error on Linux CI servers.  

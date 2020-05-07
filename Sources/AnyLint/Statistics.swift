@@ -7,12 +7,17 @@ final class Statistics {
     var executedChecks: [CheckInfo] = []
     var violationsPerCheck: [CheckInfo: [Violation]] = [:]
     var violationsBySeverity: [Severity: [Violation]] = [.info: [], .warning: [], .error: []]
+    var filesChecked: Set<String> = []
 
     var maxViolationSeverity: Severity? {
         violationsBySeverity.keys.filter { !violationsBySeverity[$0]!.isEmpty }.max { $0.rawValue < $1.rawValue }
     }
 
     private init() {}
+
+    func checkedFiles(at filePaths: [String]) {
+        filePaths.forEach { filesChecked.insert($0) }
+    }
 
     func found(violations: [Violation], in check: CheckInfo) {
         executedChecks.append(check)
@@ -25,6 +30,7 @@ final class Statistics {
         executedChecks = []
         violationsPerCheck = [:]
         violationsBySeverity = [.info: [], .warning: [], .error: []]
+        filesChecked = []
     }
 
     func logValidationSummary() {
@@ -36,7 +42,10 @@ final class Statistics {
         if executedChecks.isEmpty {
             log.message("No checks found to validate.", level: .warning)
         } else {
-            log.message("Performed \(executedChecks.count) validation(s) without any issues.", level: .success)
+            log.message(
+                "Performed \(executedChecks.count) validation(s) in \(filesChecked.count) file(s) without any issues.",
+                level: .success
+            )
         }
     }
 
@@ -52,7 +61,10 @@ final class Statistics {
                 showViolationsInXcode()
             }
         } else {
-            log.message("Performed \(executedChecks.count) check(s) without any violations.", level: .success)
+            log.message(
+                "Performed \(executedChecks.count) check(s) in \(filesChecked.count) file(s) without any violations.",
+                level: .success
+            )
         }
     }
 
@@ -107,7 +119,7 @@ final class Statistics {
         let warnings = "\(violationsBySeverity[.warning]!.count) warning(s)"
 
         log.message(
-            "Performed \(executedChecks.count) check(s) and found \(errors) & \(warnings).",
+            "Performed \(executedChecks.count) check(s) in \(filesChecked.count) file(s) and found \(errors) & \(warnings).",
             level: maxViolationSeverity!.logLevel
         )
     }

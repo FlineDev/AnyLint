@@ -19,7 +19,8 @@ public struct Violation {
     /// The autocorrection applied to fix this violation.
     public let appliedAutoCorrection: AutoCorrection?
 
-    init(
+    /// Initializes a violation object.
+    public init(
         checkInfo: CheckInfo,
         filePath: String? = nil,
         matchedString: String? = nil,

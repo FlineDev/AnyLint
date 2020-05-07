@@ -87,6 +87,10 @@ final class StatisticsTests: XCTestCase {
             in: CheckInfo(id: "id3", hint: "hint3", severity: .error)
         )
 
+        Statistics.shared.checkedFiles(at: ["Hogwarts/Harry.swift"])
+        Statistics.shared.checkedFiles(at: ["Hogwarts/Harry.swift", "Hogwarts/Albus.swift"])
+        Statistics.shared.checkedFiles(at: ["Hogwarts/Albus.swift"])
+
         Statistics.shared.logCheckSummary()
 
         XCTAssertEqual(
@@ -106,7 +110,7 @@ final class StatisticsTests: XCTestCase {
             "> 2. Hogwarts/Harry.swift:72:17:",
             "> 3. Hogwarts/Albus.swift:40:4:",
             ">> Hint: hint3".bold.italic,
-            "Performed 3 check(s) and found 3 error(s) & 2 warning(s).",
+            "Performed 3 check(s) in 2 file(s) and found 3 error(s) & 2 warning(s).",
         ]
 
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, expectedOutputs.count)

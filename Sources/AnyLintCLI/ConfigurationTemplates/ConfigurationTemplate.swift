@@ -9,7 +9,7 @@ extension ConfigurationTemplate {
     static var commonPrefix: String {
         """
         #!\(CLIConstants.swiftShPath)
-        import AnyLint // @Flinesoft ~> \(Constants.currentVersion)
+        import AnyLint // @Flinesoft
 
         try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 

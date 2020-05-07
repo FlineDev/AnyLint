@@ -43,6 +43,8 @@ extension FilePathsChecker: Checker {
                     Violation(checkInfo: checkInfo, filePath: filePath, locationInfo: nil, appliedAutoCorrection: appliedAutoCorrection)
                 )
             }
+
+            Statistics.shared.checkedFiles(at: filePathsToCheck)
         }
 
         return violations
