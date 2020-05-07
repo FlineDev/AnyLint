@@ -49,10 +49,10 @@ final class FilesSearchTests: XCTestCase {
                 )
             }
 
-            measure {
-                // first run
-                XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
+            // first run
+            XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
 
+            measure {
                 // subsequent runs (should be much faster)
                 XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
                 XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
