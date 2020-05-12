@@ -26,7 +26,7 @@ jobs:
         id: anylint-cache
         with:
           path: anylint-cache
-          key: ${{ runner.os }}-anylint-$ANYLINT_LATEST_VERSION-swift-sh-$SWIFT_SH_LATEST_VERSION
+          key: ${{ runner.os }}-v1-anylint-$ANYLINT_LATEST_VERSION-swift-sh-$SWIFT_SH_LATEST_VERSION
           
       - name: Copy from cache
         if: steps.anylint-cache.outputs.cache-hit
