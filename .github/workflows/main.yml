@@ -13,7 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Export latest AnyLint version
+        run: ::set-env name=ANYLINT_LATEST_VERSION::${{ curl --silent "https://api.github.com/repos/Flinesoft/AnyLint/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' }}
+
+      - name: Export latest swift-sh version
+        run: ::set-env name=SWIFT_SH_LATEST_VERSION::${{ curl --silent "https://api.github.com/repos/mxcl/swift-sh/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' }}
+      
+      - name: Use cached AnyLint
+        uses: actions/cache@v1
+        with:
+          path: /usr/local/bin/anylint
+          key: ${{ runner.os }}-anylint-$ANYLINT_LATEST_VERSION-swift-sh-$SWIFT_SH_LATEST_VERSION
+
       - name: Install AnyLint
+        if: ${{ ! type anylint > /dev/null }}
         run: |
           git clone https://github.com/Flinesoft/AnyLint.git
           cd AnyLint
@@ -21,6 +34,7 @@ jobs:
           sudo cp -f .build/release/anylint /usr/local/bin/anylint
 
       - name: Install swift-sh
+        if: ${{ ! type swift-sh > /dev/null }}
         run: |
           git clone https://github.com/mxcl/swift-sh.git
           cd swift-sh
