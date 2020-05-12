@@ -27,6 +27,9 @@ jobs:
           swift build -c release
           sudo cp -f .build/release/swift-sh /usr/local/bin/swift-sh
 
+      - name: Cleanup checkouts
+        run: rm -rf AnyLint && rm -rf swift-sh
+
       - name: Run AnyLint
         run: anylint
 

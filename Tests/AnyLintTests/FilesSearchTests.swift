@@ -23,7 +23,7 @@ final class FilesSearchTests: XCTestCase {
                 within: FileManager.default.currentDirectoryPath,
                 includeFilters: [try Regex("\(tempDir)/.*")],
                 excludeFilters: []
-            )
+            ).sorted()
             XCTAssertEqual(includeFilterFilePaths, ["\(tempDir)/Sources/Hello.swift", "\(tempDir)/Sources/World.swift"])
 
             let excludeFilterFilePaths = FilesSearch.shared.allFiles(
