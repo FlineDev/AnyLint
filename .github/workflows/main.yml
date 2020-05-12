@@ -26,7 +26,7 @@ jobs:
           key: ${{ runner.os }}-anylint-$ANYLINT_LATEST_VERSION-swift-sh-$SWIFT_SH_LATEST_VERSION
 
       - name: Install AnyLint
-        if: ${{ ! type anylint > /dev/null }}
+        if: $( ! type anylint > /dev/null )
         run: |
           git clone https://github.com/Flinesoft/AnyLint.git
           cd AnyLint
@@ -34,7 +34,7 @@ jobs:
           sudo cp -f .build/release/anylint /usr/local/bin/anylint
 
       - name: Install swift-sh
-        if: ${{ ! type swift-sh > /dev/null }}
+        if: $( ! type swift-sh > /dev/null )
         run: |
           git clone https://github.com/mxcl/swift-sh.git
           cd swift-sh
