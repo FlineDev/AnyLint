@@ -51,6 +51,8 @@ jobs:
           sudo cp -f .build/release/swift-sh /usr/local/bin/swift-sh
           
       - name: Copy to cache
+        if: steps.anylint-cache.outputs.cache-hit != 'true'
+        run: |
           mkdir -p anylint-cache
           cp -f /usr/local/bin/anylint anylint-cache/anylint
           cp -f /usr/local/bin/swift-sh anylint-cache/swift-sh
