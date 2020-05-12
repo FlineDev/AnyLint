@@ -4,9 +4,9 @@
 </p>
 
 <p align="center">
-    <a href="https://app.bitrise.io/app/b2708c16ab236ff8">
-        <img src="https://app.bitrise.io/app/b2708c16ab236ff8/status.svg?token=PuELIpLj_V11GkcIztEgGQ&branch=main"
-            alt="Build Status">
+    <a href="https://github.com/Flinesoft/AnyLint/actions?query=branch%3Amain">
+        <img src="https://github.com/Flinesoft/AnyLint/workflows/CI/badge.svg"
+            alt="CI">
     </a>
     <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
         <img src="https://api.codacy.com/project/badge/Grade/c881ee12938145d3bfd398eff1571228"
