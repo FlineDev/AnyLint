@@ -19,19 +19,12 @@ jobs:
       - name: Export latest swift-sh version
         run: echo "::set-env name=SWIFT_SH_LATEST_VERSION::$( curl --silent "https://api.github.com/repos/mxcl/swift-sh/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' )"
       
-      - name: Use cached AnyLint
+      - name: AnyLint Cache
         uses: actions/cache@v1
         id: anylint-cache
         with:
-          path: /usr/local/bin/anylint
-          key: ${{ runner.os }}-anylint-$ANYLINT_LATEST_VERSION
-          
-      - name: Use cached swift-sh
-        uses: actions/cache@v1
-        id: swift-sh-cache
-        with:
-          path: /usr/local/bin/swift-sh
-          key: ${{ runner.os }}-swift-sh-$SWIFT_SH_LATEST_VERSION
+          path: /usr/local/bin
+          key: ${{ runner.os }}-anylint-$ANYLINT_LATEST_VERSION-swift-sh-$SWIFT_SH_LATEST_VERSION
 
       - name: Install AnyLint
         if: steps.anylint-cache.outputs.cache-hit != 'true'
@@ -42,7 +35,7 @@ jobs:
           sudo cp -f .build/release/anylint /usr/local/bin/anylint
 
       - name: Install swift-sh
-        if: steps.swift-sh-cache.outputs.cache-hit != 'true'
+        if: steps.anylint-cache.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/mxcl/swift-sh.git
           cd swift-sh
