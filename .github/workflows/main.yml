@@ -1,0 +1,68 @@
+name: Swift
+
+on:
+  push:
+    branches: [main, versions]
+  pull_request:
+    branches: [main]
+
+jobs:
+  anylint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install AnyLint
+        run: |
+          git clone https://github.com/Flinesoft/AnyLint.git
+          cd AnyLint
+          swift build -c release
+          sudo cp -f .build/release/anylint /usr/local/bin/anylint
+
+      - name: Install swift-sh
+        run: |
+          git clone https://github.com/mxcl/swift-sh.git
+          cd swift-sh
+          swift build -c release
+          sudo cp -f .build/release/swift-sh /usr/local/bin/swift-sh
+
+      - name: Run AnyLint
+        run: anylint
+
+  swiftlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run SwiftLint
+        uses: norio-nomura/action-swiftlint@3.1.0
+        with:
+          args: --strict
+
+  test-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run tests
+        run: swift test -v
+
+
+  test-macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run tests
+        run: swift test -v --enable-code-coverage
+
+      - name: Report Code Coverage
+        run: |
+          xcrun llvm-cov export -format="lcov" .build/debug/${PACKAGE_NAME}PackageTests.xctest/Contents/MacOS/${PACKAGE_NAME}PackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.lcov
+        env:
+          PACKAGE_NAME: AnyLint
