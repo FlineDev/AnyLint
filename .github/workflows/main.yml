@@ -13,7 +13,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Export latest tool versions
+        run: |
+          latest_version() {
+            curl --silent "https://api.github.com/repos/$1/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+          }
+          echo "::set-env name=ANYLINT_LATEST_VERSION::$( latest_version Flinesoft/AnyLint )"
+          echo "::set-env name=SWIFT_SH_LATEST_VERSION::$( latest_version mxcl/swift-sh )"
+      
+      - name: AnyLint Cache
+        uses: actions/cache@v1
+        id: anylint-cache
+        with:
+          path: anylint-cache
+          key: ${{ runner.os }}-v1-anylint-${{ env.ANYLINT_LATEST_VERSION }}-swift-sh-${{ env.SWIFT_SH_LATEST_VERSION }}
+          
+      - name: Copy from cache
+        if: steps.anylint-cache.outputs.cache-hit
+        run: |
+          sudo cp -f anylint-cache/anylint /usr/local/bin/anylint
+          sudo cp -f anylint-cache/swift-sh /usr/local/bin/swift-sh
+
       - name: Install AnyLint
+        if: steps.anylint-cache.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/Flinesoft/AnyLint.git
           cd AnyLint
@@ -21,11 +43,19 @@ jobs:
           sudo cp -f .build/release/anylint /usr/local/bin/anylint
 
       - name: Install swift-sh
+        if: steps.anylint-cache.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/mxcl/swift-sh.git
           cd swift-sh
           swift build -c release
           sudo cp -f .build/release/swift-sh /usr/local/bin/swift-sh
+          
+      - name: Copy to cache
+        if: steps.anylint-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p anylint-cache
+          cp -f /usr/local/bin/anylint anylint-cache/anylint
+          cp -f /usr/local/bin/swift-sh anylint-cache/swift-sh
 
       - name: Cleanup checkouts
         run: rm -rf AnyLint && rm -rf swift-sh
