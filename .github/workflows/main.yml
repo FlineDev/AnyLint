@@ -14,10 +14,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Export latest AnyLint version
-        run: ::set-env name=ANYLINT_LATEST_VERSION::${{ curl --silent "https://api.github.com/repos/Flinesoft/AnyLint/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' }}
+        run: ::set-env name=ANYLINT_LATEST_VERSION::$( curl --silent "https://api.github.com/repos/Flinesoft/AnyLint/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' )
 
       - name: Export latest swift-sh version
-        run: ::set-env name=SWIFT_SH_LATEST_VERSION::${{ curl --silent "https://api.github.com/repos/mxcl/swift-sh/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' }}
+        run: ::set-env name=SWIFT_SH_LATEST_VERSION::$( curl --silent "https://api.github.com/repos/mxcl/swift-sh/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' )
       
       - name: Use cached AnyLint
         uses: actions/cache@v1
