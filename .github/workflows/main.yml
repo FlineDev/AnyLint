@@ -15,7 +15,9 @@ jobs:
 
       - name: Export latest tool versions
         run: |
-          latest_version() { curl --silent "https://api.github.com/repos/$1/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' }
+          latest_version() {
+            curl --silent "https://api.github.com/repos/$1/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+          }
           echo "::set-env name=ANYLINT_LATEST_VERSION::$( latest_version Flinesoft/AnyLint )"
           echo "::set-env name=SWIFT_SH_LATEST_VERSION::$( latest_version mxcl/swift-sh )"
       
