@@ -66,3 +66,4 @@ jobs:
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.lcov
         env:
           PACKAGE_NAME: AnyLint
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
