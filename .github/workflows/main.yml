@@ -25,8 +25,14 @@ jobs:
         uses: actions/cache@v1
         id: anylint-cache
         with:
-          path: /usr/local/bin
+          path: anylint-cache
           key: ${{ runner.os }}-anylint-$ANYLINT_LATEST_VERSION-swift-sh-$SWIFT_SH_LATEST_VERSION
+          
+      - name: Copy from cache
+        if: steps.anylint-cache.outputs.cache-hit
+        run: |
+          sudo cp -f anylint-cache/anylint /usr/local/bin/anylint
+          sudo cp -f anylint-cache/swift-sh /usr/local/bin/swift-sh
 
       - name: Install AnyLint
         if: steps.anylint-cache.outputs.cache-hit != 'true'
@@ -43,6 +49,11 @@ jobs:
           cd swift-sh
           swift build -c release
           sudo cp -f .build/release/swift-sh /usr/local/bin/swift-sh
+          
+      - name: Copy to cache
+          mkdir -p anylint-cache
+          cp -f /usr/local/bin/anylint anylint-cache/anylint
+          cp -f /usr/local/bin/swift-sh anylint-cache/swift-sh
 
       - name: Cleanup checkouts
         run: rm -rf AnyLint && rm -rf swift-sh
