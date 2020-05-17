@@ -184,7 +184,7 @@ Many parameters in the above mentioned lint check methods are of `Regex` type. A
   let regexWithOptions: Regex = ["key": #"foo|bar"#, "num": "[0-9]+", #"\"#: "im"] // => /(?<key>foo|bar)(?<num>[0-9]+)/im
   ```
 
-Note that we recommend using [raw strings](https://www.hackingwithswift.com/articles/162/how-to-use-raw-strings-in-swift) (`#"foo"#` instead of `"foo"`) for all regexes to get rid of double escaping backslashes (e.g. `\\s` becomes `\s`). This also allows for testing regexes in online regex editors like [Rubular](https://rubular.com/) first and then copy & pasting from them without any additional escaping.
+Note that we recommend using [raw strings](https://www.hackingwithswift.com/articles/162/how-to-use-raw-strings-in-swift) (`#"foo"#` instead of `"foo"`) for all regexes to get rid of double escaping backslashes (e.g. `\\s` becomes `\s`). This also allows for testing regexes in online regex editors like [Rubular](https://rubular.com/) first and then copy & pasting from them without any additional escaping (except for `{` & `}`, replace with `\{` & `\}`).
 
 <details>
 <summary>Regex Options</summary>
@@ -380,31 +380,47 @@ AnyLint allows you to do any kind of lint checks (thus its name) as it gives you
 
 Note that the `Violation` type just holds some additional information on the file, matched string, location in the file and applied autocorrection and that all these fields are optional. It is a simple struct used by the AnyLint reporter for more detailed output, no logic attached. The only required field is the `CheckInfo` object which caused the violation.
 
-If you want to use regexes in your custom code, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift) (the project, the class was taken from) or read the [code documentation comments](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift).
+If you want to use regexes in your custom code, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/Flinesoft/HandySwift#regex) (the project, the class was taken from) or read the [code documentation comments](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift).
 
 When using the `customCheck`, you might want to also include some Swift packages for [easier file handling](https://github.com/JohnSundell/Files) or [running shell commands](https://github.com/JohnSundell/ShellOut). You can do so by adding them at the top of the file like so:
-
-> TODO: Improve the below code example with something more useful & realistic.
 
 ```swift
 #!/usr/local/bin/swift-sh
 import AnyLint // @Flinesoft
-import Files // @JohnSundell
 import ShellOut // @JohnSundell
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
-    // MARK: echo
-    try Lint.customCheck(checkInfo: "Echo: Always say hello to the world.") { checkInfo in
+    // MARK: - Variables
+    let projectName: String = "AnyLint"
+
+    // MARK: - Checks 
+    // MARK: LinuxMainUpToDate
+    try Lint.customCheck(checkInfo: "LinuxMainUpToDate: The tests in Tests/LinuxMain.swift should be up-to-date.") { checkInfo in
         var violations: [Violation] = []
 
-        // use ShellOut package
-        let output = try shellOut(to: "echo", arguments: ["Hello world"])
-        // ...
+        let linuxMainFilePath = "Tests/LinuxMain.swift"
+        let linuxMainContentsBeforeRegeneration = try! String(contentsOfFile: linuxMainFilePath)
 
-        // use Files package
-        try Folder(path: "MyFolder").files.forEach { file in
-            // ...
-            violations.append(Violation(checkInfo: checkInfo))
+        let sourceryDirPath = ".sourcery"
+        try! shellOut(to: "sourcery", arguments: ["--sources", "Tests/\(projectName)Tests", "--templates", "\(sourceryDirPath)/LinuxMain.stencil", "--output", sourceryDirPath])
+        
+        let generatedLinuxMainFilePath = "\(sourceryDirPath)/LinuxMain.generated.swift"
+        let linuxMainContentsAfterRegeneration = try! String(contentsOfFile: generatedLinuxMainFilePath)
+
+        // move generated file to LinuxMain path to update its contents
+        try! shellOut(to: "mv", arguments: [generatedLinuxMainFilePath, linuxMainFilePath])
+
+        if linuxMainContentsBeforeRegeneration != linuxMainContentsAfterRegeneration {
+            violations.append(
+                Violation(
+                    checkInfo: checkInfo,
+                    filePath: linuxMainFilePath,
+                    appliedAutoCorrection: AutoCorrection(
+                        before: linuxMainContentsBeforeRegeneration,
+                        after: linuxMainContentsAfterRegeneration
+                    )
+                )
+            )
         }
 
         return violations
