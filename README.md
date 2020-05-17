@@ -184,7 +184,7 @@ Many parameters in the above mentioned lint check methods are of `Regex` type. A
   let regexWithOptions: Regex = ["key": #"foo|bar"#, "num": "[0-9]+", #"\"#: "im"] // => /(?<key>foo|bar)(?<num>[0-9]+)/im
   ```
 
-Note that we recommend using [raw strings](https://www.hackingwithswift.com/articles/162/how-to-use-raw-strings-in-swift) (`#"foo"#` instead of `"foo"`) for all regexes to get rid of double escaping backslashes (e.g. `\\s` becomes `\s`). This also allows for testing regexes in online regex editors like [Rubular](https://rubular.com/) first and then copy & pasting from them without any additional escaping.
+Note that we recommend using [raw strings](https://www.hackingwithswift.com/articles/162/how-to-use-raw-strings-in-swift) (`#"foo"#` instead of `"foo"`) for all regexes to get rid of double escaping backslashes (e.g. `\\s` becomes `\s`). This also allows for testing regexes in online regex editors like [Rubular](https://rubular.com/) first and then copy & pasting from them without any additional escaping (except for `{` & `}`, replace with `\{` & `\}`).
 
 <details>
 <summary>Regex Options</summary>
