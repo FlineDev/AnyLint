@@ -21,7 +21,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- None.
+- When a given `autoCorrectReplacement` on the `checkFileContents` method leads to no changes, the matched string of the given `regex` is considered to be already correct, thus no violation is reported anymore.  
+  Issue: [#26](https://github.com/Flinesoft/AnyLint/issues/26) | PR: [#28](https://github.com/Flinesoft/AnyLint/pull/28) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Deprecated
 - None.
 ### Removed
