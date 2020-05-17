@@ -1,5 +1,7 @@
 #!/usr/local/bin/swift-sh
 import AnyLint // .
+import Utility
+import ShellOut // @JohnSundell
 
 try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: - Variables
@@ -7,6 +9,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     let swiftTestFiles: Regex = #"Tests/.*\.swift"#
     let readmeFile: Regex = #"README\.md"#
     let changelogFile: Regex = #"^CHANGELOG\.md$"#
+    let projectName: String = "AnyLint"
 
     // MARK: - Checks
     // MARK: Changelog
@@ -436,6 +439,49 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
             ["before": "call(x: (viewModel?.username)!)", "after": "call(x: viewModel!.username)"],
         ]
     )
+
+    // MARK: LinuxMainUpToDate
+    try Lint.customCheck(checkInfo: "LinuxMainUpToDate: The tests in Tests/LinuxMain.swift should be up-to-date.") { checkInfo in
+        var violations: [Violation] = []
+
+        let linuxMainFilePath = "Tests/LinuxMain.swift"
+        let linuxMainContentsBeforeRegeneration = try! String(contentsOfFile: linuxMainFilePath)
+
+        let sourceryDirPath = ".sourcery"
+        let testsDirPath = "Tests/\(projectName)Tests"
+        let stencilFilePath = "\(sourceryDirPath)/LinuxMain.stencil"
+        let generatedLinuxMainFilePath = "\(sourceryDirPath)/LinuxMain.generated.swift"
+
+        let sourceryInstallPath = try? shellOut(to: "which", arguments: ["sourcery"])
+        guard sourceryInstallPath != nil else {
+            log.message(
+                "Skipped custom check \(checkInfo) – requires Sourcery to be installed, download from: https://github.com/krzysztofzablocki/Sourcery",
+                level: .warning
+            )
+            return []
+        }
+
+        try! shellOut(to: "sourcery", arguments: ["--sources", testsDirPath, "--templates", stencilFilePath, "--output", sourceryDirPath])
+        let linuxMainContentsAfterRegeneration = try! String(contentsOfFile: generatedLinuxMainFilePath)
+
+        // move generated file to LinuxMain path to update its contents
+        try! shellOut(to: "mv", arguments: [generatedLinuxMainFilePath, linuxMainFilePath])
+
+        if linuxMainContentsBeforeRegeneration != linuxMainContentsAfterRegeneration {
+            violations.append(
+                Violation(
+                    checkInfo: checkInfo,
+                    filePath: linuxMainFilePath,
+                    appliedAutoCorrection: AutoCorrection(
+                        before: linuxMainContentsBeforeRegeneration,
+                        after: linuxMainContentsAfterRegeneration
+                    )
+                )
+            )
+        }
+
+        return violations
+    }
 
     // MARK: Logger
     try Lint.checkFileContents(

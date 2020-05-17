@@ -31,6 +31,15 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.7.0] - 2020-05-18
+### Added
+- A new AnyLint custom check was added to ensure `AnyLint` fails when `LinuxMain.swift` isn't up-to-date, useful as a git pre-commit hook.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut) | PR: [#28](https://github.com/Flinesoft/AnyLint/pull/28)
+### Changed
+- When a given `autoCorrectReplacement` on the `checkFileContents` method leads to no changes, the matched string of the given `regex` is considered to be already correct, thus no violation is reported anymore.  
+  Issue: [#26](https://github.com/Flinesoft/AnyLint/issues/26) | PR: [#28](https://github.com/Flinesoft/AnyLint/pull/28) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+- A CI pipeline using GitHub Actions was setup, which is much faster as it runs multiple tasks in parallel than Bitrise.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 
 ## [0.6.3] - 2020-05-07
 ### Added

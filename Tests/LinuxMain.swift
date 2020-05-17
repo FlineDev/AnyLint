@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import AnyLintTests
@@ -29,7 +29,8 @@ extension FileContentsCheckerTests {
     static var allTests: [(String, (FileContentsCheckerTests) -> () throws -> Void)] = [
         ("testPerformCheck", testPerformCheck),
         ("testSkipInFile", testSkipInFile),
-        ("testSkipHere", testSkipHere)
+        ("testSkipHere", testSkipHere),
+        ("testSkipIfEqualsToAutocorrectReplacement", testSkipIfEqualsToAutocorrectReplacement)
     ]
 }
 

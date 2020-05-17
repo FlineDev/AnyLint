@@ -41,16 +41,21 @@ extension FileContentsChecker: Checker {
                         continue
                     }
 
-                    let appliedAutoCorrection: AutoCorrection? = {
+                    let autoCorrection: AutoCorrection? = {
                         guard let autoCorrectReplacement = autoCorrectReplacement else { return nil }
 
                         let newMatchString = regex.replaceAllCaptures(in: match.string, with: autoCorrectReplacement)
-                        newFileContents.replaceSubrange(match.range, with: newMatchString)
-
                         return AutoCorrection(before: match.string, after: newMatchString)
                     }()
 
-                    if appliedAutoCorrection != nil {
+                    if let autoCorrection = autoCorrection {
+                        guard match.string != autoCorrection.after else {
+                            // can skip auto-correction & violation reporting because auto-correct replacement is equal to matched string
+                            continue
+                        }
+
+                        // apply auto correction
+                        newFileContents.replaceSubrange(match.range, with: autoCorrection.after)
                         log.message("Applied autocorrection for last match ...", level: .debug)
                     }
 
@@ -61,7 +66,7 @@ extension FileContentsChecker: Checker {
                             filePath: filePath,
                             matchedString: match.string,
                             locationInfo: locationInfo,
-                            appliedAutoCorrection: appliedAutoCorrection
+                            appliedAutoCorrection: autoCorrection
                         )
                     )
                 }

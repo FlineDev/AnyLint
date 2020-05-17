@@ -24,12 +24,8 @@ extension String {
 
     /// Returns the parent directory path.
     public var parentDirectoryPath: String {
-        guard let url = URL(string: self) else {
-            log.message("Could not convert path '\(self)' to type URL.", level: .error)
-            log.exit(status: .failure)
-            return "" // only reachable in unit tests
-        }
-
+        let url = URL(fileURLWithPath: self)
+        guard url.pathComponents.count > 1 else { return fileManager.currentDirectoryPath }
         return url.deletingLastPathComponent().absoluteString
     }
 

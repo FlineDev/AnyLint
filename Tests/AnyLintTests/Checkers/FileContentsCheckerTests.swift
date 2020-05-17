@@ -117,4 +117,33 @@ final class FileContentsCheckerTests: XCTestCase {
             XCTAssertEqual(violations[5].locationInfo!.charInLine, 1)
         }
     }
+
+    func testSkipIfEqualsToAutocorrectReplacement() {
+        let temporaryFiles: [TemporaryFile] = [
+            (subpath: "Sources/Hello.swift", contents: "let x = 5\nvar y = 10"),
+            (subpath: "Sources/World.swift", contents: "let x =5\nvar y= 10"),
+        ]
+
+        withTemporaryFiles(temporaryFiles) { filePathsToCheck in
+            let checkInfo = CheckInfo(id: "Whitespacing", hint: "Always add a single whitespace around '='.", severity: .warning)
+            let violations = try FileContentsChecker(
+                checkInfo: checkInfo,
+                regex: #"(let|var) (\w+)\s*=\s*(\w+)"#,
+                filePathsToCheck: filePathsToCheck,
+                autoCorrectReplacement: "$1 $2 = $3"
+            ).performCheck()
+
+            XCTAssertEqual(violations.count, 2)
+
+            XCTAssertEqual(violations[0].checkInfo, checkInfo)
+            XCTAssertEqual(violations[0].filePath, "\(tempDir)/Sources/World.swift")
+            XCTAssertEqual(violations[0].locationInfo!.line, 1)
+            XCTAssertEqual(violations[0].locationInfo!.charInLine, 1)
+
+            XCTAssertEqual(violations[1].checkInfo, checkInfo)
+            XCTAssertEqual(violations[1].filePath, "\(tempDir)/Sources/World.swift")
+            XCTAssertEqual(violations[1].locationInfo!.line, 2)
+            XCTAssertEqual(violations[1].locationInfo!.charInLine, 1)
+        }
+    }
 }
