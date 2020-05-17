@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.6.3-blue.svg"
-             alt="Version: 0.6.3">
+        <img src="https://img.shields.io/badge/Version-0.7.0-blue.svg"
+             alt="Version: 0.7.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -393,7 +393,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: - Variables
     let projectName: String = "AnyLint"
 
-    // MARK: - Checks 
+    // MARK: - Checks
     // MARK: LinuxMainUpToDate
     try Lint.customCheck(checkInfo: "LinuxMainUpToDate: The tests in Tests/LinuxMain.swift should be up-to-date.") { checkInfo in
         var violations: [Violation] = []
@@ -403,7 +403,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
         let sourceryDirPath = ".sourcery"
         try! shellOut(to: "sourcery", arguments: ["--sources", "Tests/\(projectName)Tests", "--templates", "\(sourceryDirPath)/LinuxMain.stencil", "--output", sourceryDirPath])
-        
+
         let generatedLinuxMainFilePath = "\(sourceryDirPath)/LinuxMain.generated.swift"
         let linuxMainContentsAfterRegeneration = try! String(contentsOfFile: generatedLinuxMainFilePath)
 
