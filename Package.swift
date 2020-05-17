@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "AnyLint",
     products: [
-        .library(name: "AnyLint", targets: ["AnyLint"]),
+        .library(name: "AnyLint", targets: ["AnyLint", "Utility"]),
         .executable(name: "anylint", targets: ["AnyLintCLI"]),
     ],
     dependencies: [
