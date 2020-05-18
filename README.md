@@ -467,16 +467,30 @@ Refer to the Regex quick reference on [rubular.com](https://rubular.com/) which 
       width=900 />
 </p>
 
-In Swift, there are some differences to regexes in Ruby (which rubular.com is based on) – take care when copying regexes:
+In Swift, there are some **differences to regexes in Ruby** (which rubular.com is based on) – take care when copying regexes:
 
 1. In Ruby, forward slashes (`/`) must be escaped (`\/`), that's not necessary in Swift.
 2. In Swift, curly braces (`{` & `}`) must be escaped (`\{` & `\}`), that's not necessary in Ruby.
 
-Here are some advanced Regex features you might want to use or learn more about:
+Here are some **advanced Regex features** you might want to use or learn more about:
 
-1. Back references can be used within regexes to match previous capture groups. For example, you can make sure that the PR number and link match in `PR: [#100](https://github.com/Flinesoft/AnyLint/pull/100)` by using a capture group (`(\d+)`) and a back reference (`\1`) like in: `\[#(\d+)\]\(https://[^)]+/pull/\1\)`. [Learn more](https://www.regular-expressions.info/backref.html)
-2. Negative & positive lookaheads & lookbehinds allow you to specify patterns with some limitations that will be excluded from the matched range. They are specified with `(?=PATTERN)` (positive lookahead), `(?!PATTERN)` (negative lookahead), `(?<=PATTERN)` (positive lookbehind) or `(?<!PATTERN)` (negative lookbehind). For example, you could use the regex `- (?!None\.).*` to match any entry in a `CHANGELOG.md` file except empty ones called `None.`. [Learn more](https://www.regular-expressions.info/lookaround.html)
-3. Specifically you can use a lookbehind to make sure that the reported line of a regex spanning multiple lines only reports on the exact line where the developer needs to make a change, instead of one line before. That works because the pattern matched by a lookbehind is not considered part of the matching range. For example, consider a regex violating if there's an empty line after an opening curly brace like so: `{\n\s*\n\s*\S`. This would match the lines of `func do() {\n\n    return 5}`, but what you actually want is it to start matching on the empty newline like so: `(?<={\n)\s*\n\s*\S`. (See also [#3](https://github.com/Flinesoft/AnyLint/issues/3))
+1. Back references can be used within regexes to match previous capture groups.
+
+   For example, you can make sure that the PR number and link match in `PR: [#100](https://github.com/Flinesoft/AnyLint/pull/100)` by using a capture group (`(\d+)`) and a back reference (`\1`) like in: `\[#(\d+)\]\(https://[^)]+/pull/\1\)`.
+
+   [Learn more](https://www.regular-expressions.info/backref.html)
+
+2. Negative & positive lookaheads & lookbehinds allow you to specify patterns with some limitations that will be excluded from the matched range. They are specified with `(?=PATTERN)` (positive lookahead), `(?!PATTERN)` (negative lookahead), `(?<=PATTERN)` (positive lookbehind) or `(?<!PATTERN)` (negative lookbehind).
+
+   For example, you could use the regex `- (?!None\.).*` to match any entry in a `CHANGELOG.md` file except empty ones called `None.`.
+
+   [Learn more](https://www.regular-expressions.info/lookaround.html)
+
+3. Specifically you can use a lookbehind to make sure that the reported line of a regex spanning multiple lines only reports on the exact line where the developer needs to make a change, instead of one line before. That works because the pattern matched by a lookbehind is not considered part of the matching range.
+
+   For example, consider a regex violating if there's an empty line after an opening curly brace like so: `{\n\s*\n\s*\S`. This would match the lines of `func do() {\n\n    return 5}`, but what you actually want is it to start matching on the empty newline like so: `(?<={\n)\s*\n\s*\S`.
+
+   See also [#3](https://github.com/Flinesoft/AnyLint/issues/3)
 
 ## Donation
 
