@@ -277,6 +277,7 @@ There's 3 more parameters you can optionally set if needed:
 1. `excludeFilters`: Array of `Regex` objects to exclude from the file paths to check.
 2. `autoCorrectReplacement`: Replacement string which can reference any capture groups in the `regex`.
 3. `autoCorrectExamples`: Example structs with `before` and `after` for autocorrection validation.
+4. `repeatIfAutoCorrected`: Repeat check if at least one auto-correction was applied in last run. Defaults to `false`.
 
 The `excludeFilters` can be used alternatively to the `includeFilters` or alongside them. If used alongside, exclusion will take precedence over inclusion.
 

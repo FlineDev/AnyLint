@@ -2,6 +2,8 @@
 @testable import Utility
 import XCTest
 
+// swiftlint:disable function_body_length
+
 final class FileContentsCheckerTests: XCTestCase {
     override func setUp() {
         log = Logger(outputType: .test)

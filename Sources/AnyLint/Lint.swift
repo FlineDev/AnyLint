@@ -14,7 +14,7 @@ public enum Lint {
     ///   - excludeFilters: An array of regexes defining which files should be excluded from the check. Will ignore all files matching any of the given regexes. Takes precedence over includes.
     ///   - autoCorrectReplacement: A replacement string which can reference any capture groups in the `regex` to use for autocorrection.
     ///   - autoCorrectExamples: An array of example structs with a `before` and an `after` String object to check if autocorrection works properly.
-    ///   - repeatIfAutoCorrected: If at least one auto-corrected was applied, the check will be repeated until no new auto-correction is applied. Defaults to `false`.
+    ///   - repeatIfAutoCorrected: Repeat check if at least one auto-correction was applied in last run. Defaults to `false`.
     public static func checkFileContents(
         checkInfo: CheckInfo,
         regex: Regex,
