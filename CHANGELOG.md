@@ -21,6 +21,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - Added new `repeatIfAutoCorrected` option to `checkFileContents` method to repeat the check if last run did any auto-corrections.  
   Issue: [#29](https://github.com/Flinesoft/AnyLint/issues/29) | PR: [#31](https://github.com/Flinesoft/AnyLint/pull/31) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+- Added new Regex Cheat Sheet section to README including a tip on how to workaround the pointer issue.  
+  Issue: [#3](https://github.com/Flinesoft/AnyLint/issues/3) | PR: [#32](https://github.com/Flinesoft/AnyLint/pull/32) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - None.
 ### Deprecated

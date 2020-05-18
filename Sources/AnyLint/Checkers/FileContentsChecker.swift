@@ -31,7 +31,6 @@ extension FileContentsChecker: Checker {
                 let skipHereRegex = try Regex(#"AnyLint\.skipHere:[^\n]*[, ]\#(checkInfo.id)"#)
 
                 for match in regex.matches(in: fileContents).reversed() {
-                    // TODO: [cg_2020-03-13] use capture group named 'pointer' if exists
                     let locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
 
                     log.message("Found violating match at \(locationInfo) ...", level: .debug)
