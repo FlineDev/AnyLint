@@ -320,6 +320,17 @@ try Lint.checkFileContents(
 )
 ```
 
+Note that when `autoCorrectReplacement` produces a replacement string that exactly matches the matched string of `regex`, then no violation will be reported. This enables us to provide more generic `regex` patterns that also match the correct string without actually reporting a violation for the correct one. For example, using the regex ` if\s*\(([^)]+)\)\s*\{` would report a violation for all of the following examples:
+
+```Java
+if(x == 5) { /* some code */ }
+if (x == 5){ /* some code */ }
+if(x == 5){ /* some code */ }
+if (x == 5) { /* some code */ }
+```
+
+The problem is that the last example actually is our expected formatting and should not violate. By providing an `autoCorrectReplacement` of ` if ($1) {`, we can fix that as the replacement would be equal to the matched string, so no violation would be reported for the last example and all the others would be auto-corrected. 🎉
+
 #### Skip file content checks
 
 While the `includeFilters` and `excludeFilters` arguments in the config file can be used to skip checks on specified files, sometimes it's necessary to make **exceptions** and specify that within the files themselves. For example this can become handy when there's a check which works 99% of the time, but there might be the 1% of cases where the check is reporting **false positives**.
