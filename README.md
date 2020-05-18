@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.7.0-blue.svg"
-             alt="Version: 0.7.0">
+        <img src="https://img.shields.io/badge/Version-0.8.0-blue.svg"
+             alt="Version: 0.8.0">
     </a>
     <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -46,7 +46,7 @@
   • <a href="#xcode-build-script">Xcode Build Script</a>
   • <a href="#donation">Donation</a>
   • <a href="https://github.com/Flinesoft/AnyLint/issues">Issues</a>
-  • <a href="#contributing">Contributing</a>
+  • <a href="#regex-cheat-sheet">Regex Cheat Sheet</a>
   • <a href="#license">License</a>
 </p>
 
@@ -277,6 +277,7 @@ There's 3 more parameters you can optionally set if needed:
 1. `excludeFilters`: Array of `Regex` objects to exclude from the file paths to check.
 2. `autoCorrectReplacement`: Replacement string which can reference any capture groups in the `regex`.
 3. `autoCorrectExamples`: Example structs with `before` and `after` for autocorrection validation.
+4. `repeatIfAutoCorrected`: Repeat check if at least one auto-correction was applied in last run. Defaults to `false`.
 
 The `excludeFilters` can be used alternatively to the `includeFilters` or alongside them. If used alongside, exclusion will take precedence over inclusion.
 
@@ -319,6 +320,19 @@ try Lint.checkFileContents(
     ]
 )
 ```
+
+Note that when `autoCorrectReplacement` produces a replacement string that exactly matches the matched string of `regex`, then no violation will be reported. This enables us to provide more generic `regex` patterns that also match the correct string without actually reporting a violation for the correct one. For example, using the regex ` if\s*\(([^)]+)\)\s*\{` to check whitespaces around braces after `if` statement would report a violation for all of the following examples:
+
+```Java
+if(x == 5) { /* some code */ }
+if (x == 5){ /* some code */ }
+if(x == 5){ /* some code */ }
+if (x == 5) { /* some code */ }
+```
+
+The problem is that the last example actually is our expected formatting and should not violate. By providing an `autoCorrectReplacement` of ` if ($1) {`, we can fix that as the replacement would be equal to the matched string, so no violation would be reported for the last example and all the others would be auto-corrected – just what we want. 🎉
+
+(The alternative would be to split the check to two separate ones, one fore checking the prefix and one the suffix whitespacing – not so beautiful as this blows up our `lint.swift` configuration file very quickly.)
 
 #### Skip file content checks
 
@@ -445,6 +459,39 @@ Next, make sure the AnyLint script runs before the steps `Compiling Sources` by 
 
 > **_Note_**: There's a [known bug](https://github.com/mxcl/swift-sh/issues/113) when the build script is used in non-macOS platforms targets.
 
+## Regex Cheat Sheet
+
+Refer to the Regex quick reference on [rubular.com](https://rubular.com/) which all apply for Swift as well:
+<p align="center">
+    <img src="https://raw.githubusercontent.com/Flinesoft/AnyLint/main/RubularQuickReference.png"
+      width=900 />
+</p>
+
+In Swift, there are some **differences to regexes in Ruby** (which rubular.com is based on) – take care when copying regexes:
+
+1. In Ruby, forward slashes (`/`) must be escaped (`\/`), that's not necessary in Swift.
+2. In Swift, curly braces (`{` & `}`) must be escaped (`\{` & `\}`), that's not necessary in Ruby.
+
+Here are some **advanced Regex features** you might want to use or learn more about:
+
+1. Back references can be used within regexes to match previous capture groups.
+
+   For example, you can make sure that the PR number and link match in `PR: [#100](https://github.com/Flinesoft/AnyLint/pull/100)` by using a capture group (`(\d+)`) and a back reference (`\1`) like in: `\[#(\d+)\]\(https://[^)]+/pull/\1\)`.
+
+   [Learn more](https://www.regular-expressions.info/backref.html)
+
+2. Negative & positive lookaheads & lookbehinds allow you to specify patterns with some limitations that will be excluded from the matched range. They are specified with `(?=PATTERN)` (positive lookahead), `(?!PATTERN)` (negative lookahead), `(?<=PATTERN)` (positive lookbehind) or `(?<!PATTERN)` (negative lookbehind).
+
+   For example, you could use the regex `- (?!None\.).*` to match any entry in a `CHANGELOG.md` file except empty ones called `None.`.
+
+   [Learn more](https://www.regular-expressions.info/lookaround.html)
+
+3. Specifically you can use a lookbehind to make sure that the reported line of a regex spanning multiple lines only reports on the exact line where the developer needs to make a change, instead of one line before. That works because the pattern matched by a lookbehind is not considered part of the matching range.
+
+   For example, consider a regex violating if there's an empty line after an opening curly brace like so: `{\n\s*\n\s*\S`. This would match the lines of `func do() {\n\n    return 5}`, but what you actually want is it to start matching on the empty newline like so: `(?<={\n)\s*\n\s*\S`.
+
+   See also [#3](https://github.com/Flinesoft/AnyLint/issues/3)
+
 ## Donation
 
 AnyLint was brought to you by [Cihat Gündüz](https://github.com/Jeehut) in his free time. If you want to thank me and support the development of this project, please **make a small donation on [PayPal](https://paypal.me/Dschee/5EUR)**. In case you also like my other [open source contributions](https://github.com/Flinesoft) and [articles](https://medium.com/@Jeehut), please consider motivating me by **becoming a sponsor on [GitHub](https://github.com/sponsors/Jeehut)** or a **patron on [Patreon](https://www.patreon.com/Jeehut)**.
@@ -454,12 +501,6 @@ Thank you very much for any donation, it really helps out a lot! 💯
 ## Contributing
 
 Contributions are welcome. Feel free to open an issue on GitHub with your ideas or implement an idea yourself and post a pull request. If you want to contribute code, please try to follow the same syntax and semantic in your **commit messages** (see rationale [here](http://chris.beams.io/posts/git-commit/)). Also, please make sure to add an entry to the `CHANGELOG.md` file which explains your change.
-
-To update the Linux tests, run [Sourcery](https://github.com/krzysztofzablocki/Sourcery) like this:
-
-```bash
-sourcery --sources Tests/AnyLintTests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated && mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
-```
 
 ## License
 
