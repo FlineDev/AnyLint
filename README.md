@@ -46,7 +46,7 @@
   • <a href="#xcode-build-script">Xcode Build Script</a>
   • <a href="#donation">Donation</a>
   • <a href="https://github.com/Flinesoft/AnyLint/issues">Issues</a>
-  • <a href="#contributing">Contributing</a>
+  • <a href="#regex-cheat-sheet">Regex Cheat Sheet</a>
   • <a href="#license">License</a>
 </p>
 
@@ -464,7 +464,7 @@ Next, make sure the AnyLint script runs before the steps `Compiling Sources` by 
 Refer to the Regex quick reference on [rubular.com](https://rubular.com/) which all apply for Swift as well:
 <p align="center">
     <img src="https://raw.githubusercontent.com/Flinesoft/AnyLint/main/RubularQuickReference.png"
-      width=518 />
+      width=900 />
 </p>
 
 In Swift, there are some differences to regexes in Ruby (which rubular.com is based on) – take care when copying regexes:
@@ -487,12 +487,6 @@ Thank you very much for any donation, it really helps out a lot! 💯
 ## Contributing
 
 Contributions are welcome. Feel free to open an issue on GitHub with your ideas or implement an idea yourself and post a pull request. If you want to contribute code, please try to follow the same syntax and semantic in your **commit messages** (see rationale [here](http://chris.beams.io/posts/git-commit/)). Also, please make sure to add an entry to the `CHANGELOG.md` file which explains your change.
-
-To update the Linux tests, run [Sourcery](https://github.com/krzysztofzablocki/Sourcery) like this:
-
-```bash
-sourcery --sources Tests/AnyLintTests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated && mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
-```
 
 ## License
 
