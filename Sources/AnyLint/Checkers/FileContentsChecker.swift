@@ -6,6 +6,7 @@ struct FileContentsChecker {
     let regex: Regex
     let filePathsToCheck: [String]
     let autoCorrectReplacement: String?
+    let repeatIfAutoCorrected: Bool
 }
 
 extension FileContentsChecker: Checker {
@@ -85,6 +86,24 @@ extension FileContentsChecker: Checker {
             Statistics.shared.checkedFiles(at: [filePath])
         }
 
-        return violations.reversed()
+        violations = violations.reversed()
+
+        if repeatIfAutoCorrected && violations.contains(where: { $0.appliedAutoCorrection != nil }) {
+            log.message("Repeating check \(checkInfo) because auto-corrections were applied on last run.", level: .debug)
+
+            // only paths where auto-corrections were applied need to be re-checked
+            let filePathsToReCheck = Array(Set(violations.filter { $0.appliedAutoCorrection != nil }.map { $0.filePath! })).sorted()
+
+            let violationsOnRechecks = try FileContentsChecker(
+                checkInfo: checkInfo,
+                regex: regex,
+                filePathsToCheck: filePathsToReCheck,
+                autoCorrectReplacement: autoCorrectReplacement,
+                repeatIfAutoCorrected: repeatIfAutoCorrected
+            ).performCheck()
+            violations.append(contentsOf: violationsOnRechecks)
+        }
+
+        return violations
     }
 }
