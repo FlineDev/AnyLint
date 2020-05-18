@@ -320,7 +320,7 @@ try Lint.checkFileContents(
 )
 ```
 
-Note that when `autoCorrectReplacement` produces a replacement string that exactly matches the matched string of `regex`, then no violation will be reported. This enables us to provide more generic `regex` patterns that also match the correct string without actually reporting a violation for the correct one. For example, using the regex ` if\s*\(([^)]+)\)\s*\{` would report a violation for all of the following examples:
+Note that when `autoCorrectReplacement` produces a replacement string that exactly matches the matched string of `regex`, then no violation will be reported. This enables us to provide more generic `regex` patterns that also match the correct string without actually reporting a violation for the correct one. For example, using the regex ` if\s*\(([^)]+)\)\s*\{` to check whitespaces around braces after `if` statement would report a violation for all of the following examples:
 
 ```Java
 if(x == 5) { /* some code */ }
@@ -329,7 +329,9 @@ if(x == 5){ /* some code */ }
 if (x == 5) { /* some code */ }
 ```
 
-The problem is that the last example actually is our expected formatting and should not violate. By providing an `autoCorrectReplacement` of ` if ($1) {`, we can fix that as the replacement would be equal to the matched string, so no violation would be reported for the last example and all the others would be auto-corrected. 🎉
+The problem is that the last example actually is our expected formatting and should not violate. By providing an `autoCorrectReplacement` of ` if ($1) {`, we can fix that as the replacement would be equal to the matched string, so no violation would be reported for the last example and all the others would be auto-corrected – just what we want. 🎉
+
+(The alternative would be to split the check to two separate ones, one fore checking the prefix and one the suffix whitespacing – not so beautiful as this blows up our `lint.swift` configuration file very quickly.)
 
 #### Skip file content checks
 
