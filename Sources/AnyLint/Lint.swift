@@ -182,7 +182,6 @@ public enum Lint {
 
         for example in matchingExamples {
             if !regex.matches(example) {
-                // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
                 log.message(
                     "Couldn't find a match for regex \(regex) in check '\(checkInfo.id)' within matching example:\n\(example)",
                     level: .error
@@ -199,7 +198,6 @@ public enum Lint {
 
         for example in nonMatchingExamples {
             if regex.matches(example) {
-                // TODO: [cg_2020-03-14] check position of ↘ is the matching line and char.
                 log.message(
                     "Unexpectedly found a match for regex \(regex) in check '\(checkInfo.id)' within non-matching example:\n\(example)",
                     level: .error
