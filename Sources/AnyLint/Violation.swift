@@ -34,7 +34,8 @@ public struct Violation {
         self.appliedAutoCorrection = appliedAutoCorrection
     }
 
-    func locationMessage(pathType: String.PathType) -> String? {
+    /// Returns a string representation of a violations filled with path and line information if available.
+    public func locationMessage(pathType: String.PathType) -> String? {
         guard let filePath = filePath else { return nil }
         guard let locationInfo = locationInfo else { return filePath.path(type: pathType) }
         return "\(filePath.path(type: pathType)):\(locationInfo.line):\(locationInfo.charInLine):"
