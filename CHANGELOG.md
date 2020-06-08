@@ -31,6 +31,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.8.1] - 2020-06-08
+### Changed
+- Made internal methods in types `FilesSearch` and `Violation` public for usage in `customCheck`.  
+  PR: [#34](https://github.com/Flinesoft/AnyLint/pull/34) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.8.0] - 2020-05-18
 ### Added
 - Added new `repeatIfAutoCorrected` option to `checkFileContents` method to repeat the check if last run did any auto-corrections.  
