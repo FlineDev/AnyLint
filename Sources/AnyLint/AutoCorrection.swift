@@ -90,29 +90,56 @@ extension AutoCorrection: ExpressibleByDictionaryLiteral {
     }
 }
 
-@available(swift 5.1)
-@available(OSX 10.15, *)
-extension CollectionDifference.Change: Comparable where ChangeElement == String {
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-        switch (lhs, rhs) {
-        case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
-            return leftOffset < rightOffset
+#if os(Linux) && swift(>=5.1)
+    extension CollectionDifference.Change: Comparable where ChangeElement == String {
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
+                return leftOffset < rightOffset
 
-        case let (.remove(leftOffset, _, _), .insert(rightOffset, _, _)):
-            return leftOffset < rightOffset || true
+            case let (.remove(leftOffset, _, _), .insert(rightOffset, _, _)):
+                return leftOffset < rightOffset || true
 
-        case let (.insert(leftOffset, _, _), .remove(rightOffset, _, _)):
-            return leftOffset < rightOffset || false
+            case let (.insert(leftOffset, _, _), .remove(rightOffset, _, _)):
+                return leftOffset < rightOffset || false
+            }
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
+                return leftOffset == rightOffset
+
+            case (.remove, .insert), (.insert, .remove):
+                return false
+            }
         }
     }
 
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        switch (lhs, rhs) {
-        case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
-            return leftOffset == rightOffset
+#else
+    @available(OSX 10.15, *)
+    extension CollectionDifference.Change: Comparable where ChangeElement == String {
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
+                return leftOffset < rightOffset
 
-        case (.remove, .insert), (.insert, .remove):
-            return false
+            case let (.remove(leftOffset, _, _), .insert(rightOffset, _, _)):
+                return leftOffset < rightOffset || true
+
+            case let (.insert(leftOffset, _, _), .remove(rightOffset, _, _)):
+                return leftOffset < rightOffset || false
+            }
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
+                return leftOffset == rightOffset
+
+            case (.remove, .insert), (.insert, .remove):
+                return false
+            }
         }
     }
-}
+#endif
