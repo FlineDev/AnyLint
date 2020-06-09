@@ -8,6 +8,7 @@ extension String {
     /// Info about the exact location of a character in a given file.
     public typealias LocationInfo = (line: Int, charInLine: Int)
 
+    /// Returns the location info for a given line index.
     public func locationInfo(of index: String.Index) -> LocationInfo {
         let prefix = self[startIndex ..< index]
         let prefixLines = prefix.components(separatedBy: .newlines)

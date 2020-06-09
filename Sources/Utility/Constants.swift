@@ -31,4 +31,7 @@ public enum Constants {
 
     /// Hint that the case dot matches newline option should be active on a Regex.
     public static let dotMatchesNewlinesRegexOption: String = "m"
+
+    /// The number of newlines required in both before and after of AutoCorrections required to use diff for outputs.
+    public static let newlinesRequiredForDiffing: Int = 3
 }
