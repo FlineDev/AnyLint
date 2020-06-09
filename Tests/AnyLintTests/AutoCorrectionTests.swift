@@ -15,13 +15,13 @@ final class AutoCorrectionTests: XCTestCase {
             [
                 "Autocorrection applied, the diff is: (+ added, - removed)",
                 "- Lisence",
-                "+ License"
+                "+ License",
             ]
         )
 
         let multiLineAutoCorrection: AutoCorrection = [
             "before": "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n",
-            "after": "A\nB\nD\nE\nF1\nF2\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n"
+            "after": "A\nB\nD\nE\nF1\nF2\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n",
         ]
         XCTAssertEqual(
             multiLineAutoCorrection.appliedMessageLines,
@@ -30,7 +30,7 @@ final class AutoCorrectionTests: XCTestCase {
                 "- [L3] C",
                 "+ [L5] F1",
                 "- [L6] F",
-                "+ [L6] F2"
+                "+ [L6] F2",
             ]
         )
     }
