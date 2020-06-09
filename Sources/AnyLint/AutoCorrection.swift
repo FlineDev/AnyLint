@@ -10,57 +10,30 @@ public struct AutoCorrection {
     public let after: String
 
     var appliedMessageLines: [String] {
-        #if os(Linux) && swift(>=5.1)
-            if useDiffOutput {
-                var lines: [String] = ["Autocorrection applied, the diff is: (+ added, - removed)"]
+        if useDiffOutput {
+            var lines: [String] = ["Autocorrection applied, the diff is: (+ added, - removed)"]
 
-                let beforeLines = before.components(separatedBy: .newlines)
-                let afterLines = after.components(separatedBy: .newlines)
+            let beforeLines = before.components(separatedBy: .newlines)
+            let afterLines = after.components(separatedBy: .newlines)
 
-                for difference in afterLines.difference(from: beforeLines).sorted() {
-                    switch difference {
-                    case let .insert(offset, element, _):
-                        lines.append("+ [L\(offset + 1)] \(element)".green)
+            for difference in afterLines.difference(from: beforeLines).sorted() {
+                switch difference {
+                case let .insert(offset, element, _):
+                    lines.append("+ [L\(offset + 1)] \(element)".green)
 
-                    case let .remove(offset, element, _):
-                        lines.append("- [L\(offset + 1)] \(element)".red)
-                    }
+                case let .remove(offset, element, _):
+                    lines.append("- [L\(offset + 1)] \(element)".red)
                 }
-
-                return lines
-            } else {
-                return [
-                    "Autocorrection applied, the diff is: (+ added, - removed)",
-                    "- \(before.showWhitespacesAndNewlines())".red,
-                    "+ \(after.showWhitespacesAndNewlines())".green,
-                ]
             }
-        #else
-            if useDiffOutput, #available(OSX 10.15, *) {
-                var lines: [String] = ["Autocorrection applied, the diff is: (+ added, - removed)"]
 
-                let beforeLines = before.components(separatedBy: .newlines)
-                let afterLines = after.components(separatedBy: .newlines)
-
-                for difference in afterLines.difference(from: beforeLines).sorted() {
-                    switch difference {
-                    case let .insert(offset, element, _):
-                        lines.append("+ [L\(offset + 1)] \(element)".green)
-
-                    case let .remove(offset, element, _):
-                        lines.append("- [L\(offset + 1)] \(element)".red)
-                    }
-                }
-
-                return lines
-            } else {
-                return [
-                    "Autocorrection applied, the diff is: (+ added, - removed)",
-                    "- \(before.showWhitespacesAndNewlines())".red,
-                    "+ \(after.showWhitespacesAndNewlines())".green,
-                ]
-            }
-        #endif
+            return lines
+        } else {
+            return [
+                "Autocorrection applied, the diff is: (+ added, - removed)",
+                "- \(before.showWhitespacesAndNewlines())".red,
+                "+ \(after.showWhitespacesAndNewlines())".green,
+            ]
+        }
     }
 
     var useDiffOutput: Bool {
@@ -90,56 +63,27 @@ extension AutoCorrection: ExpressibleByDictionaryLiteral {
     }
 }
 
-#if os(Linux) && swift(>=5.1)
-    extension CollectionDifference.Change: Comparable where ChangeElement == String {
-        public static func < (lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
-                return leftOffset < rightOffset
+extension CollectionDifference.Change: Comparable where ChangeElement == String {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
+            return leftOffset < rightOffset
 
-            case let (.remove(leftOffset, _, _), .insert(rightOffset, _, _)):
-                return leftOffset < rightOffset || true
+        case let (.remove(leftOffset, _, _), .insert(rightOffset, _, _)):
+            return leftOffset < rightOffset || true
 
-            case let (.insert(leftOffset, _, _), .remove(rightOffset, _, _)):
-                return leftOffset < rightOffset || false
-            }
-        }
-
-        public static func == (lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
-                return leftOffset == rightOffset
-
-            case (.remove, .insert), (.insert, .remove):
-                return false
-            }
+        case let (.insert(leftOffset, _, _), .remove(rightOffset, _, _)):
+            return leftOffset < rightOffset || false
         }
     }
 
-#else
-    @available(OSX 10.15, *)
-    extension CollectionDifference.Change: Comparable where ChangeElement == String {
-        public static func < (lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
-                return leftOffset < rightOffset
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
+            return leftOffset == rightOffset
 
-            case let (.remove(leftOffset, _, _), .insert(rightOffset, _, _)):
-                return leftOffset < rightOffset || true
-
-            case let (.insert(leftOffset, _, _), .remove(rightOffset, _, _)):
-                return leftOffset < rightOffset || false
-            }
-        }
-
-        public static func == (lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-            case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
-                return leftOffset == rightOffset
-
-            case (.remove, .insert), (.insert, .remove):
-                return false
-            }
+        case (.remove, .insert), (.insert, .remove):
+            return false
         }
     }
-#endif
+}
