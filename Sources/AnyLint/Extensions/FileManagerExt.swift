@@ -3,7 +3,7 @@ import Utility
 
 extension FileManager {
     /// Moves a file from one path to another, making sure that all directories are created and no files are overwritten.
-    func moveFileSafely(from sourcePath: String, to targetPath: String) throws {
+    public func moveFileSafely(from sourcePath: String, to targetPath: String) throws {
         guard fileExists(atPath: sourcePath) else {
             log.message("No file found at \(sourcePath) to move.", level: .error)
             log.exit(status: .failure)

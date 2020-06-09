@@ -21,7 +21,10 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- None.
+- Made internal extension methos public for usage in `customCheck`.  
+  PR: [#35](https://github.com/Flinesoft/AnyLint/pull/35) | Author: [Cihat Gündüz](https://github.com/Jeehut)
+  - Print diff out to console for multiline autocorrections that were applied.  
+  Issue: [#27](https://github.com/Flinesoft/AnyLint/issues/27) | PR: [#35](https://github.com/Flinesoft/AnyLint/pull/35) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Deprecated
 - None.
 ### Removed
