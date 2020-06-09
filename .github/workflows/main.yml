@@ -7,6 +7,15 @@ on:
     branches: [main]
 
 jobs:
+  cancel-previous-runs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cancel previous runs of this workflow on same branch
+        uses: rokroskar/workflow-run-cleanup-action@v0.2.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   anylint:
     runs-on: ubuntu-latest
 
@@ -20,14 +29,14 @@ jobs:
           }
           echo "::set-env name=ANYLINT_LATEST_VERSION::$( latest_version Flinesoft/AnyLint )"
           echo "::set-env name=SWIFT_SH_LATEST_VERSION::$( latest_version mxcl/swift-sh )"
-      
+
       - name: AnyLint Cache
         uses: actions/cache@v1
         id: anylint-cache
         with:
           path: anylint-cache
           key: ${{ runner.os }}-v1-anylint-${{ env.ANYLINT_LATEST_VERSION }}-swift-sh-${{ env.SWIFT_SH_LATEST_VERSION }}
-          
+
       - name: Copy from cache
         if: steps.anylint-cache.outputs.cache-hit
         run: |
@@ -49,7 +58,7 @@ jobs:
           cd swift-sh
           swift build -c release
           sudo cp -f .build/release/swift-sh /usr/local/bin/swift-sh
-          
+
       - name: Copy to cache
         if: steps.anylint-cache.outputs.cache-hit != 'true'
         run: |
