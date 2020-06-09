@@ -10,30 +10,38 @@ public struct AutoCorrection {
     public let after: String
 
     var appliedMessageLines: [String] {
-        if useDiffOutput {
-            var lines: [String] = ["Autocorrection applied, the diff is: (+ added, - removed)"]
+        #if !os(Linux)
+            if useDiffOutput, #available(OSX 10.15, *) {
+                var lines: [String] = ["Autocorrection applied, the diff is: (+ added, - removed)"]
 
-            let beforeLines = before.components(separatedBy: .newlines)
-            let afterLines = after.components(separatedBy: .newlines)
+                let beforeLines = before.components(separatedBy: .newlines)
+                let afterLines = after.components(separatedBy: .newlines)
 
-            for difference in afterLines.difference(from: beforeLines).sorted() {
-                switch difference {
-                case let .insert(offset, element, _):
-                    lines.append("+ [L\(offset + 1)] \(element)".green)
+                for difference in afterLines.difference(from: beforeLines).sorted() {
+                    switch difference {
+                    case let .insert(offset, element, _):
+                        lines.append("+ [L\(offset + 1)] \(element)".green)
 
-                case let .remove(offset, element, _):
-                    lines.append("- [L\(offset + 1)] \(element)".red)
+                    case let .remove(offset, element, _):
+                        lines.append("- [L\(offset + 1)] \(element)".red)
+                    }
                 }
-            }
 
-            return lines
-        } else {
+                return lines
+            } else {
+                return [
+                    "Autocorrection applied, the diff is: (+ added, - removed)",
+                    "- \(before.showWhitespacesAndNewlines())".red,
+                    "+ \(after.showWhitespacesAndNewlines())".green,
+                ]
+            }
+        #else
             return [
                 "Autocorrection applied, the diff is: (+ added, - removed)",
                 "- \(before.showWhitespacesAndNewlines())".red,
                 "+ \(after.showWhitespacesAndNewlines())".green,
             ]
-        }
+        #endif
     }
 
     var useDiffOutput: Bool {
@@ -63,6 +71,8 @@ extension AutoCorrection: ExpressibleByDictionaryLiteral {
     }
 }
 
+#if !os(Linux)
+@available(OSX 10.15, *)
 extension CollectionDifference.Change: Comparable where ChangeElement == String {
     public static func < (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
@@ -87,3 +97,4 @@ extension CollectionDifference.Change: Comparable where ChangeElement == String 
         }
     }
 }
+#endif
