@@ -64,7 +64,7 @@ public enum Lint {
             repeatIfAutoCorrected: repeatIfAutoCorrected
         ).performCheck()
 
-        Statistics.shared.found(violations: violations, in: checkInfo)
+        Statistics.shared.found(violations: violations)
     }
 
     /// Checks the names of files.
@@ -127,7 +127,7 @@ public enum Lint {
             violateIfNoMatchesFound: violateIfNoMatchesFound
         ).performCheck()
 
-        Statistics.shared.found(violations: violations, in: checkInfo)
+        Statistics.shared.found(violations: violations)
     }
 
     /// Run custom logic as checks.
@@ -141,7 +141,35 @@ public enum Lint {
             return
         }
 
-        Statistics.shared.found(violations: customClosure(checkInfo), in: checkInfo)
+        Statistics.shared.found(violations: [checkInfo: customClosure(checkInfo)])
+    }
+    
+    /// Run checks from a separate configuration file.
+    ///
+    /// - Parameters:
+    ///   - source: The source to fetch the configuration file from to run checks. One of .local(String), .remote(String), .community(String, variant: String).
+    ///   - atPath: The path to run the checks within. Defaults to the current directory path.
+    ///   - runOnly: Instead of running all checks, only runs the ones listed in here. Acts as a whitelist. Takes precedence over `exclude`.
+    ///   - exclude: Runs all checks except the ones specified here. Will be ignore if `runOnly` is also configured.
+    ///   - options: A dictionary consisting of the rule identifiers as keys and a `Codable` options type to configure the rule.
+    public static func runChecks(
+        source: CheckSource,
+        atPath path: String = fileManager.currentDirectoryPath,
+        runOnly: [String]? = nil,
+        exclude: [String]? = nil,
+        options: [String: Codable]? = nil
+    ) throws {
+        guard !Options.validateOnly else { return }
+
+        let violations = try TemplateChecker(
+            source: source,
+            path: path,
+            runOnly: runOnly,
+            exclude: exclude,
+            options: options
+        ).performCheck()
+
+        Statistics.shared.found(violations: violations)
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
@@ -173,6 +201,11 @@ public enum Lint {
         } else {
             log.exit(status: .success)
         }
+    }
+
+    /// Reports the results of a check to the command line for usage in reusable check templates.
+    public static func reportSummary() {
+        // TODO: [cg_2020-06-13] not yet implemented
     }
 
     static func validate(regex: Regex, matchesForEach matchingExamples: [String], checkInfo: CheckInfo) {

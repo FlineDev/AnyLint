@@ -18,10 +18,7 @@ final class StatisticsTests: XCTestCase {
         XCTAssert(Statistics.shared.violationsPerCheck.isEmpty)
 
         let checkInfo1 = CheckInfo(id: "id1", hint: "hint1", severity: .info)
-        Statistics.shared.found(
-            violations: [Violation(checkInfo: checkInfo1)],
-            in: checkInfo1
-        )
+        Statistics.shared.found(violations: [checkInfo1: [Violation(checkInfo: checkInfo1)]])
 
         XCTAssertEqual(Statistics.shared.executedChecks, [checkInfo1])
         XCTAssertEqual(Statistics.shared.violationsBySeverity[.info]!.count, 1)
@@ -31,8 +28,10 @@ final class StatisticsTests: XCTestCase {
 
         let checkInfo2 = CheckInfo(id: "id2", hint: "hint2", severity: .warning)
         Statistics.shared.found(
-            violations: [Violation(checkInfo: checkInfo2), Violation(checkInfo: checkInfo2)],
-            in: CheckInfo(id: "id2", hint: "hint2", severity: .warning)
+            violations: [
+                CheckInfo(id: "id2", hint: "hint2", severity: .warning):
+                    [Violation(checkInfo: checkInfo2), Violation(checkInfo: checkInfo2)]
+            ]
         )
 
         XCTAssertEqual(Statistics.shared.executedChecks, [checkInfo1, checkInfo2])
@@ -43,8 +42,10 @@ final class StatisticsTests: XCTestCase {
 
         let checkInfo3 = CheckInfo(id: "id3", hint: "hint3", severity: .error)
         Statistics.shared.found(
-            violations: [Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3)],
-            in: CheckInfo(id: "id3", hint: "hint3", severity: .error)
+            violations: [
+                CheckInfo(id: "id3", hint: "hint3", severity: .error):
+                [Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3)]
+            ]
         )
 
         XCTAssertEqual(Statistics.shared.executedChecks, [checkInfo1, checkInfo2, checkInfo3])
@@ -63,28 +64,29 @@ final class StatisticsTests: XCTestCase {
         TestHelper.shared.reset()
 
         let checkInfo1 = CheckInfo(id: "id1", hint: "hint1", severity: .info)
-        Statistics.shared.found(
-            violations: [Violation(checkInfo: checkInfo1)],
-            in: checkInfo1
-        )
+        Statistics.shared.found(violations: [checkInfo1: [Violation(checkInfo: checkInfo1)]])
 
         let checkInfo2 = CheckInfo(id: "id2", hint: "hint2", severity: .warning)
         Statistics.shared.found(
             violations: [
-                Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Harry.swift"),
-                Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Albus.swift"),
-            ],
-            in: CheckInfo(id: "id2", hint: "hint2", severity: .warning)
+                CheckInfo(id: "id2", hint: "hint2", severity: .warning):
+                    [
+                        Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Harry.swift"),
+                        Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Albus.swift"),
+                    ]
+            ]
         )
 
         let checkInfo3 = CheckInfo(id: "id3", hint: "hint3", severity: .error)
         Statistics.shared.found(
             violations: [
-                Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 10, charInLine: 30)),
-                Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 72, charInLine: 17)),
-                Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Albus.swift", locationInfo: (line: 40, charInLine: 4)),
-            ],
-            in: CheckInfo(id: "id3", hint: "hint3", severity: .error)
+                CheckInfo(id: "id3", hint: "hint3", severity: .error):
+                    [
+                        Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 10, charInLine: 30)),
+                        Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 72, charInLine: 17)),
+                        Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Albus.swift", locationInfo: (line: 40, charInLine: 4)),
+                    ]
+            ]
         )
 
         Statistics.shared.checkedFiles(at: ["Hogwarts/Harry.swift"])

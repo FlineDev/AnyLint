@@ -19,10 +19,12 @@ final class Statistics {
         filePaths.forEach { filesChecked.insert($0) }
     }
 
-    func found(violations: [Violation], in check: CheckInfo) {
-        executedChecks.append(check)
-        violationsPerCheck[check] = violations
-        violationsBySeverity[check.severity]!.append(contentsOf: violations)
+    func found(violations: [CheckInfo: [Violation]]) {
+        for (checkInfo, checkViolations) in violations {
+            executedChecks.append(checkInfo)
+            violationsPerCheck[checkInfo] = checkViolations
+            violationsBySeverity[checkInfo.severity]!.append(contentsOf: checkViolations)
+        }
     }
 
     /// Use for unit testing only.
