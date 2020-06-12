@@ -143,7 +143,7 @@ public enum Lint {
 
         Statistics.default.found(violations: [checkInfo: customClosure(checkInfo)])
     }
-    
+
     /// Run checks from a separate configuration file.
     ///
     /// - Parameters:

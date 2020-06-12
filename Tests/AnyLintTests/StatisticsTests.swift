@@ -30,7 +30,7 @@ final class StatisticsTests: XCTestCase {
         Statistics.default.found(
             violations: [
                 CheckInfo(id: "id2", hint: "hint2", severity: .warning):
-                    [Violation(checkInfo: checkInfo2), Violation(checkInfo: checkInfo2)]
+                    [Violation(checkInfo: checkInfo2), Violation(checkInfo: checkInfo2)],
             ]
         )
 
@@ -44,7 +44,7 @@ final class StatisticsTests: XCTestCase {
         Statistics.default.found(
             violations: [
                 CheckInfo(id: "id3", hint: "hint3", severity: .error):
-                [Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3)]
+                [Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3)],
             ]
         )
 
@@ -73,7 +73,7 @@ final class StatisticsTests: XCTestCase {
                     [
                         Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Harry.swift"),
                         Violation(checkInfo: checkInfo2, filePath: "Hogwarts/Albus.swift"),
-                    ]
+                    ],
             ]
         )
 
@@ -97,7 +97,7 @@ final class StatisticsTests: XCTestCase {
                             filePath: "Hogwarts/Albus.swift",
                             locationInfo: String.LocationInfo(line: 40, charInLine: 4)
                         ),
-                    ]
+                    ],
             ]
         )
 

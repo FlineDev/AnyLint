@@ -2,7 +2,7 @@ import Foundation
 import Utility
 
 final class Statistics {
-    static let `default` = Statistics()
+    static let `default`: Statistics = Statistics()
 
     var executedChecks: [CheckInfo] = []
     var violationsPerCheck: [CheckInfo: [Violation]] = [:]

@@ -20,7 +20,7 @@ struct TemplateChecker {
 }
 
 extension TemplateChecker: Checker {
-    func performCheck() throws -> [CheckInfo : [Violation]] {
+    func performCheck() throws -> [CheckInfo: [Violation]] {
         // TODO: [cg_2020-06-13] not yet implemented
         return [:]
     }
