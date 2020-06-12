@@ -46,7 +46,7 @@ public enum Lint {
         }
 
         guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
+            Statistics.default.executedChecks.append(checkInfo)
             return
         }
 
@@ -64,7 +64,7 @@ public enum Lint {
             repeatIfAutoCorrected: repeatIfAutoCorrected
         ).performCheck()
 
-        Statistics.shared.found(violations: violations)
+        Statistics.default.found(violations: violations)
     }
 
     /// Checks the names of files.
@@ -109,7 +109,7 @@ public enum Lint {
         }
 
         guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
+            Statistics.default.executedChecks.append(checkInfo)
             return
         }
 
@@ -127,7 +127,7 @@ public enum Lint {
             violateIfNoMatchesFound: violateIfNoMatchesFound
         ).performCheck()
 
-        Statistics.shared.found(violations: violations)
+        Statistics.default.found(violations: violations)
     }
 
     /// Run custom logic as checks.
@@ -137,24 +137,22 @@ public enum Lint {
     ///   - customClosure: The custom logic to run which produces an array of `Violation` objects for any violations.
     public static func customCheck(checkInfo: CheckInfo, customClosure: (CheckInfo) -> [Violation]) {
         guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
+            Statistics.default.executedChecks.append(checkInfo)
             return
         }
 
-        Statistics.shared.found(violations: [checkInfo: customClosure(checkInfo)])
+        Statistics.default.found(violations: [checkInfo: customClosure(checkInfo)])
     }
     
     /// Run checks from a separate configuration file.
     ///
     /// - Parameters:
     ///   - source: The source to fetch the configuration file from to run checks. One of .local(String), .remote(String), .community(String, variant: String).
-    ///   - atPath: The path to run the checks within. Defaults to the current directory path.
     ///   - runOnly: Instead of running all checks, only runs the ones listed in here. Acts as a whitelist. Takes precedence over `exclude`.
     ///   - exclude: Runs all checks except the ones specified here. Will be ignore if `runOnly` is also configured.
     ///   - options: A dictionary consisting of the rule identifiers as keys and a `Codable` options type to configure the rule.
     public static func runChecks(
         source: CheckSource,
-        atPath path: String = fileManager.currentDirectoryPath,
         runOnly: [String]? = nil,
         exclude: [String]? = nil,
         options: [String: Codable]? = nil
@@ -163,13 +161,12 @@ public enum Lint {
 
         let violations = try TemplateChecker(
             source: source,
-            path: path,
             runOnly: runOnly,
             exclude: exclude,
             options: options
         ).performCheck()
 
-        Statistics.shared.found(violations: violations)
+        Statistics.default.found(violations: violations)
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
@@ -187,25 +184,51 @@ public enum Lint {
         try checksToPerform()
 
         guard !Options.validateOnly else {
-            Statistics.shared.logValidationSummary()
+            Statistics.default.logValidationSummary()
             log.exit(status: .success)
             return // only reachable in unit tests
         }
 
-        Statistics.shared.logCheckSummary()
+        Statistics.default.logCheckSummary()
 
-        if Statistics.shared.violations(severity: .error, excludeAutocorrected: targetIsXcode).isFilled {
+        if Statistics.default.violations(severity: .error, excludeAutocorrected: targetIsXcode).isFilled {
             log.exit(status: .failure)
-        } else if failOnWarnings && Statistics.shared.violations(severity: .warning, excludeAutocorrected: targetIsXcode).isFilled {
+        } else if failOnWarnings && Statistics.default.violations(severity: .warning, excludeAutocorrected: targetIsXcode).isFilled {
             log.exit(status: .failure)
         } else {
             log.exit(status: .success)
         }
     }
 
-    /// Reports the results of a check to the command line for usage in reusable check templates.
-    public static func reportSummary() {
-        // TODO: [cg_2020-06-13] not yet implemented
+    /// Reports the results of a check to a file for usage in reusable check templates.
+    public static func reportResultsToFile() {
+        let dumpFileUrl = URL(fileURLWithPath: Constants.statisticsDumpFilePath)
+        let statisticsToDump = Statistics()
+
+        if let dumpFileData = try? Data(contentsOf: dumpFileUrl) {
+            guard let previouslyDumpedStatistics = try? JSONDecoder().decode(Statistics.self, from: dumpFileData) else {
+                log.message("Could not decode Statistics JSON at \(dumpFileUrl.path)", level: .error)
+                log.exit(status: .failure)
+                return // only reachable in unit tests
+            }
+
+            statisticsToDump.merge(other: previouslyDumpedStatistics)
+        }
+
+        statisticsToDump.merge(other: Statistics.default)
+        guard let dataToDump = try? JSONEncoder().encode(statisticsToDump) else {
+            log.message("Could not encode Statistics JSON", level: .error)
+            log.exit(status: .failure)
+            return // only reachable in unit tests
+        }
+
+        do {
+            try dataToDump.write(to: dumpFileUrl)
+        } catch {
+            log.message("Could not write Statistics JSON to \(dumpFileUrl.path). Error: \(error)", level: .error)
+            log.exit(status: .failure)
+            return // only reachable in unit tests
+        }
     }
 
     static func validate(regex: Regex, matchesForEach matchingExamples: [String], checkInfo: CheckInfo) {

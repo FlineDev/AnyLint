@@ -82,7 +82,7 @@ extension FileContentsChecker: Checker {
                 )
             }
 
-            Statistics.shared.checkedFiles(at: [filePath])
+            Statistics.default.checkedFiles(at: [filePath])
         }
 
         violations = violations.reversed()

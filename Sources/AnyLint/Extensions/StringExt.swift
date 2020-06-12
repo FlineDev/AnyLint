@@ -6,16 +6,19 @@ public typealias Regex = Utility.Regex
 
 extension String {
     /// Info about the exact location of a character in a given file.
-    public typealias LocationInfo = (line: Int, charInLine: Int)
+    public struct LocationInfo: Codable {
+        let line: Int
+        let charInLine: Int
+    }
 
     /// Returns the location info for a given line index.
     public func locationInfo(of index: String.Index) -> LocationInfo {
         let prefix = self[startIndex ..< index]
         let prefixLines = prefix.components(separatedBy: .newlines)
-        guard let lastPrefixLine = prefixLines.last else { return (line: 1, charInLine: 1) }
+        guard let lastPrefixLine = prefixLines.last else { return LocationInfo(line: 1, charInLine: 1) }
 
         let charInLine = prefix.last == "\n" ? 1 : lastPrefixLine.count + 1
-        return (line: prefixLines.count, charInLine: charInLine)
+        return LocationInfo(line: prefixLines.count, charInLine: charInLine)
     }
 
     func showNewlines() -> String {

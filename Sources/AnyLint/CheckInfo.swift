@@ -77,3 +77,5 @@ extension CheckInfo: ExpressibleByStringLiteral {
         }
     }
 }
+
+extension CheckInfo: Codable {}

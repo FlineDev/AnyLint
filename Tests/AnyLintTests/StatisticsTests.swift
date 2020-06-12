@@ -7,56 +7,56 @@ final class StatisticsTests: XCTestCase {
     override func setUp() {
         log = Logger(outputType: .test)
         TestHelper.shared.reset()
-        Statistics.shared.reset()
+        Statistics.default.reset()
     }
 
     func testFoundViolationsInCheck() {
-        XCTAssert(Statistics.shared.executedChecks.isEmpty)
-        XCTAssert(Statistics.shared.violationsBySeverity[.info]!.isEmpty)
-        XCTAssert(Statistics.shared.violationsBySeverity[.warning]!.isEmpty)
-        XCTAssert(Statistics.shared.violationsBySeverity[.error]!.isEmpty)
-        XCTAssert(Statistics.shared.violationsPerCheck.isEmpty)
+        XCTAssert(Statistics.default.executedChecks.isEmpty)
+        XCTAssert(Statistics.default.violationsBySeverity[.info]!.isEmpty)
+        XCTAssert(Statistics.default.violationsBySeverity[.warning]!.isEmpty)
+        XCTAssert(Statistics.default.violationsBySeverity[.error]!.isEmpty)
+        XCTAssert(Statistics.default.violationsPerCheck.isEmpty)
 
         let checkInfo1 = CheckInfo(id: "id1", hint: "hint1", severity: .info)
-        Statistics.shared.found(violations: [checkInfo1: [Violation(checkInfo: checkInfo1)]])
+        Statistics.default.found(violations: [checkInfo1: [Violation(checkInfo: checkInfo1)]])
 
-        XCTAssertEqual(Statistics.shared.executedChecks, [checkInfo1])
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.info]!.count, 1)
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.warning]!.count, 0)
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.error]!.count, 0)
-        XCTAssertEqual(Statistics.shared.violationsPerCheck.keys.count, 1)
+        XCTAssertEqual(Statistics.default.executedChecks, [checkInfo1])
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.info]!.count, 1)
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.warning]!.count, 0)
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.error]!.count, 0)
+        XCTAssertEqual(Statistics.default.violationsPerCheck.keys.count, 1)
 
         let checkInfo2 = CheckInfo(id: "id2", hint: "hint2", severity: .warning)
-        Statistics.shared.found(
+        Statistics.default.found(
             violations: [
                 CheckInfo(id: "id2", hint: "hint2", severity: .warning):
                     [Violation(checkInfo: checkInfo2), Violation(checkInfo: checkInfo2)]
             ]
         )
 
-        XCTAssertEqual(Statistics.shared.executedChecks, [checkInfo1, checkInfo2])
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.info]!.count, 1)
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.warning]!.count, 2)
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.error]!.count, 0)
-        XCTAssertEqual(Statistics.shared.violationsPerCheck.keys.count, 2)
+        XCTAssertEqual(Statistics.default.executedChecks, [checkInfo1, checkInfo2])
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.info]!.count, 1)
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.warning]!.count, 2)
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.error]!.count, 0)
+        XCTAssertEqual(Statistics.default.violationsPerCheck.keys.count, 2)
 
         let checkInfo3 = CheckInfo(id: "id3", hint: "hint3", severity: .error)
-        Statistics.shared.found(
+        Statistics.default.found(
             violations: [
                 CheckInfo(id: "id3", hint: "hint3", severity: .error):
                 [Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3), Violation(checkInfo: checkInfo3)]
             ]
         )
 
-        XCTAssertEqual(Statistics.shared.executedChecks, [checkInfo1, checkInfo2, checkInfo3])
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.info]!.count, 1)
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.warning]!.count, 2)
-        XCTAssertEqual(Statistics.shared.violationsBySeverity[.error]!.count, 3)
-        XCTAssertEqual(Statistics.shared.violationsPerCheck.keys.count, 3)
+        XCTAssertEqual(Statistics.default.executedChecks, [checkInfo1, checkInfo2, checkInfo3])
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.info]!.count, 1)
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.warning]!.count, 2)
+        XCTAssertEqual(Statistics.default.violationsBySeverity[.error]!.count, 3)
+        XCTAssertEqual(Statistics.default.violationsPerCheck.keys.count, 3)
     }
 
     func testLogSummary() { // swiftlint:disable:this function_body_length
-        Statistics.shared.logCheckSummary()
+        Statistics.default.logCheckSummary()
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .warning)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].message, "No checks found to perform.")
@@ -64,10 +64,10 @@ final class StatisticsTests: XCTestCase {
         TestHelper.shared.reset()
 
         let checkInfo1 = CheckInfo(id: "id1", hint: "hint1", severity: .info)
-        Statistics.shared.found(violations: [checkInfo1: [Violation(checkInfo: checkInfo1)]])
+        Statistics.default.found(violations: [checkInfo1: [Violation(checkInfo: checkInfo1)]])
 
         let checkInfo2 = CheckInfo(id: "id2", hint: "hint2", severity: .warning)
-        Statistics.shared.found(
+        Statistics.default.found(
             violations: [
                 CheckInfo(id: "id2", hint: "hint2", severity: .warning):
                     [
@@ -78,22 +78,34 @@ final class StatisticsTests: XCTestCase {
         )
 
         let checkInfo3 = CheckInfo(id: "id3", hint: "hint3", severity: .error)
-        Statistics.shared.found(
+        Statistics.default.found(
             violations: [
                 CheckInfo(id: "id3", hint: "hint3", severity: .error):
                     [
-                        Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 10, charInLine: 30)),
-                        Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Harry.swift", locationInfo: (line: 72, charInLine: 17)),
-                        Violation(checkInfo: checkInfo3, filePath: "Hogwarts/Albus.swift", locationInfo: (line: 40, charInLine: 4)),
+                        Violation(
+                            checkInfo: checkInfo3,
+                            filePath: "Hogwarts/Harry.swift",
+                            locationInfo: String.LocationInfo(line: 10, charInLine: 30)
+                        ),
+                        Violation(
+                            checkInfo: checkInfo3,
+                            filePath: "Hogwarts/Harry.swift",
+                            locationInfo: String.LocationInfo(line: 72, charInLine: 17)
+                        ),
+                        Violation(
+                            checkInfo: checkInfo3,
+                            filePath: "Hogwarts/Albus.swift",
+                            locationInfo: String.LocationInfo(line: 40, charInLine: 4)
+                        ),
                     ]
             ]
         )
 
-        Statistics.shared.checkedFiles(at: ["Hogwarts/Harry.swift"])
-        Statistics.shared.checkedFiles(at: ["Hogwarts/Harry.swift", "Hogwarts/Albus.swift"])
-        Statistics.shared.checkedFiles(at: ["Hogwarts/Albus.swift"])
+        Statistics.default.checkedFiles(at: ["Hogwarts/Harry.swift"])
+        Statistics.default.checkedFiles(at: ["Hogwarts/Harry.swift", "Hogwarts/Albus.swift"])
+        Statistics.default.checkedFiles(at: ["Hogwarts/Albus.swift"])
 
-        Statistics.shared.logCheckSummary()
+        Statistics.default.logCheckSummary()
 
         XCTAssertEqual(
             TestHelper.shared.consoleOutputs.map { $0.level },

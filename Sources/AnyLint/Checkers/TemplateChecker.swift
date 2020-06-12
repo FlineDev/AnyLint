@@ -14,7 +14,6 @@ public enum CheckSource {
 
 struct TemplateChecker {
     let source: CheckSource
-    let path: String
     let runOnly: [String]?
     let exclude: [String]?
     let options: [String: Codable]?

@@ -47,3 +47,5 @@ extension Severity: Comparable {
         lhs.rawValue < rhs.rawValue
     }
 }
+
+extension Severity: Codable {}

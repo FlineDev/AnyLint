@@ -44,7 +44,7 @@ extension FilePathsChecker: Checker {
                 )
             }
 
-            Statistics.shared.checkedFiles(at: filePathsToCheck)
+            Statistics.default.checkedFiles(at: filePathsToCheck)
         }
 
         return [checkInfo: violations]
