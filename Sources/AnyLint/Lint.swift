@@ -150,22 +150,10 @@ public enum Lint {
     ///   - source: The source to fetch the configuration file from to run checks. One of .local(String), .remote(String), .community(String, variant: String).
     ///   - runOnly: Instead of running all checks, only runs the ones listed in here. Acts as a whitelist. Takes precedence over `exclude`.
     ///   - exclude: Runs all checks except the ones specified here. Will be ignore if `runOnly` is also configured.
-    ///   - options: A dictionary consisting of the rule identifiers as keys and a `Codable` options type to configure the rule.
-    public static func runChecks(
-        source: CheckSource,
-        runOnly: [String]? = nil,
-        exclude: [String]? = nil,
-        options: [String: Codable]? = nil
-    ) throws {
+    public static func runChecks(source: CheckSource, runOnly: [String]? = nil, exclude: [String]? = nil) throws {
         guard !Options.validateOnly else { return }
 
-        let violations = try TemplateChecker(
-            source: source,
-            runOnly: runOnly,
-            exclude: exclude,
-            options: options
-        ).performCheck()
-
+        let violations = try TemplateChecker(source: source, runOnly: runOnly, exclude: exclude).performCheck()
         Statistics.default.found(violations: violations)
     }
 
@@ -201,7 +189,16 @@ public enum Lint {
     }
 
     /// Reports the results of a check to a file for usage in reusable check templates.
-    public static func reportResultsToFile() {
+    public static func reportResultsToFile(arguments: [String] = [], afterPerformingChecks checksToPerform: () throws -> Void = {}) throws {
+        let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
+
+        if targetIsXcode {
+            log = Logger(outputType: .xcode)
+        }
+        log.logDebugLevel = arguments.contains(Constants.debugArgument)
+
+        try checksToPerform()
+
         let dumpFileUrl = URL(fileURLWithPath: Constants.statisticsDumpFilePath)
         let statisticsToDump = Statistics()
 
