@@ -1,5 +1,8 @@
 import Foundation
 import Utility
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// The source of the subchecks to run.
 public enum CheckSource {
