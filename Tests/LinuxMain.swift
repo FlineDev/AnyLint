@@ -72,6 +72,14 @@ extension StatisticsTests {
     ]
 }
 
+extension TemplateCheckerTests {
+    static var allTests: [(String, (TemplateCheckerTests) -> () throws -> Void)] = [
+        ("testPerformWithLocalSource", testPerformWithLocalSource),
+        ("testPerformWithRemoteSource", testPerformWithRemoteSource),
+        ("testPerformWithGithubSource", testPerformWithGithubSource)
+    ]
+}
+
 extension ViolationTests {
     static var allTests: [(String, (ViolationTests) -> () throws -> Void)] = [
         ("testLocationMessage", testLocationMessage)
@@ -88,5 +96,6 @@ XCTMain([
     testCase(LintTests.allTests),
     testCase(RegexExtTests.allTests),
     testCase(StatisticsTests.allTests),
+    testCase(TemplateCheckerTests.allTests),
     testCase(ViolationTests.allTests)
 ])

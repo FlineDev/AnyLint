@@ -37,8 +37,9 @@ extension TemplateChecker: Checker {
             return [:] // only reachable in unit tests
         }
 
-        // TODO: [cg_2020-06-13] not yet implemented
-        log.message("Local template file to run: '\(templateFilePath)'", level: .debug)
+        // TODO: [cg_2020-06-14] not yet implemented
+
+        log.message("Local template file to run: '\(templateFilePath)'", level: .info)
 
         return [:]
     }
@@ -57,8 +58,18 @@ extension TemplateChecker: Checker {
         }
 
         let remoteFileContents = try String(contentsOf: remoteUrl)
-        let uniqueFileName = remoteUrl.deletingPathExtension().pathComponents.suffix(5).joined(separator: "_")
+        let uniqueFileName = remoteUrl
+            .deletingPathExtension()
+            .pathComponents
+            .filter { $0 != "Variants" && $0 != "/" }
+            .suffix(4)
+            .joined(separator: "_")
         let localFilePath = "\(Constants.tempDirPath)/\(uniqueFileName).swift"
+
+        if !fileManager.fileExists(atPath: Constants.tempDirPath) {
+            try fileManager.createDirectory(atPath: Constants.tempDirPath, withIntermediateDirectories: true, attributes: nil)
+        }
+
         try remoteFileContents.write(toFile: localFilePath, atomically: true, encoding: .utf8)
 
         return .local(localFilePath)
