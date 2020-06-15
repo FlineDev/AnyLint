@@ -13,8 +13,8 @@ public enum CheckSource {
     /// A remote public URL source, requiring the full config file URL string.
     case remote(String)
 
-    /// A GitHub repo with a 'Variants' folder, requiring the GitHub user, repo, branch/tag, subpath and variant.
-    case github(user: String, repo: String, branchOrTag: String, subpath: String, variant: String)
+    /// A GitHub repo source config file specified via repo (e.g. 'Flinesoft/AnyLint-Swift'), version (tag or branch) and variant (a subpath to the config file).
+    case github(repo: String, version: String, variant: String)
 }
 
 struct TemplateChecker {
@@ -46,7 +46,7 @@ extension TemplateChecker: Checker {
             try Task.run(bash: "chmod +x '\(templateFilePath)'")
         }
 
-        log.message("Local template file to run: '\(templateFilePath)'", level: .info)
+        log.message("Running local config file at '\(templateFilePath)'", level: .info)
 
         var command = templateFilePath.absolutePath
         if logDebugLevel {
@@ -70,9 +70,9 @@ extension TemplateChecker: Checker {
     }
 
     private func convertGitHubToRemoteSource(source: CheckSource) -> CheckSource? {
-        guard case let .github(user, repo, branchOrTag, subpath, variant) = source else { return nil }
+        guard case let .github(repo, version, variant) = source else { return nil }
         log.message("Converting .github source to .remote source ...", level: .debug)
-        return .remote("https://raw.githubusercontent.com/\(user)/\(repo)/\(branchOrTag)/\(subpath)/\(variant).swift")
+        return .remote("https://raw.githubusercontent.com/\(repo)/\(version)/\(variant).swift")
     }
 
     private func downloadRemoteSourceToLocal(source: CheckSource) throws -> CheckSource? {
@@ -86,7 +86,9 @@ extension TemplateChecker: Checker {
         }
 
         let remoteFileContents = try String(contentsOf: remoteUrl)
-        let uniqueFileName = (remoteUrl.pathComponents.dropFirst().prefix(2) + [remoteUrl.deletingPathExtension().lastPathComponent]).joined(separator: "_")
+        let uniqueFileName = (
+            remoteUrl.pathComponents.dropFirst().prefix(2) + remoteUrl.deletingPathExtension().pathComponents.suffix(2)
+        ).joined(separator: "_")
         let localFilePath = "\(Constants.tempDirPath)/\(uniqueFileName).swift"
 
         if !fileManager.fileExists(atPath: Constants.tempDirPath) {

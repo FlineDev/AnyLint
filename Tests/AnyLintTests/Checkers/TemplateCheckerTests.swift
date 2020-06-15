@@ -34,7 +34,7 @@ final class TemplateCheckerTests: XCTestCase {
         ) { filePaths in
             let violations = try! TemplateChecker(source: .local(filePaths[0]), runOnly: nil, exclude: nil, logDebugLevel: false).performCheck()
             XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
-            XCTAssertEqual(TestHelper.shared.consoleOutputs[0].message, "Local template file to run: '\(filePaths[0])'")
+            XCTAssertEqual(TestHelper.shared.consoleOutputs[0].message, "Running local config file at '\(filePaths[0])'")
             XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .info)
 
             let check: CheckInfo = "PseudoCheck: Checks if the file `Pseudo.md` exists."
@@ -54,10 +54,10 @@ final class TemplateCheckerTests: XCTestCase {
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
         XCTAssertEqual(
             TestHelper.shared.consoleOutputs[0].message,
-            "Local template file to run: '\(Constants.tempDirPath)/Flinesoft_AnyLint_sample.swift'"
+            "Running local config file at '\(Constants.tempDirPath)/Flinesoft_AnyLint_Variants_Sample.swift'"
         )
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .info)
-        XCTAssert(FileManager.default.fileExists(atPath: "\(Constants.tempDirPath)/Flinesoft_AnyLint_sample.swift"))
+        XCTAssert(FileManager.default.fileExists(atPath: "\(Constants.tempDirPath)/Flinesoft_AnyLint_Variants_Sample.swift"))
 
         let check: CheckInfo = "PseudoCheck: Checks if the file `Pseudo.md` exists."
         XCTAssert(violations.keys.contains(check))
@@ -67,11 +67,9 @@ final class TemplateCheckerTests: XCTestCase {
     func testPerformWithGithubSource() {
         let violations = try! TemplateChecker(
             source: .github(
-                user: "Flinesoft",
-                repo: "AnyLint",
-                branchOrTag: "wip/cg_template-system",
-                subpath: "Tests/Variants",
-                variant: "sample"
+                repo: "Flinesoft/AnyLint",
+                version: "wip/cg_template-system",
+                variant: "Tests/Variants/sample"
             ),
             runOnly: nil,
             exclude: nil,
@@ -81,10 +79,10 @@ final class TemplateCheckerTests: XCTestCase {
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
         XCTAssertEqual(
             TestHelper.shared.consoleOutputs[0].message,
-            "Local template file to run: '\(Constants.tempDirPath)/Flinesoft_AnyLint_sample.swift'"
+            "Running local config file at '\(Constants.tempDirPath)/Flinesoft_AnyLint_Variants_Sample.swift'"
         )
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .info)
-        XCTAssert(FileManager.default.fileExists(atPath: "\(Constants.tempDirPath)/Flinesoft_AnyLint_sample.swift"))
+        XCTAssert(FileManager.default.fileExists(atPath: "\(Constants.tempDirPath)/Flinesoft_AnyLint_Variants_Sample.swift"))
 
         let check: CheckInfo = "PseudoCheck: Checks if the file `Pseudo.md` exists."
         XCTAssert(violations.keys.contains(check))
