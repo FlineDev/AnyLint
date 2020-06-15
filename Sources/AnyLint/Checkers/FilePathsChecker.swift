@@ -44,7 +44,7 @@ extension FilePathsChecker: Checker {
                 )
             }
 
-            Statistics.default.checkedFiles(at: filePathsToCheck)
+            Statistics.default.checkedFiles(at: Set(filePathsToCheck))
         }
 
         return [checkInfo: violations]

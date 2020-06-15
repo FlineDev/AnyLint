@@ -13,7 +13,7 @@ final class Statistics {
         violationsBySeverity.keys.filter { !violationsBySeverity[$0]!.isEmpty }.max { $0.rawValue < $1.rawValue }
     }
 
-    func checkedFiles(at filePaths: [String]) {
+    func checkedFiles(at filePaths: Set<String>) {
         filePaths.forEach { filesChecked.insert($0) }
     }
 
@@ -26,6 +26,7 @@ final class Statistics {
     }
 
     func merge(other: Statistics) {
+        checkedFiles(at: other.filesChecked)
         found(violations: other.violationsPerCheck)
     }
 
@@ -146,5 +147,6 @@ final class Statistics {
 extension Statistics: Codable {
     enum CodingKeys: String, CodingKey {
         case violationsPerCheck
+        case filesChecked
     }
 }
