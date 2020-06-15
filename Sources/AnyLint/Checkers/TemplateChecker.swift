@@ -54,8 +54,19 @@ extension TemplateChecker: Checker {
         }
         try Task.run(bash: command)
 
-        // TODO: [cg_2020-06-15] parse results JSON output and add to statistics
-        return [:]
+        let dumpFileUrl = URL(fileURLWithPath: Constants.statisticsDumpFilePath)
+
+        guard
+            let dumpFileData = try? Data(contentsOf: dumpFileUrl),
+            let dumpedStatistics = try? JSONDecoder().decode(Statistics.self, from: dumpFileData)
+        else {
+            log.message("Could not decode Statistics JSON at \(dumpFileUrl.path)", level: .error)
+            log.exit(status: .failure)
+            return [:] // only reachable in unit tests
+        }
+
+        try fileManager.removeItem(atPath: Constants.statisticsDumpFilePath)
+        return dumpedStatistics.violationsPerCheck
     }
 
     private func convertGitHubToRemoteSource(source: CheckSource) -> CheckSource? {
