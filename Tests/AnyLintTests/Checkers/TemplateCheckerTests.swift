@@ -12,7 +12,7 @@ final class TemplateCheckerTests: XCTestCase {
         withTemporaryFiles(
             [
                 (
-                    subpath: "AnyLint/sample.swift",
+                    subpath: "AnyLint/Sample.swift",
                     contents: """
                         #!/usr/local/bin/swift-sh
                         import AnyLint // @Flinesoft == wip/cg_template-system

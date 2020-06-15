@@ -1,5 +1,5 @@
 #!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft == wip/cg_template-system
+import AnyLint // .
 
 try Lint.reportResultsToFile(arguments: CommandLine.arguments) {
     // MARK: PseudoCheck

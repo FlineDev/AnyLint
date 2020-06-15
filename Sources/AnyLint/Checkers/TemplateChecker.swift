@@ -48,7 +48,7 @@ extension TemplateChecker: Checker {
 
         log.message("Running local config file at '\(templateFilePath)'", level: .info)
 
-        var command = templateFilePath.absolutePath
+        var command = "anylint --path \(templateFilePath.absolutePath)"
         if logDebugLevel {
             command += " \(Constants.debugArgument)"
         }
