@@ -24,7 +24,7 @@ final class FileContentsCheckerTests: XCTestCase {
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: nil,
                 repeatIfAutoCorrected: false
-            ).performCheck()
+            ).performCheck()[checkInfo]!
 
             XCTAssertEqual(violations.count, 2)
 
@@ -55,7 +55,7 @@ final class FileContentsCheckerTests: XCTestCase {
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: nil,
                 repeatIfAutoCorrected: false
-            ).performCheck()
+            ).performCheck()[checkInfo]!
 
             XCTAssertEqual(violations.count, 2)
 
@@ -87,7 +87,7 @@ final class FileContentsCheckerTests: XCTestCase {
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: nil,
                 repeatIfAutoCorrected: false
-            ).performCheck()
+            ).performCheck()[checkInfo]!
 
             XCTAssertEqual(violations.count, 6)
 
@@ -137,7 +137,7 @@ final class FileContentsCheckerTests: XCTestCase {
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: "$1 $2 = $3",
                 repeatIfAutoCorrected: false
-            ).performCheck()
+            ).performCheck()[checkInfo]!
 
             XCTAssertEqual(violations.count, 2)
 
@@ -167,7 +167,7 @@ final class FileContentsCheckerTests: XCTestCase {
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: "$1_$2",
                 repeatIfAutoCorrected: true
-            ).performCheck()
+            ).performCheck()[checkInfo]!
 
             XCTAssertEqual(violations.count, 7)
 

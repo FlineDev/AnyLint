@@ -14,23 +14,19 @@ let package = Package(
     targets: [
         .target(
             name: "AnyLint",
-            dependencies: ["Utility"]
+            dependencies: ["SwiftCLI", "Utility"]
         ),
         .testTarget(
             name: "AnyLintTests",
-            dependencies: ["AnyLint"]
+            dependencies: ["AnyLint", "Rainbow", "SwiftCLI"]
         ),
         .target(
             name: "AnyLintCLI",
             dependencies: ["Rainbow", "SwiftCLI", "Utility"]
         ),
-        .testTarget(
-            name: "AnyLintCLITests",
-            dependencies: ["AnyLintCLI"]
-        ),
         .target(
             name: "Utility",
-            dependencies: ["Rainbow"]
+            dependencies: ["Rainbow", "SwiftCLI"]
         ),
         .testTarget(
             name: "UtilityTests",

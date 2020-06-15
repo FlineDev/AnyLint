@@ -10,7 +10,7 @@ struct FileContentsChecker {
 }
 
 extension FileContentsChecker: Checker {
-    func performCheck() throws -> [Violation] { // swiftlint:disable:this function_body_length
+    func performCheck() throws -> [CheckInfo: [Violation]] { // swiftlint:disable:this function_body_length
         log.message("Start checking \(checkInfo) ...", level: .debug)
         var violations: [Violation] = []
 
@@ -82,7 +82,7 @@ extension FileContentsChecker: Checker {
                 )
             }
 
-            Statistics.shared.checkedFiles(at: [filePath])
+            Statistics.default.checkedFiles(at: [filePath])
         }
 
         violations = violations.reversed()
@@ -91,7 +91,9 @@ extension FileContentsChecker: Checker {
             log.message("Repeating check \(checkInfo) because auto-corrections were applied on last run.", level: .debug)
 
             // only paths where auto-corrections were applied need to be re-checked
-            let filePathsToReCheck = Array(Set(violations.filter { $0.appliedAutoCorrection != nil }.map { $0.filePath! })).sorted()
+            let filePathsToReCheck = Array(
+                Set(violations.filter { $0.appliedAutoCorrection != nil }.map { $0.filePath! })
+            ).sorted()
 
             let violationsOnRechecks = try FileContentsChecker(
                 checkInfo: checkInfo,
@@ -100,9 +102,9 @@ extension FileContentsChecker: Checker {
                 autoCorrectReplacement: autoCorrectReplacement,
                 repeatIfAutoCorrected: repeatIfAutoCorrected
             ).performCheck()
-            violations.append(contentsOf: violationsOnRechecks)
+            violations.append(contentsOf: violationsOnRechecks[checkInfo]!)
         }
 
-        return violations
+        return [checkInfo: violations]
     }
 }

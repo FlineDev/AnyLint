@@ -25,6 +25,11 @@ extension LintTask: TaskHandler {
         ValidateOrFail.swiftShInstalled()
 
         do {
+            if fileManager.fileExists(atPath: Constants.statisticsDumpFilePath) {
+                log.message("Removing statistics dump file from previous run ...", level: .info)
+                try fileManager.removeItem(atPath: Constants.statisticsDumpFilePath)
+            }
+
             log.message("Start linting using config file at \(configFilePath) ...", level: .info)
 
             var command = "\(configFilePath.absolutePath) \(log.outputType.rawValue)"

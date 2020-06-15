@@ -10,7 +10,7 @@ struct FilePathsChecker {
 }
 
 extension FilePathsChecker: Checker {
-    func performCheck() throws -> [Violation] {
+    func performCheck() throws -> [CheckInfo: [Violation]] {
         var violations: [Violation] = []
 
         if violateIfNoMatchesFound {
@@ -44,9 +44,9 @@ extension FilePathsChecker: Checker {
                 )
             }
 
-            Statistics.shared.checkedFiles(at: filePathsToCheck)
+            Statistics.default.checkedFiles(at: Set(filePathsToCheck))
         }
 
-        return violations
+        return [checkInfo: violations]
     }
 }

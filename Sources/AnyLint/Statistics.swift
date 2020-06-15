@@ -2,7 +2,7 @@ import Foundation
 import Utility
 
 final class Statistics {
-    static let shared = Statistics()
+    static let `default`: Statistics = Statistics()
 
     var executedChecks: [CheckInfo] = []
     var violationsPerCheck: [CheckInfo: [Violation]] = [:]
@@ -13,16 +13,21 @@ final class Statistics {
         violationsBySeverity.keys.filter { !violationsBySeverity[$0]!.isEmpty }.max { $0.rawValue < $1.rawValue }
     }
 
-    private init() {}
-
-    func checkedFiles(at filePaths: [String]) {
+    func checkedFiles(at filePaths: Set<String>) {
         filePaths.forEach { filesChecked.insert($0) }
     }
 
-    func found(violations: [Violation], in check: CheckInfo) {
-        executedChecks.append(check)
-        violationsPerCheck[check] = violations
-        violationsBySeverity[check.severity]!.append(contentsOf: violations)
+    func found(violations: [CheckInfo: [Violation]]) {
+        for (checkInfo, checkViolations) in violations {
+            executedChecks.append(checkInfo)
+            violationsPerCheck[checkInfo] = checkViolations
+            violationsBySeverity[checkInfo.severity]!.append(contentsOf: checkViolations)
+        }
+    }
+
+    func merge(other: Statistics) {
+        checkedFiles(at: other.filesChecked)
+        found(violations: other.violationsPerCheck)
     }
 
     /// Use for unit testing only.
@@ -136,5 +141,12 @@ final class Statistics {
                 )
             }
         }
+    }
+}
+
+extension Statistics: Codable {
+    enum CodingKeys: String, CodingKey {
+        case violationsPerCheck
+        case filesChecked
     }
 }

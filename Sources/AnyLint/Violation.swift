@@ -41,3 +41,5 @@ public struct Violation {
         return "\(filePath.path(type: pathType)):\(locationInfo.line):\(locationInfo.charInLine):"
     }
 }
+
+extension Violation: Codable {}

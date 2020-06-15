@@ -34,4 +34,10 @@ public enum Constants {
 
     /// The number of newlines required in both before and after of AutoCorrections required to use diff for outputs.
     public static let newlinesRequiredForDiffing: Int = 3
+
+    /// The temporary directory to put files into when needed temporarily.
+    public static let tempDirPath: String = ".anylint"
+
+    /// The file for dumping the statistics of a run. Useful to merge together sub-runs with parent.
+    public static let statisticsDumpFilePath: String = "\(tempDirPath)/statistics.json"
 }

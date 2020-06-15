@@ -14,8 +14,8 @@ final class AutoCorrectionTests: XCTestCase {
             singleLineAutoCorrection.appliedMessageLines,
             [
                 "Autocorrection applied, the diff is: (+ added, - removed)",
-                "- Lisence",
-                "+ License",
+                "- Lisence".red,
+                "+ License".green,
             ]
         )
 
@@ -27,10 +27,10 @@ final class AutoCorrectionTests: XCTestCase {
             multiLineAutoCorrection.appliedMessageLines,
             [
                 "Autocorrection applied, the diff is: (+ added, - removed)",
-                "- [L3] C",
-                "+ [L5] F1",
-                "- [L6] F",
-                "+ [L6] F2",
+                "- [L3] C".red,
+                "+ [L5] F1".green,
+                "- [L6] F".red,
+                "+ [L6] F2".green,
             ]
         )
     }

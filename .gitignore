@@ -7,3 +7,4 @@ xcuserdata/
 .codacy-coverage
 *.lcov
 codacy-coverage.json
+.anylint

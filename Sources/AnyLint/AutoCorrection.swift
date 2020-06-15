@@ -63,7 +63,8 @@ extension AutoCorrection: ExpressibleByDictionaryLiteral {
     }
 }
 
-// TODO: make the autocorrection diff sorted by line number
+extension AutoCorrection: Codable {}
+
 @available(OSX 10.15, *)
 extension CollectionDifference.Change: Comparable where ChangeElement == String {
     public static func < (lhs: Self, rhs: Self) -> Bool {

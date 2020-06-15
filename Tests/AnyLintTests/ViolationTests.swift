@@ -7,7 +7,7 @@ final class ViolationTests: XCTestCase {
     override func setUp() {
         log = Logger(outputType: .test)
         TestHelper.shared.reset()
-        Statistics.shared.reset()
+        Statistics.default.reset()
     }
 
     func testLocationMessage() {
