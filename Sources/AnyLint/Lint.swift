@@ -222,6 +222,10 @@ public enum Lint {
             return // only reachable in unit tests
         }
 
+        if !fileManager.fileExists(atPath: Constants.tempDirPath) {
+            try fileManager.createDirectory(atPath: Constants.tempDirPath, withIntermediateDirectories: true, attributes: nil)
+        }
+
         do {
             try dataToDump.write(to: dumpFileUrl)
         } catch {
