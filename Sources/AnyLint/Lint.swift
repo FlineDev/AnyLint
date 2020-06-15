@@ -153,7 +153,12 @@ public enum Lint {
     public static func runChecks(source: CheckSource, runOnly: [String]? = nil, exclude: [String]? = nil) throws {
         guard !Options.validateOnly else { return }
 
-        let violations = try TemplateChecker(source: source, runOnly: runOnly, exclude: exclude).performCheck()
+        let violations = try TemplateChecker(
+            source: source,
+            runOnly: runOnly,
+            exclude: exclude,
+            logDebugLevel: log.logDebugLevel
+        ).performCheck()
         Statistics.default.found(violations: violations)
     }
 
@@ -189,12 +194,10 @@ public enum Lint {
     }
 
     /// Reports the results of a check to a file for usage in reusable check templates.
-    public static func reportResultsToFile(arguments: [String] = [], afterPerformingChecks checksToPerform: () throws -> Void = {}) throws {
-        let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
-
-        if targetIsXcode {
-            log = Logger(outputType: .xcode)
-        }
+    public static func reportResultsToFile(
+        arguments: [String] = [],
+        afterPerformingChecks checksToPerform: () throws -> Void = {}
+    ) throws {
         log.logDebugLevel = arguments.contains(Constants.debugArgument)
 
         try checksToPerform()

@@ -91,7 +91,9 @@ extension FileContentsChecker: Checker {
             log.message("Repeating check \(checkInfo) because auto-corrections were applied on last run.", level: .debug)
 
             // only paths where auto-corrections were applied need to be re-checked
-            let filePathsToReCheck = Array(Set(violations.filter { $0.appliedAutoCorrection != nil }.map { $0.filePath! })).sorted()
+            let filePathsToReCheck = Array(
+                Set(violations.filter { $0.appliedAutoCorrection != nil }.map { $0.filePath! })
+            ).sorted()
 
             let violationsOnRechecks = try FileContentsChecker(
                 checkInfo: checkInfo,

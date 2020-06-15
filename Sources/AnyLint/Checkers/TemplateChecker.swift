@@ -1,8 +1,9 @@
 import Foundation
-import Utility
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import SwiftCLI
+import Utility
 
 /// The source of the subchecks to run.
 public enum CheckSource {
@@ -12,14 +13,15 @@ public enum CheckSource {
     /// A remote public URL source, requiring the full config file URL string.
     case remote(String)
 
-    /// A GitHub repo with a 'Variants' folder, requiring the GitHub user, repo , branch/tag and variant.
-    case github(user: String, repo: String, branchOrTag: String, variant: String)
+    /// A GitHub repo with a 'Variants' folder, requiring the GitHub user, repo, branch/tag, subpath and variant.
+    case github(user: String, repo: String, branchOrTag: String, subpath: String, variant: String)
 }
 
 struct TemplateChecker {
     let source: CheckSource
     let runOnly: [String]?
     let exclude: [String]?
+    let logDebugLevel: Bool
 }
 
 extension TemplateChecker: Checker {
@@ -40,20 +42,32 @@ extension TemplateChecker: Checker {
             return [:] // only reachable in unit tests
         }
 
-        // TODO: [cg_2020-06-14] not yet implemented
+        if !fileManager.isExecutableFile(atPath: templateFilePath) {
+            try Task.run(bash: "chmod +x '\(templateFilePath)'")
+        }
 
         log.message("Local template file to run: '\(templateFilePath)'", level: .info)
 
+        var command = templateFilePath.absolutePath
+        if logDebugLevel {
+            command += " \(Constants.debugArgument)"
+        }
+        try Task.run(bash: command)
+
+        // TODO: [cg_2020-06-15] parse results JSON output and add to statistics
         return [:]
     }
 
     private func convertGitHubToRemoteSource(source: CheckSource) -> CheckSource? {
-        guard case let .github(user, repo, branchOrTag, variant) = source else { return nil }
-        return .remote("https://raw.githubusercontent.com/\(user)/\(repo)/\(branchOrTag)/Variants/\(variant).swift")
+        guard case let .github(user, repo, branchOrTag, subpath, variant) = source else { return nil }
+        log.message("Converting .github source to .remote source ...", level: .debug)
+        return .remote("https://raw.githubusercontent.com/\(user)/\(repo)/\(branchOrTag)/\(subpath)/\(variant).swift")
     }
 
     private func downloadRemoteSourceToLocal(source: CheckSource) throws -> CheckSource? {
         guard case let .remote(urlString) = source else { return nil }
+
+        log.message("Downloading .remote source from '\(urlString)' ...", level: .debug)
         guard let remoteUrl = URL(string: urlString) else {
             log.message("`.remote` source URL string '\(urlString)' is not a valid URL.", level: .error)
             log.exit(status: .failure)
@@ -61,12 +75,7 @@ extension TemplateChecker: Checker {
         }
 
         let remoteFileContents = try String(contentsOf: remoteUrl)
-        let uniqueFileName = remoteUrl
-            .deletingPathExtension()
-            .pathComponents
-            .filter { $0 != "Variants" && $0 != "/" }
-            .suffix(4)
-            .joined(separator: "_")
+        let uniqueFileName = (remoteUrl.pathComponents.dropFirst().prefix(2) + [remoteUrl.deletingPathExtension().lastPathComponent]).joined(separator: "_")
         let localFilePath = "\(Constants.tempDirPath)/\(uniqueFileName).swift"
 
         if !fileManager.fileExists(atPath: Constants.tempDirPath) {
