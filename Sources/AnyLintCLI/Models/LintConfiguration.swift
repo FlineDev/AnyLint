@@ -4,7 +4,7 @@ import Utility
 
 struct LintConfiguration: Codable {
   enum CodingKeys: String, CodingKey {
-      case checkFileContents = "CheckFileContents"
+    case checkFileContents = "CheckFileContents"
     case checkFilePaths = "CheckFilePaths"
   }
 

@@ -72,7 +72,8 @@ extension LintTask: TaskHandler {
       }
 
       log.message("Linting successful using config file at \(configFilePath). Congrats! 🎉", level: .success)
-    } catch is RunError {
+    }
+    catch is RunError {
       if log.outputType != .xcode {
         log.message("Linting failed using config file at \(configFilePath).", level: .error)
       }
