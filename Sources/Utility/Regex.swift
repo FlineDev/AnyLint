@@ -133,6 +133,21 @@ extension Regex: Hashable {
     }
 }
 
+extension Regex: Decodable {
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let pattern = try container.decode(String.self)
+    try self.init(pattern)
+  }
+}
+
+extension Regex: Encodable {
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(pattern)
+  }
+}
+
 // MARK: - Options
 extension Regex {
     /// `Options` defines alternate behaviours of regular expressions when matching.

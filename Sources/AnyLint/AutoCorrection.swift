@@ -2,7 +2,7 @@ import Foundation
 import Utility
 
 /// Information about an autocorrection.
-public struct AutoCorrection {
+public struct AutoCorrection: Codable {
     /// The matching text before applying the autocorrection.
     public let before: String
 

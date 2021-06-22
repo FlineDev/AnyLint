@@ -5,74 +5,59 @@ import Utility
 
 enum BlankTemplate: ConfigurationTemplate {
     static func fileContents() -> String {
-        commonPrefix + #"""
-            // MARK: - Variables
-            let readmeFile: Regex = #"^README\.md$"#
+        #"""
+        CheckFileContents:
+          - id: Readme
+            hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
+            regex: '^README\.md$'
+            violateIfNoMatchesFound: true
+            matchingExamples: ['README.md']
+            nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
 
-            // MARK: - Checks
-            // MARK: Readme
-            try Lint.checkFilePaths(
-                checkInfo: "Readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
-                regex: readmeFile,
-                matchingExamples: ["README.md"],
-                nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
-                violateIfNoMatchesFound: true
-            )
+          - id: ReadmeTopLevelTitle
+            hint: 'The README.md file should only contain a single top level title.'
+            regex: '(^|\n)#[^#](.*\n)*\n#[^#]'
+            includeFilter: ['^README\.md$']
+            matchingExamples:
+              - |
+                # Title
+                ## Subtitle
+                Lorem ipsum
 
-            // MARK: ReadmePath
-            try Lint.checkFilePaths(
-                checkInfo: "ReadmePath: The README file should be named exactly `README.md`.",
-                regex: #"^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$"#,
-                matchingExamples: ["README.markdown", "readme.md", "ReadMe.md"],
-                nonMatchingExamples: ["README.md", "CHANGELOG.md", "CONTRIBUTING.md", "api/help.md"],
-                autoCorrectReplacement: "$1README.md",
-                autoCorrectExamples: [
-                    ["before": "api/readme.md", "after": "api/README.md"],
-                    ["before": "ReadMe.md", "after": "README.md"],
-                    ["before": "README.markdown", "after": "README.md"],
-                ]
-            )
+                # Other Title
+                ## Other Subtitle
+            nonMatchingExamples:
+              - |
+                # Title
+                ## Subtitle
+                Lorem ipsum #1 and # 2.
 
-            // MARK: ReadmeTopLevelTitle
-            try Lint.checkFileContents(
-                checkInfo: "ReadmeTopLevelTitle: The README.md file should only contain a single top level title.",
-                regex: #"(^|\n)#[^#](.*\n)*\n#[^#]"#,
-                matchingExamples: [
-                    """
-                    # Title
-                    ## Subtitle
-                    Lorem ipsum
+                ## Other Subtitle
+                ### Other Subsubtitle
 
-                    # Other Title
-                    ## Other Subtitle
-                    """,
-                ],
-                nonMatchingExamples: [
-                    """
-                    # Title
-                    ## Subtitle
-                    Lorem ipsum #1 and # 2.
+          - id: ReadmeTypoLicense
+            hint: 'ReadmeTypoLicense: Misspelled word `license`.'
+            regex: '([\s#]L|l)isence([\s\.,:;])'
+            matchingExamples: [' lisence:', '## Lisence\n']
+            nonMatchingExamples: [' license:', '## License\n']
+            includeFilters: ['^README\.md$']
+            autoCorrectReplacement: '$1icense$2'
+            autoCorrectExamples:
+              - { before: ' lisence:', after: ' license:' }
+              - { before: '## Lisence\n', after: '## License\n' }
 
-                    ## Other Subtitle
-                    ### Other Subsubtitle
-                    """,
-                ],
-                includeFilters: [readmeFile]
-            )
+        CheckFilePaths:
+          - id: 'ReadmePath'
+            hint: 'The README file should be named exactly `README.md`.'
+            regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
+            matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
+            nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
+            autoCorrectReplacement: '$1README.md'
+            autoCorrectExamples:
+              - { before: 'api/readme.md', after: 'api/README.md' }
+              - { before: 'ReadMe.md', after: 'README.md' }
+              - { before: 'README.markdown', after: 'README.md' }
 
-            // MARK: ReadmeTypoLicense
-            try Lint.checkFileContents(
-                checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
-                regex: #"([\s#]L|l)isence([\s\.,:;])"#,
-                matchingExamples: [" lisence:", "## Lisence\n"],
-                nonMatchingExamples: [" license:", "## License\n"],
-                includeFilters: [readmeFile],
-                autoCorrectReplacement: "$1icense$2",
-                autoCorrectExamples: [
-                    ["before": " lisence:", "after": " license:"],
-                    ["before": "## Lisence\n", "after": "## License\n"],
-                ]
-            )
-        """# + commonSuffix
+        """#
     }
 }

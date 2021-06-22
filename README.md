@@ -87,46 +87,61 @@ To initialize AnyLint in a project, run:
 anylint --init blank
 ```
 
-This will create the Swift script file `lint.swift` with something like the following contents:
+This will create the Swift script file `anylint.yml` with something like the following contents:
 
-```swift
-#!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft
+```yaml
+CheckFileContents:
+  - id: Readme
+    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
+    regex: '^README\.md$'
+    violateIfNoMatchesFound: true
+    matchingExamples: ['README.md']
+    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
 
-Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
-    // MARK: - Variables
-    let readmeFile: Regex = #"README\.md"#
+  - id: ReadmeTopLevelTitle
+    hint: 'The README.md file should only contain a single top level title.'
+    regex: '(^|\n)#[^#](.*\n)*\n#[^#]'
+    includeFilter: ['^README\.md$']
+    matchingExamples:
+      - |
+        # Title
+        ## Subtitle
+        Lorem ipsum
 
-    // MARK: - Checks
-    // MARK: Readme
-    try Lint.checkFilePaths(
-        checkInfo: "Readme: Each project should have a README.md file explaining the project.",
-        regex: readmeFile,
-        matchingExamples: ["README.md"],
-        nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
-        violateIfNoMatchesFound: true
-    )
+        # Other Title
+        ## Other Subtitle
+    nonMatchingExamples:
+      - |
+        # Title
+        ## Subtitle
+        Lorem ipsum #1 and # 2.
 
-    // MARK: ReadmeTypoLicense
-    try Lint.checkFileContents(
-        checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
-        regex: #"([\s#]L|l)isence([\s\.,:;])"#,
-        matchingExamples: [" license:", "## Lisence\n"],
-        nonMatchingExamples: [" license:", "## License\n"],
-        includeFilters: [readmeFile],
-        autoCorrectReplacement: "$1icense$2",
-        autoCorrectExamples: [
-            ["before": " lisence:", "after": " license:"],
-            ["before": "## Lisence\n", "after": "## License\n"],
-        ]
-    )
-}
+        ## Other Subtitle
+        ### Other Subsubtitle
 
+  - id: ReadmeTypoLicense
+    hint: 'ReadmeTypoLicense: Misspelled word `license`.'
+    regex: '([\s#]L|l)isence([\s\.,:;])'
+    matchingExamples: [' lisence:', '## Lisence\n']
+    nonMatchingExamples: [' license:', '## License\n']
+    includeFilters: ['^README\.md$']
+    autoCorrectReplacement: '$1icense$2'
+    autoCorrectExamples:
+      - { before: ' lisence:', after: ' license:' }
+      - { before: '## Lisence\n', after: '## License\n' }
+
+CheckFilePaths:
+  - id: 'ReadmePath'
+    hint: 'The README file should be named exactly `README.md`.'
+    regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
+    matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
+    nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
+    autoCorrectReplacement: '$1README.md'
+    autoCorrectExamples:
+      - { before: 'api/readme.md', after: 'api/README.md' }
+      - { before: 'ReadMe.md', after: 'README.md' }
+      - { before: 'README.markdown', after: 'README.md' }
 ```
-
-The most important thing to note is that the **first three lines are required** for AnyLint to work properly.
-
-All the other code can be adjusted and that's actually where you configure your lint checks (a few examples are provided by default in the `blank` template). Note that the first two lines declare the file to be a Swift script using [swift-sh](https://github.com/mxcl/swift-sh). Thus, you can run any Swift code and even import Swift packages (see the [swift-sh docs](https://github.com/mxcl/swift-sh#usage)) if you need to. The third line makes sure that all violations found in the process of running the code in the completion block are reported properly and exits the script with the proper exit code at the end.
 
 Having this configuration file, you can now run `anylint` to run your lint checks. By default, if any check fails, the entire command fails and reports the violation reason. To learn more about how to configure your own checks, see the [Configuration](#configuration) section below.
 
@@ -134,12 +149,12 @@ If you want to create and run multiple configuration files or if you want a diff
 
 Initializes the configuration files at the given locations:
 ```bash
-anylint --init blank --path Sources/lint.swift --path Tests/lint.swift
+anylint --init blank --path Sources/anylint.yml --path Tests/anylint.yml
 ```
 
 Runs the lint checks for both configuration files:
 ```bash
-anylint --path Sources/lint.swift --path Tests/lint.swift
+anylint --path Sources/anylint.yml --path Tests/anylint.yml
 ```
 
 There are also several flags you can pass to `anylint`:
@@ -154,11 +169,11 @@ There are also several flags you can pass to `anylint`:
 
 AnyLint provides three different kinds of lint checks:
 
-1. `checkFileContents`: Matches the contents of a text file to a given regex.
-2. `checkFilePaths`: Matches the file paths of the current directory to a given regex.
-3. `customCheck`: Allows to write custom Swift code to do other kinds of checks.
+1. `CheckFileContents`: Matches the contents of a text file to a given regex.
+2. `CheckFilePaths`: Matches the file paths of the current directory to a given regex.
+3. `CustomScripts`: Allows to write custom scripts in any language to do other kinds of checks. (TODO)
 
-Several examples of lint checks can be found in the [`lint.swift` file of this very project](https://github.com/Flinesoft/AnyLint/blob/main/lint.swift).
+Several examples of lint checks can be found in the [`anylint.yml` file of this very project](https://github.com/Flinesoft/AnyLint/blob/main/anylint.yml).
 
 ### Basic Types
 
@@ -386,6 +401,8 @@ As this method is about file paths and not file contents, the `autoCorrectReplac
 By default, `checkFilePaths` will fail if the given `regex` matches a file. If you want to check for the _existence_ of a file though, you can set `violateIfNoMatchesFound` to `true` instead, then the method will fail if it does _not_ match any file.
 
 ### Custom Checks
+
+TODO: Update to new custom script format supporting all languages as long as they output Violation JOSN format.
 
 AnyLint allows you to do any kind of lint checks (thus its name) as it gives you the full power of the Swift programming language and it's packages [ecosystem](https://swiftpm.co/). The `customCheck` method needs to be used to profit from this flexibility. And it's actually the simplest of the three methods, consisting of only two parameters:
 
