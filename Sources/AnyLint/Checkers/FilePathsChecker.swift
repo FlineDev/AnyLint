@@ -1,5 +1,4 @@
 import Foundation
-import Utility
 
 struct FilePathsChecker {
   let checkInfo: CheckInfo

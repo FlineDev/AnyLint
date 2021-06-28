@@ -1,6 +1,4 @@
 import Foundation
-import SwiftCLI
-import Utility
 
 enum ValidateOrFail {
   static func configFileExists(at configFilePath: String) throws {

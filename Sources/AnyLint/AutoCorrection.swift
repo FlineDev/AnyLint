@@ -1,5 +1,4 @@
 import Foundation
-import Utility
 
 /// Information about an autocorrection.
 public struct AutoCorrection: Codable {

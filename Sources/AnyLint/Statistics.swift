@@ -1,5 +1,4 @@
 import Foundation
-import Utility
 
 final class Statistics {
   static let shared = Statistics()

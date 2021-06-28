@@ -1,6 +1,4 @@
 import Foundation
-import Rainbow
-import Utility
 
 /// A violation found in a check.
 public struct Violation {

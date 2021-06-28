@@ -8,14 +8,6 @@
         <img src="https://github.com/Flinesoft/AnyLint/workflows/CI/badge.svg"
             alt="CI">
     </a>
-    <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
-        <img src="https://api.codacy.com/project/badge/Grade/c881ee12938145d3bfd398eff1571228"
-             alt="Code Quality"/>
-    </a>
-    <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
-        <img src="https://api.codacy.com/project/badge/Coverage/c881ee12938145d3bfd398eff1571228"
-             alt="Coverage"/>
-    </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
         <img src="https://img.shields.io/badge/Version-0.8.2-blue.svg"
              alt="Version: 0.8.2">
@@ -52,7 +44,7 @@
 
 # AnyLint
 
-Lint any project in any language using Swift and regular expressions. With built-in support for matching and non-matching examples validation & autocorrect replacement. Replaces SwiftLint custom rules & works for other languages as well! 🎉
+Lint anything by combining the power of scripts & regular expressions. With built-in support for matching and non-matching examples validation & autocorrect replacement. Replaces SwiftLint custom rules & works for/with other languages as well! 🎉
 
 ## Installation
 

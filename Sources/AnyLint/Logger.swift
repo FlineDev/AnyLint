@@ -1,5 +1,4 @@
 import Foundation
-import Rainbow
 
 /// Helper to log output to console or elsewhere.
 public final class Logger {
@@ -158,5 +157,20 @@ public final class Logger {
     dateFormatter.dateFormat = "HH:mm:ss.SSS"
     let dateTime = dateFormatter.string(from: Date())
     return "\(dateTime):"
+  }
+}
+
+extension Severity {
+  var logLevel: Logger.PrintLevel {
+    switch self {
+    case .info:
+      return .info
+
+    case .warning:
+      return .warning
+
+    case .error:
+      return .error
+    }
   }
 }

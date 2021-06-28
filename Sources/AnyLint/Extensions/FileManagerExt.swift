@@ -1,5 +1,4 @@
 import Foundation
-import Utility
 
 extension FileManager {
   /// Moves a file from one path to another, making sure that all directories are created and no files are overwritten.
@@ -37,5 +36,18 @@ extension FileManager {
     }
 
     FilesSearch.shared.invalidateCache()
+  }
+}
+
+extension FileManager {
+  /// The current directory `URL`.
+  public var currentDirectoryUrl: URL {
+    URL(string: currentDirectoryPath)!
+  }
+
+  /// Checks if a file exists and the given paths and is a directory.
+  public func fileExistsAndIsDirectory(atPath path: String) -> Bool {
+    var isDirectory: ObjCBool = false
+    return fileExists(atPath: path, isDirectory: &isDirectory) && isDirectory.boolValue
   }
 }

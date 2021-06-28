@@ -1,5 +1,4 @@
 import Foundation
-import Utility
 
 extension URL {
   /// Returns the relative path of from the current path.

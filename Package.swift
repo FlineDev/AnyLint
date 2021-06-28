@@ -1,46 +1,44 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
   name: "AnyLint",
   products: [
-    .library(name: "AnyLint", targets: ["AnyLint", "Utility"]),
-    .executable(name: "anylint", targets: ["AnyLintCLI"]),
+    .executable(name: "anylint", targets: ["Commands"]),
   ],
   dependencies: [
-    // Delightful console output for Swift developers.
-    .package(url: "https://github.com/onevcat/Rainbow.git", from: "3.1.5"),
-
-    // A powerful framework for developing CLIs in Swift
-    .package(url: "https://github.com/jakeheis/SwiftCLI.git", from: "6.0.1"),
+    // Straightforward, type-safe argument parsing for Swift
+    .package(url: "https://github.com/apple/swift-argument-parser.git", from: "0.4.3"),
 
     // A Sweet and Swifty YAML parser.
     .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
   ],
   targets: [
+    .target(name: "Core"),
+    .target(name: "Checkers", dependencies: ["Core"]),
     .target(
-      name: "AnyLint",
-      dependencies: ["Utility"]
+      name: "Configuration",
+      dependencies: [
+        "Core",
+        .product(name: "Yams", package: "Yams"),
+      ]
     ),
-    .testTarget(
-      name: "AnyLintTests",
-      dependencies: ["AnyLint"]
+    .target(name: "Reporting", dependencies: ["Core"]),
+    .executableTarget(
+      name: "Commands",
+      dependencies: [
+        "Configuration",
+        "Core",
+        "Reporting",
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+      ]
     ),
-    .target(
-      name: "AnyLintCLI",
-      dependencies: ["AnyLint", "Rainbow", "SwiftCLI", "Utility", "Yams"]
-    ),
-    .testTarget(
-      name: "AnyLintCLITests",
-      dependencies: ["AnyLintCLI"]
-    ),
-    .target(
-      name: "Utility",
-      dependencies: ["Rainbow"]
-    ),
-    .testTarget(
-      name: "UtilityTests",
-      dependencies: ["Utility"]
-    )
+
+    // test targets
+    .testTarget(name: "CoreTests", dependencies: ["Core"]),
+    .testTarget(name: "CheckersTests", dependencies: ["Checkers"]),
+    .testTarget(name: "ConfigurationTests", dependencies: ["Configuration"]),
+    .testTarget(name: "ReportingTests", dependencies: ["Reporting"]),
+    .testTarget(name: "CommandsTests", dependencies: ["Commands"]),
   ]
 )

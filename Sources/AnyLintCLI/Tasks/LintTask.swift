@@ -1,7 +1,5 @@
 import AnyLint
 import Foundation
-import SwiftCLI
-import Utility
 import Yams
 
 struct LintTask {

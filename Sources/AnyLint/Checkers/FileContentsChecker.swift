@@ -1,5 +1,4 @@
 import Foundation
-import Utility
 
 struct FileContentsChecker {
   let checkInfo: CheckInfo

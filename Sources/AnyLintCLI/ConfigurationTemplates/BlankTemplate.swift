@@ -1,12 +1,11 @@
 import Foundation
-import Utility
 
 // swiftlint:disable function_body_length
 
 enum BlankTemplate: ConfigurationTemplate {
   static func fileContents() -> String {
     #"""
-    CheckFileContents:
+    FileContents:
       - id: Readme
         hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
         regex: '^README\.md$'
@@ -46,7 +45,7 @@ enum BlankTemplate: ConfigurationTemplate {
           - { before: ' lisence:', after: ' license:' }
           - { before: '## Lisence\n', after: '## License\n' }
 
-    CheckFilePaths:
+    FilePaths:
       - id: 'ReadmePath'
         hint: 'The README file should be named exactly `README.md`.'
         regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'

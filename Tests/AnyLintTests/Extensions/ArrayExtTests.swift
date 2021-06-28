@@ -1,5 +1,4 @@
 @testable import AnyLint
-@testable import Utility
 import XCTest
 
 final class ArrayExtTests: XCTestCase {

@@ -1,5 +1,4 @@
 import Foundation
-import Utility
 
 /// Helper to search for files and filter using Regexes.
 public final class FilesSearch {

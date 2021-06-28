@@ -1,6 +1,5 @@
 import AnyLint
 import Foundation
-import Utility
 
 struct LintConfiguration: Codable {
   enum CodingKeys: String, CodingKey {

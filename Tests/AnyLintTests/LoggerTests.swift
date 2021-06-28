@@ -1,4 +1,3 @@
-@testable import Utility
 import XCTest
 
 final class LoggerTests: XCTestCase {

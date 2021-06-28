@@ -1,6 +1,4 @@
 import Foundation
-import SwiftCLI
-import Utility
 
 class SingleCommand: Command {
   // MARK: - Basics

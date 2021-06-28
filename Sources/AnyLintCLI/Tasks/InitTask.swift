@@ -1,6 +1,4 @@
 import Foundation
-import SwiftCLI
-import Utility
 
 struct InitTask {
   enum Template: String, CaseIterable {

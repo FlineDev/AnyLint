@@ -1,6 +1,4 @@
 @testable import AnyLint
-import Rainbow
-@testable import Utility
 import XCTest
 
 final class ViolationTests: XCTestCase {
