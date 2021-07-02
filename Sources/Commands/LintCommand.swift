@@ -14,13 +14,13 @@ struct LintCommand: ParsableCommand {
     parsing: .upToNextOption,
     help: .init("The path(s) to run the checks from.", valueName: "path")
   )
-  var paths: [String] = [URL(fileURLWithPath: ".").path]
+  var paths: [String] = [FileManager.default.currentDirectoryUrl.path]
 
   @Option(
     name: .shortAndLong,
     help: .init("Path to the config file to execute.", valueName: "path")
   )
-  var config: String = URL(fileURLWithPath: ".").appendingPathComponent("anylint.yml").path
+  var config: String = FileManager.default.currentDirectoryUrl.appendingPathComponent("anylint.yml").path
 
   @Option(
     name: .shortAndLong,

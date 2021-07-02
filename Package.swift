@@ -13,6 +13,9 @@ let package = Package(
     // Straightforward, type-safe argument parsing for Swift
     .package(url: "https://github.com/apple/swift-argument-parser.git", from: "0.4.3"),
 
+    // Easily run shell commands from a Swift script or command line tool
+    .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.3.0"),
+
     // A Sweet and Swifty YAML parser.
     .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
   ],
@@ -38,6 +41,7 @@ let package = Package(
         "Configuration",
         "Core",
         "Reporting",
+        .product(name: "ShellOut", package: "ShellOut"),
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
     ),

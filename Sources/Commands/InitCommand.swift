@@ -2,6 +2,7 @@ import ArgumentParser
 import Configuration
 import Core
 import Foundation
+import ShellOut
 
 struct InitCommand: ParsableCommand {
   static var configuration: CommandConfiguration = .init(
@@ -19,10 +20,35 @@ struct InitCommand: ParsableCommand {
     name: .shortAndLong,
     help: "Path to the new config file to initialize it at."
   )
-  var path: String = URL(fileURLWithPath: ".").appendingPathComponent("anylint.yml").path
+  var path: String = FileManager.default.currentDirectoryUrl.appendingPathComponent("anylint.yml").path
 
   mutating func run() throws {
-    // TODO: [cg_2021-06-28] not yet implemented
+    // if the specified path is a directory, assume the user wants the default file name
+    if FileManager.default.fileExistsAndIsDirectory(atPath: path) {
+      path = path.appendingPathComponent("anylint.yml")
+    }
+
+    guard !FileManager.default.fileExists(atPath: path) else {
+      log.message("Configuration file already exists at path '\(path)'.", level: .error)
+      log.exit(status: .failure)
+      return  // only reachable in unit tests
+    }
+
+    log.message("Making sure config file directory exists ...", level: .info)
+    try shellOut(to: "mkdir", arguments: ["-p", path.parentDirectoryPath])
+
+    log.message("Creating config file using template '\(template.rawValue)' ...", level: .info)
+    FileManager.default.createFile(
+      atPath: path,
+      contents: template.fileContents.data(using: .utf8),
+      attributes: nil
+    )
+
+    log.message("Making config file executable ...", level: .info)
+    try shellOut(to: "chmod", arguments: ["+x", path])
+
+    log.message("Successfully created config file at \(path)", level: .success)
+
   }
 }
 
