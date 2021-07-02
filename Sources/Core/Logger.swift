@@ -1,4 +1,8 @@
 import Foundation
+import Rainbow
+
+/// Shortcut to access the `Logger` within this project.
+public var log = Logger(outputType: .console)
 
 /// Helper to log output to console or elsewhere.
 public final class Logger {
@@ -145,10 +149,10 @@ public final class Logger {
   ///   - location: The file, line and char in line location string.
   public func xcodeMessage(_ message: String, level: PrintLevel, location: String? = nil) {
     if let location = location {
-      print("\(location) \(level.rawValue): \(Constants.toolName): \(message)")
+      print("\(location) \(level.rawValue): AnyLint: \(message)")
     }
     else {
-      print("\(level.rawValue): \(Constants.toolName): \(message)")
+      print("\(level.rawValue): AnyLint: \(message)")
     }
   }
 

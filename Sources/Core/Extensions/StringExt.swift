@@ -1,8 +1,5 @@
 import Foundation
 
-/// `Regex` is a swifty regex engine built on top of the NSRegularExpression api.
-public typealias Regex = Utility.Regex
-
 extension String {
   /// Info about the exact location of a character in a given file.
   public typealias LocationInfo = (line: Int, charInLine: Int)
@@ -17,15 +14,18 @@ extension String {
     return (line: prefixLines.count, charInLine: charInLine)
   }
 
-  func showNewlines() -> String {
+  /// Returns a string that shows newlines as `\n`.
+  public func showNewlines() -> String {
     components(separatedBy: .newlines).joined(separator: #"\n"#)
   }
 
-  func showWhitespaces() -> String {
+  /// Returns a string that shows whitespaces as `␣`.
+  public func showWhitespaces() -> String {
     components(separatedBy: .whitespaces).joined(separator: "␣")
   }
 
-  func showWhitespacesAndNewlines() -> String {
+  /// Returns a string that shows newlines as `\n` and whitespaces as `␣`.
+  public func showWhitespacesAndNewlines() -> String {
     showNewlines().showWhitespaces()
   }
 }
@@ -42,20 +42,20 @@ extension String {
 
   /// Returns the absolute path for a path given relative to the current directory.
   public var absolutePath: String {
-    guard !self.starts(with: fileManager.currentDirectoryUrl.path) else { return self }
-    return fileManager.currentDirectoryUrl.appendingPathComponent(self).path
+    guard !self.starts(with: FileManager.default.currentDirectoryUrl.path) else { return self }
+    return FileManager.default.currentDirectoryUrl.appendingPathComponent(self).path
   }
 
   /// Returns the relative path for a path given relative to the current directory.
   public var relativePath: String {
-    guard self.starts(with: fileManager.currentDirectoryUrl.path) else { return self }
-    return replacingOccurrences(of: fileManager.currentDirectoryUrl.path, with: "")
+    guard self.starts(with: FileManager.default.currentDirectoryUrl.path) else { return self }
+    return replacingOccurrences(of: FileManager.default.currentDirectoryUrl.path, with: "")
   }
 
   /// Returns the parent directory path.
   public var parentDirectoryPath: String {
     let url = URL(fileURLWithPath: self)
-    guard url.pathComponents.count > 1 else { return fileManager.currentDirectoryPath }
+    guard url.pathComponents.count > 1 else { return FileManager.default.currentDirectoryPath }
     return url.deletingLastPathComponent().absoluteString
   }
 

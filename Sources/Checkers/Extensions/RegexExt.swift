@@ -1,6 +1,22 @@
 import Foundation
+import Core
 
 extension Regex: ExpressibleByStringLiteral {
+  /// Constants to reference across the project.
+  enum Constants {
+    /// The separator indicating that next come regex options.
+    static let regexOptionsSeparator: String = #"\"#
+
+    /// Hint that the case insensitive option should be active on a Regex.
+    static let caseInsensitiveRegexOption: String = "i"
+
+    /// Hint that the case dot matches newline option should be active on a Regex.
+    static let dotMatchesNewlinesRegexOption: String = "m"
+
+    //    /// The number of newlines required in both before and after of AutoCorrections required to use diff for outputs.
+    //    static let newlinesRequiredForDiffing: Int = 3
+  }
+
   public init(
     stringLiteral value: String
   ) {

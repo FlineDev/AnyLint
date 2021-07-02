@@ -7,6 +7,9 @@ let package = Package(
     .executable(name: "anylint", targets: ["Commands"]),
   ],
   dependencies: [
+    // Delightful console output for Swift developers.
+    .package(url: "https://github.com/onevcat/Rainbow.git", from: "4.0.0"),
+
     // Straightforward, type-safe argument parsing for Swift
     .package(url: "https://github.com/apple/swift-argument-parser.git", from: "0.4.3"),
 
@@ -14,7 +17,12 @@ let package = Package(
     .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
   ],
   targets: [
-    .target(name: "Core"),
+    .target(
+      name: "Core",
+      dependencies: [
+        .product(name: "Rainbow", package: "Rainbow")
+      ]
+    ),
     .target(name: "Checkers", dependencies: ["Core"]),
     .target(
       name: "Configuration",
