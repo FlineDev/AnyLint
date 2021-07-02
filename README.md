@@ -500,6 +500,91 @@ Here are some **advanced Regex features** you might want to use or learn more ab
    For example, consider a regex violating if there's an empty line after an opening curly brace like so: `{\n\s*\n\s*\S`. This would match the lines of `func do() {\n\n    return 5}`, but what you actually want is it to start matching on the empty newline like so: `(?<={\n)\s*\n\s*\S`.
 
    See also [#3](https://github.com/Flinesoft/AnyLint/issues/3)
+   
+## YAML Cheat Sheet
+
+Please be aware that in YAML indentation (whitespaces) and newlines are actually important.
+Natively supported types are: String, Integer, Float, Bool and Date.
+
+**Strings** (unlike in most other languages) don't need to be put between quotes, but can:
+```yaml
+string1: This is without quotes.
+string2: 'This is with single quotes.'
+string3: "This is with double quotes."
+```
+
+**Multi-line strings** can be written by specifying `|` and then a newline:
+```yaml
+multiline1: |
+  This is a multi line string.
+  Newlines are going to be preserved.
+  By default, only one trailing newline is kept.
+```
+
+An additional `+` or `-` specified what to do with trailing newlines:
+```yaml
+multiline2: |+
+  This will make sure both trailing newlines are kept (ends with ".\n\n").
+  
+  
+multiline3: |-
+  This will ignore any trailing newlines and 
+  will end with the lest non-newline character (the following dot in this case -->).
+  
+  
+```
+
+**Arrays** can be written in two ways:
+```yaml
+array1: [1, 2, 3]
+array2:
+  - 1
+  - 2
+  - 3
+```
+
+**Dictionaries**, too, can be written in two similar ways:
+```yaml
+array1: { key1: 1, key2: 2, key3: 3 }
+array2:
+  - 1
+  - 2
+  - 3
+```
+
+Dictionaries and Arrays can be nested indefinitely. Dictionaries within Arrays are denoted with one `-` before the keys:
+```yaml
+level1dict:
+  level2dict:
+    level3dict1:
+      leaf1: foo
+      leaf2: bar
+    level3dict2:
+      array1: [a, b, c]
+      array2:
+        - [a, b, c]
+        - [x, y, z]
+    level3array:
+      - level4dict1: a
+        level4dict2: b
+        level4dict3: c
+```
+
+You can also reuse Dictionaries defined earlier (at the top) down the file via `<<: *`:
+```yaml
+swiftFileFilters:
+  includeFilters: ['.*\.swift']
+  excludeFilters: ['.*\.generated\.swift']
+
+FileContents:
+  - id: Check1
+    regex: 'a*b*'
+    <<: *swiftFileFilters
+
+  - id: Check2
+    regex: 'c*d*'
+    <<: *swiftFileFilters
+```
 
 ## Donation
 
