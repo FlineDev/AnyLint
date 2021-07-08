@@ -1,4 +1,5 @@
 import Foundation
+import Core
 
 extension Array where Element == String {
   func containsLine(at indexes: [Int], matchingRegex regex: Regex) -> Bool {

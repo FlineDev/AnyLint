@@ -2,7 +2,7 @@ import Foundation
 import Rainbow
 
 /// Shortcut to access the `Logger` within this project.
-public var log = Logger(outputType: .console)
+public var log = Logger(outputFormat: .commandLine)
 
 /// Helper to log output to console or elsewhere.
 public final class Logger {
@@ -20,9 +20,6 @@ public final class Logger {
     /// Print information that probably is problematic.
     case error
 
-    /// Print detailed information for debugging purposes.
-    case debug
-
     var color: Color {
       switch self {
       case .success:
@@ -36,55 +33,18 @@ public final class Logger {
 
       case .error:
         return Color.red
-
-      case .debug:
-        return Color.default
       }
     }
   }
 
-  /// The output type.
-  public enum OutputType: String {
-    /// Output is targeted to a console to be read by developers.
-    case console
+  /// The output format of the logger.
+  public let outputFormat: OutputFormat
 
-    /// Output is targeted to Xcodes left pane to be interpreted by it to mark errors & warnings.
-    case xcode
-
-    /// Output is targeted for unit tests. Collect into globally accessible TestHelper.
-    case test
-  }
-
-  /// The exit status.
-  public enum ExitStatus {
-    /// Successfully finished task.
-    case success
-
-    /// Failed to finish task.
-    case failure
-
-    var statusCode: Int32 {
-      switch self {
-      case .success:
-        return EXIT_SUCCESS
-
-      case .failure:
-        return EXIT_FAILURE
-      }
-    }
-  }
-
-  /// The output type of the logger.
-  public let outputType: OutputType
-
-  /// Defines if the log should include debug logs.
-  public var logDebugLevel: Bool = false
-
-  /// Initializes a new Logger object with a given output type.
+  /// Initializes a new Logger object with a given output format.
   public init(
-    outputType: OutputType
+    outputFormat: OutputFormat
   ) {
-    self.outputType = outputType
+    self.outputFormat = outputFormat
   }
 
   /// Communicates a message to the chosen output target with proper formatting based on level & source.
@@ -93,33 +53,24 @@ public final class Logger {
   ///   - message: The message to be printed. Don't include `Error!`, `Warning!` or similar information at the beginning.
   ///   - level: The level of the print statement.
   public func message(_ message: String, level: PrintLevel) {
-    guard level != .debug || logDebugLevel else { return }
-
-    switch outputType {
-    case .console:
+    switch outputFormat {
+    case .commandLine, .json:
       consoleMessage(message, level: level)
 
     case .xcode:
       xcodeMessage(message, level: level)
-
-    case .test:
-      TestHelper.shared.consoleOutputs.append((message, level))
     }
   }
 
-  /// Exits the current program with the given status.
-  public func exit(status: ExitStatus) {
-    switch outputType {
-    case .console, .xcode:
-      #if os(Linux)
-        Glibc.exit(status.statusCode)
-      #else
-        Darwin.exit(status.statusCode)
-      #endif
+  /// Exits the current program with the given fail state.
+  public func exit(fail: Bool) {
+    let statusCode = fail ? EXIT_FAILURE : EXIT_SUCCESS
 
-    case .test:
-      TestHelper.shared.exitStatus = status
-    }
+    #if os(Linux)
+      Glibc.exit(statusCode)
+    #else
+      Darwin.exit(statusCode)
+    #endif
   }
 
   private func consoleMessage(_ message: String, level: PrintLevel) {
@@ -135,9 +86,6 @@ public final class Logger {
 
     case .error:
       print(formattedCurrentTime(), "❌", message.red)
-
-    case .debug:
-      print(formattedCurrentTime(), "💬", message)
     }
   }
 
@@ -148,12 +96,13 @@ public final class Logger {
   ///   - level: The level of the print statement.
   ///   - location: The file, line and char in line location string.
   public func xcodeMessage(_ message: String, level: PrintLevel, location: String? = nil) {
+    var locationPrefix = ""
+
     if let location = location {
-      print("\(location) \(level.rawValue): AnyLint: \(message)")
+      locationPrefix = location + " "
     }
-    else {
-      print("\(level.rawValue): AnyLint: \(message)")
-    }
+
+    print("\(locationPrefix)\(level.rawValue): AnyLint: \(message)")
   }
 
   private func formattedCurrentTime() -> String {
@@ -165,7 +114,7 @@ public final class Logger {
 }
 
 extension Severity {
-  var logLevel: Logger.PrintLevel {
+  public var logLevel: Logger.PrintLevel {
     switch self {
     case .info:
       return .info

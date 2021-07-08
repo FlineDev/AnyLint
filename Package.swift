@@ -13,6 +13,9 @@ let package = Package(
     // Straightforward, type-safe argument parsing for Swift
     .package(url: "https://github.com/apple/swift-argument-parser.git", from: "0.4.3"),
 
+    // Commonly used data structures for Swift`
+    .package(url: "https://github.com/apple/swift-collections.git", from: "0.0.3"),
+
     // Easily run shell commands from a Swift script or command line tool
     .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.3.0"),
 
@@ -34,10 +37,17 @@ let package = Package(
         .product(name: "Yams", package: "Yams"),
       ]
     ),
-    .target(name: "Reporting", dependencies: ["Core"]),
+    .target(
+      name: "Reporting",
+      dependencies: [
+        "Core",
+        .product(name: "OrderedCollections", package: "swift-collections"),
+      ]
+    ),
     .executableTarget(
       name: "Commands",
       dependencies: [
+        "Checkers",
         "Configuration",
         "Core",
         "Reporting",

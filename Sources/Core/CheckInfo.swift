@@ -23,12 +23,12 @@ public struct CheckInfo {
   }
 }
 
-//extension CheckInfo: Hashable {
-//  public func hash(into hasher: inout Hasher) {
-//    hasher.combine(id)
-//  }
-//}
-//
+extension CheckInfo: Hashable {
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(id)
+  }
+}
+
 //extension CheckInfo: CustomStringConvertible {
 //  public var description: String {
 //    "check '\(id)'"
@@ -57,7 +57,7 @@ public struct CheckInfo {
 //          "Specified severity '\(severityString)' for check '\(id)' unknown. Use one of [error, warning, info].",
 //          level: .error
 //        )
-//        log.exit(status: .failure)
+//        log.exit(fail: true)
 //        exit(EXIT_FAILURE)  // only reachable in unit tests
 //      }
 //
@@ -75,7 +75,7 @@ public struct CheckInfo {
 //          "Could not convert String literal '\(value)' to type CheckInfo. Please check the structure to be: <id>(@<severity>): <hint>",
 //          level: .error
 //        )
-//        log.exit(status: .failure)
+//        log.exit(fail: true)
 //        exit(EXIT_FAILURE)  // only reachable in unit tests
 //      }
 //

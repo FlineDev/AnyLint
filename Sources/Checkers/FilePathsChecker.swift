@@ -35,7 +35,7 @@ extension FilePathsChecker: Checker {
     //      if matchingFilePathsCount <= 0 {
     //        log.message("Reporting violation for \(checkInfo) as no matching file was found ...", level: .debug)
     //        violations.append(
-    //          Violation(checkInfo: checkInfo, filePath: nil, locationInfo: nil, appliedAutoCorrection: nil)
+    //          Violation(checkInfo: checkInfo, filePath: nil, fileLocation: nil, appliedAutoCorrection: nil)
     //        )
     //      }
     //    }

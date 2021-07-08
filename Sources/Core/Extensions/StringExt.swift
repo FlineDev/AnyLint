@@ -1,17 +1,14 @@
 import Foundation
 
 extension String {
-  /// Info about the exact location of a character in a given file.
-  public typealias LocationInfo = (line: Int, charInLine: Int)
-
   /// Returns the location info for a given line index.
-  public func locationInfo(of index: String.Index) -> LocationInfo {
+  public func fileLocation(of index: String.Index) -> FileLocation {
     let prefix = self[startIndex..<index]
     let prefixLines = prefix.components(separatedBy: .newlines)
-    guard let lastPrefixLine = prefixLines.last else { return (line: 1, charInLine: 1) }
+    guard let lastPrefixLine = prefixLines.last else { return .init(row: 1, column: 1) }
 
     let charInLine = prefix.last == "\n" ? 1 : lastPrefixLine.count + 1
-    return (line: prefixLines.count, charInLine: charInLine)
+    return .init(row: prefixLines.count, column: charInLine)
   }
 
   /// Returns a string that shows newlines as `\n`.
@@ -74,7 +71,7 @@ extension String {
   public func appendingPathComponent(_ pathComponent: String) -> String {
     guard let pathUrl = URL(string: self) else {
       log.message("Could not convert path '\(self)' to type URL.", level: .error)
-      log.exit(status: .failure)
+      log.exit(fail: true)
       return ""  // only reachable in unit tests
     }
 

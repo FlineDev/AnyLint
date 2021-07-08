@@ -1,7 +1,7 @@
+import Foundation
 import ArgumentParser
 import Configuration
 import Core
-import Foundation
 import ShellOut
 
 struct InitCommand: ParsableCommand {
@@ -18,7 +18,7 @@ struct InitCommand: ParsableCommand {
 
   @Option(
     name: .shortAndLong,
-    help: "Path to the new config file to initialize it at."
+    help: "Path to the new config file to initialize it at. If a directory is specified, creates 'anylint.yml' in it."
   )
   var path: String = FileManager.default.currentDirectoryUrl.appendingPathComponent("anylint.yml").path
 
@@ -30,7 +30,7 @@ struct InitCommand: ParsableCommand {
 
     guard !FileManager.default.fileExists(atPath: path) else {
       log.message("Configuration file already exists at path '\(path)'.", level: .error)
-      log.exit(status: .failure)
+      log.exit(fail: true)
       return  // only reachable in unit tests
     }
 

@@ -1,5 +1,5 @@
-import ArgumentParser
 import Foundation
+import ArgumentParser
 
 @main
 struct AnyLint: ParsableCommand {

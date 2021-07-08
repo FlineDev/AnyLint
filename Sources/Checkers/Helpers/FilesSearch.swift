@@ -1,4 +1,5 @@
 import Foundation
+import Core
 
 /// Helper to search for files and filter using Regexes.
 public final class FilesSearch {
@@ -47,7 +48,7 @@ public final class FilesSearch {
     //
     //    guard let url = URL(string: path, relativeTo: fileManager.currentDirectoryUrl) else {
     //      log.message("Could not convert path '\(path)' to type URL.", level: .error)
-    //      log.exit(status: .failure)
+    //      log.exit(fail: true)
     //      return []  // only reachable in unit tests
     //    }
     //
@@ -61,7 +62,7 @@ public final class FilesSearch {
     //      )
     //    else {
     //      log.message("Couldn't create enumerator for path '\(path)'.", level: .error)
-    //      log.exit(status: .failure)
+    //      log.exit(fail: true)
     //      return []  // only reachable in unit tests
     //    }
     //
@@ -76,7 +77,7 @@ public final class FilesSearch {
     //        let isRegularFilePath = resourceValues.isRegularFile
     //      else {
     //        log.message("Could not read resource values for file at \(fileUrl.path)", level: .error)
-    //        log.exit(status: .failure)
+    //        log.exit(fail: true)
     //        return []  // only reachable in unit tests
     //      }
     //

@@ -60,7 +60,7 @@ public struct AutoCorrection: Codable {
 //      let after = elements.first(where: { $0.0 == "after" })?.1
 //    else {
 //      log.message("Failed to convert Dictionary literal '\(elements)' to type AutoCorrection.", level: .error)
-//      log.exit(status: .failure)
+//      log.exit(fail: true)
 //      exit(EXIT_FAILURE)  // only reachable in unit tests
 //    }
 //

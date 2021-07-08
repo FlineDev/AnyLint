@@ -55,7 +55,7 @@ extension Regex: ExpressibleByStringLiteral {
     }
     catch {
       log.message("Failed to convert String literal '\(value)' to type Regex.", level: .error)
-      log.exit(status: .failure)
+      log.exit(fail: true)
       exit(EXIT_FAILURE)  // only reachable in unit tests
     }
   }
@@ -88,7 +88,7 @@ extension Regex: ExpressibleByDictionaryLiteral {
     }
     catch {
       log.message("Failed to convert Dictionary literal '\(elements)' to type Regex.", level: .error)
-      log.exit(status: .failure)
+      log.exit(fail: true)
       exit(EXIT_FAILURE)  // only reachable in unit tests
     }
   }

@@ -6,7 +6,7 @@ extension FileManager {
   public func moveFileSafely(from sourcePath: String, to targetPath: String) throws {
     guard fileExists(atPath: sourcePath) else {
       log.message("No file found at \(sourcePath) to move.", level: .error)
-      log.exit(status: .failure)
+      log.exit(fail: true)
       return  // only reachable in unit tests
     }
 
@@ -22,7 +22,7 @@ extension FileManager {
 
     guard fileExistsAndIsDirectory(atPath: targetParentDirectoryPath) else {
       log.message("Expected \(targetParentDirectoryPath) to be a directory.", level: .error)
-      log.exit(status: .failure)
+      log.exit(fail: true)
       return  // only reachable in unit tests
     }
 

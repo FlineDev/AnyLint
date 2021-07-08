@@ -53,7 +53,7 @@ extension FileContentsChecker: Checker {
     //        let skipHereRegex = try Regex(#"AnyLint\.skipHere:[^\n]*[, ]\#(checkInfo.id)"#)
     //
     //        for match in regex.matches(in: fileContents).reversed() {
-    //          let locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+    //          let fileLocation = fileContents.locationInfo(of: match.range.lowerBound)
     //
     //          log.message("Found violating match at \(locationInfo) ...", level: .debug)
     //
