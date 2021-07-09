@@ -43,12 +43,6 @@ struct LintCommand: ParsableCommand {
   )
   var outputFormat: OutputFormat = .commandLine
 
-  @Flag(
-    name: .shortAndLong,
-    help: "Enables more verbose output for more details."
-  )
-  var verbose: Bool = false
-
   mutating func run() throws {
     log = Logger(outputFormat: outputFormat)
 
@@ -58,82 +52,82 @@ struct LintCommand: ParsableCommand {
         level: .error
       )
       log.exit(fail: true)
-      return  // only reachable in unit tests
     }
 
     let configFileUrl = URL(fileURLWithPath: config)
     let configFileData = try Data(contentsOf: configFileUrl)
     let lintConfig: LintConfiguration = try YAMLDecoder().decode(from: configFileData)
 
-    do {
-      log.message("Start linting using config file at \(config) ...", level: .info)
+    log.message("Start linting using config file at \(config) ...", level: .info)
+    var lintResults: LintResults = [.info: [:], .warning: [:], .error: [:]]
 
-      try checksToPerform()
+    // run `FileContents` checks
+    for fileContentsConfig in lintConfig.fileContents {
+      let violations = try Lint.checkFileContents(
+        checkInfo: fileContentsConfig.checkInfo,
+        regex: fileContentsConfig.regex,
+        matchingExamples: fileContentsConfig.matchingExamples,
+        nonMatchingExamples: fileContentsConfig.nonMatchingExamples,
+        includeFilters: fileContentsConfig.includeFilters,
+        excludeFilters: fileContentsConfig.excludeFilters,
+        autoCorrectReplacement: fileContentsConfig.autoCorrectReplacement,
+        autoCorrectExamples: fileContentsConfig.autoCorrectExamples,
+        repeatIfAutoCorrected: fileContentsConfig.repeatIfAutoCorrected
+      )
 
-      Statistics.shared.logCheckSummary()
-
-      if Statistics.shared.violations(severity: .error, excludeAutocorrected: outputFormat == .xcode).isFilled {
-        log.exit(fail: true)
-      }
-      else if
-        failLevel == .warning,
-        Statistics.shared.violations(severity: .warning, excludeAutocorrected: outputFormat == .xcode).isFilled
-      {
-        log.exit(fail: true)
-      }
-      else {
-        log.exit(status: .success)
-      }
-
-
-
-
-
-
-
-
-
-      try Lint.logSummaryAndExit(arguments: arguments) {
-        for checkFileContent in lintConfig.checkFileContents {
-          try Lint.checkFileContents(
-            checkInfo: .init(id: checkFileContent.hint, hint: checkFileContent.hint),
-            regex: .init(checkFileContent.regex),
-            matchingExamples: checkFileContent.matchingExamples ?? [],
-            nonMatchingExamples: checkFileContent.nonMatchingExamples ?? [],
-            includeFilters: checkFileContent.includeFilters ?? [Regex(".*")],
-            excludeFilters: checkFileContent.excludeFilters ?? [],
-            autoCorrectReplacement: checkFileContent.autoCorrectReplacement,
-            autoCorrectExamples: checkFileContent.autoCorrectExamples ?? [],
-            repeatIfAutoCorrected: checkFileContent.repeatIfAutoCorrected ?? false
-          )
-        }
-
-        for checkFilePath in lintConfig.checkFilePaths {
-          try Lint.checkFilePaths(
-            checkInfo: .init(id: checkFilePath.id, hint: checkFilePath.hint),
-            regex: .init(checkFilePath.regex),
-            matchingExamples: checkFilePath.matchingExamples ?? [],
-            nonMatchingExamples: checkFilePath.nonMatchingExamples ?? [],
-            includeFilters: checkFilePath.includeFilters ?? [Regex(".*")],
-            excludeFilters: checkFilePath.excludeFilters ?? [],
-            autoCorrectReplacement: checkFilePath.autoCorrectReplacement,
-            autoCorrectExamples: checkFilePath.autoCorrectExamples ?? [],
-            violateIfNoMatchesFound: checkFilePath.violateIfNoMatchesFound ?? false
-          )
-        }
-      }
-
-      log.message("Linting successful using config file at \(config). Congrats! 🎉", level: .success)
+      lintResults.appendViolations(violations, forCheck: fileContentsConfig.checkInfo)
     }
-    catch is RunError {
-      if log.outputType != .xcode {
-        log.message("Linting failed using config file at \(config).", level: .error)
-      }
 
-      throw LintError.configFileFailed
+    // run `FilePaths` checks
+    for filePathsConfig in lintConfig.filePaths {
+      let violations = try Lint.checkFilePaths(
+        checkInfo: filePathsConfig.checkInfo,
+        regex: filePathsConfig.regex,
+        matchingExamples: filePathsConfig.matchingExamples,
+        nonMatchingExamples: filePathsConfig.nonMatchingExamples,
+        includeFilters: filePathsConfig.includeFilters,
+        excludeFilters: filePathsConfig.excludeFilters,
+        autoCorrectReplacement: filePathsConfig.autoCorrectReplacement,
+        autoCorrectExamples: filePathsConfig.autoCorrectExamples,
+        violateIfNoMatchesFound: filePathsConfig.violateIfNoMatchesFound
+      )
+
+      lintResults.appendViolations(violations, forCheck: filePathsConfig.checkInfo)
+    }
+
+    // run `CustomScripts` checks
+    for customScriptConfig in lintConfig.customScripts {
+      let violations = try Lint.runCustomScript(
+        checkInfo: customScriptConfig.checkInfo,
+        command: customScriptConfig.command
+      )
+
+      lintResults.appendViolations(violations, forCheck: customScriptConfig.checkInfo)
+    }
+
+    // report violations & exit with right status code
+    lintResults.report(outputFormat: outputFormat)
+
+    if lintResults.violations(severity: .error, excludeAutocorrected: outputFormat == .xcode).isFilled {
+      log.exit(fail: true)
+    }
+    else if failLevel == .warning,
+      lintResults.violations(severity: .warning, excludeAutocorrected: outputFormat == .xcode).isFilled
+    {
+      log.exit(fail: true)
+    }
+    else {
+      log.message("Linting successful using config file at \(config). Congrats! 🎉", level: .success)
+      log.exit(fail: false)
     }
   }
 }
 
 extension Severity: ExpressibleByArgument {}
 extension OutputFormat: ExpressibleByArgument {}
+
+extension CheckConfiguration {
+  var checkInfo: CheckInfo {
+    .init(id: id, hint: hint, severity: severity)
+  }
+}

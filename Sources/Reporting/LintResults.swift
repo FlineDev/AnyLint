@@ -23,6 +23,16 @@ extension LintResults {
     }
   }
 
+  /// Appends the violations for the provided check to the results.
+  public mutating func appendViolations(_ violations: [Violation], forCheck checkInfo: CheckInfo) {
+    assert(
+      keys.contains(checkInfo.severity),
+      "Trying to add violations for severity \(checkInfo.severity) to LintResults without having initialized the severity key."
+    )
+
+    self[checkInfo.severity]![checkInfo] = violations
+  }
+
   /// Logs the summary of the violations in the specified output format.
   public func report(outputFormat: OutputFormat) {
     let executedChecks = allExecutedChecks
@@ -50,7 +60,13 @@ extension LintResults {
     }
   }
 
-  func violations(severity: Severity, excludeAutocorrected: Bool) -> [Violation] {
+  /// Used to get validations for a specific severity level.
+  ///
+  /// - Parameters:
+  ///   - severity: The severity to filter by.
+  ///   - excludeAutocorrected: If `true`, autocorrected violations will not be returned, else returns all violations of the given severity level.
+  /// - Returns: The violations for a specific severity level.
+  public func violations(severity: Severity, excludeAutocorrected: Bool) -> [Violation] {
     guard let violations = self[severity]?.values.flatMap({ $0 }) else { return [] }
     guard excludeAutocorrected else { return violations }
     return violations.filter { $0.appliedAutoCorrection == nil }
@@ -134,6 +150,6 @@ extension LintResults {
   }
 
   private func reportToFile(at path: String) {
-
+    // TODO: [cg_2021-07-09] not yet implemented
   }
 }

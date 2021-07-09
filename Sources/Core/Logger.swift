@@ -63,7 +63,7 @@ public final class Logger {
   }
 
   /// Exits the current program with the given fail state.
-  public func exit(fail: Bool) {
+  public func exit(fail: Bool) -> Never {
     let statusCode = fail ? EXIT_FAILURE : EXIT_SUCCESS
 
     #if os(Linux)

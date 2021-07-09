@@ -19,8 +19,15 @@ public struct LintConfiguration: Codable {
   public let customScripts: [CustomScriptsConfiguration]
 }
 
+/// Defines fields each check configuration needs to have.
+public protocol CheckConfiguration {
+  var id: String { get }
+  var hint: String { get }
+  var severity: Severity { get }
+}
+
 /// The `FileContents` check configuration type.
-public struct FileContentsConfiguration: Codable {
+public struct FileContentsConfiguration: CheckConfiguration, Codable {
   /// A unique identifier for the check to show on violations. Required.
   public let id: String
 
@@ -31,29 +38,29 @@ public struct FileContentsConfiguration: Codable {
   public var severity: Severity = .error
 
   /// The regular expression to use to find violations. Required.
-  public let regex: String
+  public let regex: Regex
 
   /// A list of strings that are expected to match the provided `regex`. Optional.
   ///
   /// If any of the provided examples doesn't match, linting will fail early to ensure the provided `regex` works as expected. The check itself will not be run.
   /// This can be considered a 'unit test' for the regex. It's recommended to provide at least one matching example & one non-matching example.
-  public let matchingExamples: [String]?
+  public var matchingExamples: [String] = []
 
   /// A list of strings that are expected to **not** to match the provided `regex`. Optional.
   ///
   /// If any of the provided examples matches, linting will fail early to ensure the provided `regex` works as expected. The check itself will not be run.
   /// This can be considered a 'unit test' for the regex. It's recommended to provide at least one matching example & one non-matching example.
-  public let nonMatchingExamples: [String]?
+  public var nonMatchingExamples: [String] = []
 
   /// A list of path-matching regexes to restrict this check to files in the matching paths only ("allow-listing"). Optional.
   ///
   /// When combined with `excludeFilters`, the exclude paths take precedence over the include paths – in other words: 'exclude always wins'.
-  public let includeFilters: [Regex]?
+  public var includeFilters: [Regex] = [try! Regex(".*")]
 
   /// A list of path-matching regexes to skip this check on for files with matching paths ("deny-listing"). Optional.
   ///
   /// When combined with `includeFilters`, the exclude paths take precedence over the include paths – in other words: 'exclude always wins'
-  public let excludeFilters: [Regex]?
+  public var excludeFilters: [Regex] = []
 
   /// A regex replacement template with `$1`-kind of references to capture groups in the regex. Optional.
   ///
@@ -67,7 +74,7 @@ public struct FileContentsConfiguration: Codable {
   /// If any of the provided `before` doesn't get transformed to the `after`, linting will fail early and the check itself will not be run.
   ///
   /// This can be considered a 'unit test' for the auto-correction. It's recommended to provide at least one pair if you specify use `autoCorrectReplacement`.
-  public let autoCorrectExamples: [AutoCorrection]?
+  public var autoCorrectExamples: [AutoCorrection] = []
 
   /// If set to `true`, a check will be re-run if there was at least one auto-correction applied on the last run. Optional.
   ///
@@ -75,11 +82,11 @@ public struct FileContentsConfiguration: Codable {
   /// For example, to ensure long numbers are separated by an underscore, you could write the regex `(\d+)(\d{3})`
   /// and specify the replacement `$1_$2$3`. By default, the number `123456789` would be transformed to `123456_789`.
   /// With this option set to `true`, the check would be re-executed after the first run (because there was a correction) and the result would be `123_456_789`.
-  public let repeatIfAutoCorrected: Bool?
+  public var repeatIfAutoCorrected: Bool = false
 }
 
 /// The `FilePaths` check configuration type.
-public struct FilePathsConfiguration: Codable {
+public struct FilePathsConfiguration: CheckConfiguration, Codable {
   /// A unique identifier for the check to show on violations.
   public let id: String
 
@@ -90,29 +97,29 @@ public struct FilePathsConfiguration: Codable {
   public var severity: Severity = .error
 
   /// The regular expression to use to find violations. Required.
-  public let regex: String
+  public let regex: Regex
 
   /// A list of strings that are expected to match the provided `regex`. Optional.
   ///
   /// If any of the provided examples doesn't match, linting will fail early to ensure the provided `regex` works as expected. The check itself will not be run.
   /// This can be considered a 'unit test' for the regex. It's recommended to provide at least one matching example & one non-matching example.
-  public let matchingExamples: [String]?
+  public var matchingExamples: [String] = []
 
   /// A list of strings that are expected to **not** to match the provided `regex`. Optional.
   ///
   /// If any of the provided examples matches, linting will fail early to ensure the provided `regex` works as expected. The check itself will not be run.
   /// This can be considered a 'unit test' for the regex. It's recommended to provide at least one matching example & one non-matching example.
-  public let nonMatchingExamples: [String]?
+  public var nonMatchingExamples: [String] = []
 
   /// A list of path-matching regexes to restrict this check to files in the matching paths only ("allow-listing"). Optional.
   ///
   /// When combined with `excludeFilters`, the exclude paths take precedence over the include paths – in other words: 'exclude always wins'.
-  public let includeFilters: [Regex]?
+  public var includeFilters: [Regex] = [try! Regex(".*")]
 
   /// A list of path-matching regexes to skip this check on for files with matching paths ("deny-listing"). Optional.
   ///
   /// When combined with `includeFilters`, the exclude paths take precedence over the include paths – in other words: 'exclude always wins'
-  public let excludeFilters: [Regex]?
+  public var excludeFilters: [Regex] = []
 
   /// A regex replacement template with `$1`-kind of references to capture groups in the regex. Optional.
   ///
@@ -128,16 +135,19 @@ public struct FilePathsConfiguration: Codable {
   /// If any of the provided `before` doesn't get transformed to the `after`, linting will fail early and the check itself will not be run.
   ///
   /// This can be considered a 'unit test' for the auto-correction. It's recommended to provide at least one pair if you specify use `autoCorrectReplacement`.
-  public let autoCorrectExamples: [AutoCorrection]?
+  public var autoCorrectExamples: [AutoCorrection] = []
 
   /// If set to `true`, a violation will be reported if **no** matches are found. By default (or if set to `false`), a check violates on every matching file path.
-  public let violateIfNoMatchesFound: Bool?
+  public var violateIfNoMatchesFound: Bool = false
 }
 
 /// The `CustomScripts` check configuration type.
-public struct CustomScriptsConfiguration: Codable {
-  /// The name of the custom script.
-  public let name: String
+public struct CustomScriptsConfiguration: CheckConfiguration, Codable {
+  /// A unique identifier for the check to show on violations.
+  public let id: String
+
+  /// A hint that should be shown on violations of this check. Should explain what's wrong and guide on fixing the issue.
+  public let hint: String
 
   /// The severity level of this check. One of `.info`, `.warning` or `.error`. Defaults to `.error`.
   public var severity: Severity = .error

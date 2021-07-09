@@ -1,5 +1,6 @@
 import Foundation
 import Core
+import OrderedCollections
 
 /// The linter type providing APIs for checking anything using regular expressions.
 public enum Lint {
@@ -25,48 +26,44 @@ public enum Lint {
     autoCorrectReplacement: String? = nil,
     autoCorrectExamples: [AutoCorrection] = [],
     repeatIfAutoCorrected: Bool = false
-  ) throws {
-    fatalError()  // TODO: [cg_2021-07-08] not yet implemented
-    //    validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
-    //    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
-    //
-    //    validateParameterCombinations(
-    //      checkInfo: checkInfo,
-    //      autoCorrectReplacement: autoCorrectReplacement,
-    //      autoCorrectExamples: autoCorrectExamples,
-    //      violateIfNoMatchesFound: nil
-    //    )
-    //
-    //    if let autoCorrectReplacement = autoCorrectReplacement {
-    //      validateAutocorrectsAll(
-    //        checkInfo: checkInfo,
-    //        examples: autoCorrectExamples,
-    //        regex: regex,
-    //        autocorrectReplacement: autoCorrectReplacement
-    //      )
-    //    }
-    //
-    //    guard !Options.validateOnly else {
-    //      Statistics.shared.executedChecks.append(checkInfo)
-    //      return
-    //    }
-    //
-    //    let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
-    //      within: fileManager.currentDirectoryPath,
-    //      includeFilters: includeFilters,
-    //      excludeFilters: excludeFilters
-    //    )
-    //
-    //    let violations = try FileContentsChecker(
-    //      checkInfo: checkInfo,
-    //      regex: regex,
-    //      filePathsToCheck: filePathsToCheck,
-    //      autoCorrectReplacement: autoCorrectReplacement,
-    //      repeatIfAutoCorrected: repeatIfAutoCorrected
-    //    )
-    //    .performCheck()
-    //
-    //    Statistics.shared.found(violations: violations, in: checkInfo)
+  ) throws -> [Violation] {
+    validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
+    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
+
+    validateParameterCombinations(
+      checkInfo: checkInfo,
+      autoCorrectReplacement: autoCorrectReplacement,
+      autoCorrectExamples: autoCorrectExamples,
+      violateIfNoMatchesFound: nil
+    )
+
+    if let autoCorrectReplacement = autoCorrectReplacement {
+      validateAutocorrectsAll(
+        checkInfo: checkInfo,
+        examples: autoCorrectExamples,
+        regex: regex,
+        autocorrectReplacement: autoCorrectReplacement
+      )
+    }
+
+    let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
+      within: FileManager.default.currentDirectoryPath,
+      includeFilters: includeFilters,
+      excludeFilters: excludeFilters
+    )
+
+    let violations = try FileContentsChecker(
+      id: checkInfo.id,
+      hint: checkInfo.hint,
+      severity: checkInfo.severity,
+      regex: regex,
+      filePathsToCheck: filePathsToCheck,
+      autoCorrectReplacement: autoCorrectReplacement,
+      repeatIfAutoCorrected: repeatIfAutoCorrected
+    )
+    .performCheck()
+
+    return violations
   }
 
   /// Checks the names of files.
@@ -91,134 +88,74 @@ public enum Lint {
     autoCorrectReplacement: String? = nil,
     autoCorrectExamples: [AutoCorrection] = [],
     violateIfNoMatchesFound: Bool = false
-  ) throws {
-    fatalError()  // TODO: [cg_2021-07-08] not yet implemented
-    //    validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
-    //    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
-    //    validateParameterCombinations(
-    //      checkInfo: checkInfo,
-    //      autoCorrectReplacement: autoCorrectReplacement,
-    //      autoCorrectExamples: autoCorrectExamples,
-    //      violateIfNoMatchesFound: violateIfNoMatchesFound
-    //    )
-    //
-    //    if let autoCorrectReplacement = autoCorrectReplacement {
-    //      validateAutocorrectsAll(
-    //        checkInfo: checkInfo,
-    //        examples: autoCorrectExamples,
-    //        regex: regex,
-    //        autocorrectReplacement: autoCorrectReplacement
-    //      )
-    //    }
-    //
-    //    guard !Options.validateOnly else {
-    //      Statistics.shared.executedChecks.append(checkInfo)
-    //      return
-    //    }
-    //
-    //    let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
-    //      within: fileManager.currentDirectoryPath,
-    //      includeFilters: includeFilters,
-    //      excludeFilters: excludeFilters
-    //    )
-    //
-    //    let violations = try FilePathsChecker(
-    //      checkInfo: checkInfo,
-    //      regex: regex,
-    //      filePathsToCheck: filePathsToCheck,
-    //      autoCorrectReplacement: autoCorrectReplacement,
-    //      violateIfNoMatchesFound: violateIfNoMatchesFound
-    //    )
-    //    .performCheck()
-    //
-    //    Statistics.shared.found(violations: violations, in: checkInfo)
+  ) throws -> [Violation] {
+    validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
+    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
+    validateParameterCombinations(
+      checkInfo: checkInfo,
+      autoCorrectReplacement: autoCorrectReplacement,
+      autoCorrectExamples: autoCorrectExamples,
+      violateIfNoMatchesFound: violateIfNoMatchesFound
+    )
+
+    if let autoCorrectReplacement = autoCorrectReplacement {
+      validateAutocorrectsAll(
+        checkInfo: checkInfo,
+        examples: autoCorrectExamples,
+        regex: regex,
+        autocorrectReplacement: autoCorrectReplacement
+      )
+    }
+
+    let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
+      within: FileManager.default.currentDirectoryPath,
+      includeFilters: includeFilters,
+      excludeFilters: excludeFilters
+    )
+
+    let violations = try FilePathsChecker(
+      id: checkInfo.id,
+      hint: checkInfo.hint,
+      severity: checkInfo.severity,
+      regex: regex,
+      filePathsToCheck: filePathsToCheck,
+      autoCorrectReplacement: autoCorrectReplacement,
+      violateIfNoMatchesFound: violateIfNoMatchesFound
+    )
+    .performCheck()
+
+    return violations
   }
 
-  /// Run custom logic as checks.
+  /// Run custom scripts as checks.
   ///
-  /// - Parameters:
-  ///   - checkInfo: The info object providing some general information on the lint check.
-  ///   - customClosure: The custom logic to run which produces an array of `Violation` objects for any violations.
-  public static func customCheck(checkInfo: CheckInfo, customClosure: (CheckInfo) -> [Violation]) {
-    fatalError()  // TODO: [cg_2021-07-08] not yet implemented
-    //    guard !Options.validateOnly else {
-    //      Statistics.shared.executedChecks.append(checkInfo)
-    //      return
-    //    }
-    //
-    //    Statistics.shared.found(violations: customClosure(checkInfo), in: checkInfo)
+  /// - Returns: If the command produces an output in the ``LintResults`` JSON format, will forward them. Else, it will report exactly one violation if the command has a non-zero exit code with the last line(s) of output.
+  public static func runCustomScript(checkInfo: CheckInfo, command: String) throws -> [Violation] {
+    fatalError()  // TODO: [cg_2021-07-09] not yet implemented
   }
-
-  //  /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
-  //  public static func logSummaryAndExit(
-  //    arguments: [String] = [],
-  //    afterPerformingChecks checksToPerform: () throws -> Void = {}
-  //  ) throws {
-  //    let failOnWarnings = arguments.contains(Constants.strictArgument)
-  //    let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
-  //
-  //    if targetIsXcode {
-  //      log = Logger(outputType: .xcode)
-  //    }
-  //
-  //    log.logDebugLevel = arguments.contains(Constants.debugArgument)
-  //    Options.validateOnly = arguments.contains(Constants.validateArgument)
-  //
-  //    try checksToPerform()
-  //
-  //    guard !Options.validateOnly else {
-  //      Statistics.shared.logValidationSummary()
-  //      log.exit(status: .success)
-  //      return  // only reachable in unit tests
-  //    }
-  //
-  //    Statistics.shared.logCheckSummary()
-  //
-  //    if Statistics.shared.violations(severity: .error, excludeAutocorrected: targetIsXcode).isFilled {
-  //      log.exit(fail: true)
-  //    }
-  //    else if failOnWarnings
-  //      && Statistics.shared.violations(severity: .warning, excludeAutocorrected: targetIsXcode).isFilled
-  //    {
-  //      log.exit(fail: true)
-  //    }
-  //    else {
-  //      log.exit(status: .success)
-  //    }
-  //  }
 
   static func validate(regex: Regex, matchesForEach matchingExamples: [String], checkInfo: CheckInfo) {
-    fatalError()  // TODO: [cg_2021-07-08] not yet implemented
-    //    if matchingExamples.isFilled {
-    //      log.message("Validating 'matchingExamples' for \(checkInfo) ...", level: .debug)
-    //    }
-    //
-    //    for example in matchingExamples {
-    //      if !regex.matches(example) {
-    //        log.message(
-    //          "Couldn't find a match for regex \(regex) in check '\(checkInfo.id)' within matching example:\n\(example)",
-    //          level: .error
-    //        )
-    //        log.exit(fail: true)
-    //      }
-    //    }
+    for example in matchingExamples {
+      if !regex.matches(example) {
+        log.message(
+          "Couldn't find a match for regex \(regex) in check '\(checkInfo.id)' within matching example:\n\(example)",
+          level: .error
+        )
+        log.exit(fail: true)
+      }
+    }
   }
 
   static func validate(regex: Regex, doesNotMatchAny nonMatchingExamples: [String], checkInfo: CheckInfo) {
-    fatalError()  // TODO: [cg_2021-07-08] not yet implemented
-    //    if nonMatchingExamples.isFilled {
-    //      log.message("Validating 'nonMatchingExamples' for \(checkInfo) ...", level: .debug)
-    //    }
-    //
-    //    for example in nonMatchingExamples {
-    //      if regex.matches(example) {
-    //        log.message(
-    //          "Unexpectedly found a match for regex \(regex) in check '\(checkInfo.id)' within non-matching example:\n\(example)",
-    //          level: .error
-    //        )
-    //        log.exit(fail: true)
-    //      }
-    //    }
+    for example in nonMatchingExamples {
+      if regex.matches(example) {
+        log.message(
+          "Unexpectedly found a match for regex \(regex) in check '\(checkInfo.id)' within non-matching example:\n\(example)",
+          level: .error
+        )
+        log.exit(fail: true)
+      }
+    }
   }
 
   static func validateAutocorrectsAll(
@@ -227,26 +164,21 @@ public enum Lint {
     regex: Regex,
     autocorrectReplacement: String
   ) {
-    fatalError()  // TODO: [cg_2021-07-08] not yet implemented
-    //    if examples.isFilled {
-    //      log.message("Validating 'autoCorrectExamples' for \(checkInfo) ...", level: .debug)
-    //    }
-    //
-    //    for autocorrect in examples {
-    //      let autocorrected = regex.replaceAllCaptures(in: autocorrect.before, with: autocorrectReplacement)
-    //      if autocorrected != autocorrect.after {
-    //        log.message(
-    //          """
-    //          Autocorrecting example for \(checkInfo.id) did not result in expected output.
-    //          Before:   '\(autocorrect.before.showWhitespacesAndNewlines())'
-    //          After:    '\(autocorrected.showWhitespacesAndNewlines())'
-    //          Expected: '\(autocorrect.after.showWhitespacesAndNewlines())'
-    //          """,
-    //          level: .error
-    //        )
-    //        log.exit(fail: true)
-    //      }
-    //    }
+    for autocorrect in examples {
+      let autocorrected = regex.replaceAllCaptures(in: autocorrect.before, with: autocorrectReplacement)
+      if autocorrected != autocorrect.after {
+        log.message(
+          """
+          Autocorrecting example for \(checkInfo.id) did not result in expected output.
+          Before:   '\(autocorrect.before.showWhitespacesAndNewlines())'
+          After:    '\(autocorrected.showWhitespacesAndNewlines())'
+          Expected: '\(autocorrect.after.showWhitespacesAndNewlines())'
+          """,
+          level: .error
+        )
+        log.exit(fail: true)
+      }
+    }
   }
 
   static func validateParameterCombinations(
@@ -255,21 +187,19 @@ public enum Lint {
     autoCorrectExamples: [AutoCorrection],
     violateIfNoMatchesFound: Bool?
   ) {
-    fatalError()  // TODO: [cg_2021-07-08] not yet implemented
-    //    if autoCorrectExamples.isFilled && autoCorrectReplacement == nil {
-    //      log.message(
-    //        "`autoCorrectExamples` provided for check \(checkInfo.id) without specifying an `autoCorrectReplacement`.",
-    //        level: .warning
-    //      )
-    //    }
-    //
-    //    guard autoCorrectReplacement == nil || violateIfNoMatchesFound != true else {
-    //      log.message(
-    //        "Incompatible options specified for check \(checkInfo.id): autoCorrectReplacement and violateIfNoMatchesFound can't be used together.",
-    //        level: .error
-    //      )
-    //      log.exit(fail: true)
-    //      return  // only reachable in unit tests
-    //    }
+    if autoCorrectExamples.isFilled && autoCorrectReplacement == nil {
+      log.message(
+        "`autoCorrectExamples` provided for check \(checkInfo.id) without specifying an `autoCorrectReplacement`.",
+        level: .warning
+      )
+    }
+
+    guard autoCorrectReplacement == nil || violateIfNoMatchesFound != true else {
+      log.message(
+        "Incompatible options specified for check \(checkInfo.id): autoCorrectReplacement and violateIfNoMatchesFound can't be used together.",
+        level: .error
+      )
+      log.exit(fail: true)
+    }
   }
 }

@@ -72,7 +72,6 @@ extension String {
     guard let pathUrl = URL(string: self) else {
       log.message("Could not convert path '\(self)' to type URL.", level: .error)
       log.exit(fail: true)
-      return ""  // only reachable in unit tests
     }
 
     return pathUrl.appendingPathComponent(pathComponent).absoluteString

@@ -31,7 +31,6 @@ struct InitCommand: ParsableCommand {
     guard !FileManager.default.fileExists(atPath: path) else {
       log.message("Configuration file already exists at path '\(path)'.", level: .error)
       log.exit(fail: true)
-      return  // only reachable in unit tests
     }
 
     log.message("Making sure config file directory exists ...", level: .info)

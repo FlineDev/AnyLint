@@ -7,7 +7,6 @@ extension FileManager {
     guard fileExists(atPath: sourcePath) else {
       log.message("No file found at \(sourcePath) to move.", level: .error)
       log.exit(fail: true)
-      return  // only reachable in unit tests
     }
 
     guard !fileExists(atPath: targetPath) || sourcePath.lowercased() == targetPath.lowercased() else {
@@ -23,7 +22,6 @@ extension FileManager {
     guard fileExistsAndIsDirectory(atPath: targetParentDirectoryPath) else {
       log.message("Expected \(targetParentDirectoryPath) to be a directory.", level: .error)
       log.exit(fail: true)
-      return  // only reachable in unit tests
     }
 
     if sourcePath.lowercased() == targetPath.lowercased() {

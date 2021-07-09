@@ -11,22 +11,6 @@ public enum Severity: String, CaseIterable, Codable {
 
   /// Use for checks that probably are problematic.
   case error
-
-  //  static func from(string: String) -> Severity? {
-  //    switch string {
-  //    case "info", "i":
-  //      return .info
-  //
-  //    case "warning", "w":
-  //      return .warning
-  //
-  //    case "error", "e":
-  //      return .error
-  //
-  //    default:
-  //      return nil
-  //    }
-  //  }
 }
 
 extension Severity: Comparable {
