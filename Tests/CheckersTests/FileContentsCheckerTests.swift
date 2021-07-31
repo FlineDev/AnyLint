@@ -1,9 +1,11 @@
 @testable import Checkers
 import XCTest
 
-// swiftlint:disable function_body_length
-
 final class FileContentsCheckerTests: XCTestCase {
+  func testSample() {
+    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  }
+
   //  override func setUp() {
   //    log = Logger(outputType: .test)
   //    TestHelper.shared.reset()

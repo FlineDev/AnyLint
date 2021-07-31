@@ -2,6 +2,10 @@
 import XCTest
 
 final class FilePathsCheckerTests: XCTestCase {
+  func testSample() {
+    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  }
+
   //  override func setUp() {
   //    log = Logger(outputType: .test)
   //    TestHelper.shared.reset()

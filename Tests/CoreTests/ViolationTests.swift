@@ -2,6 +2,10 @@
 import XCTest
 
 final class ViolationTests: XCTestCase {
+  func testSample() {
+    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  }
+
   //  func testLocationMessage() {
   //    let checkInfo = CheckInfo(id: "demo_check", hint: "Make sure to always check the demo.", severity: .warning)
   //    XCTAssertNil(Violation(checkInfo: checkInfo).locationMessage(pathType: .relative))

@@ -2,6 +2,10 @@
 import XCTest
 
 final class AutoCorrectionTests: XCTestCase {
+  func testSample() {
+    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  }
+
   //  func testInitWithDictionaryLiteral() {
   //    let autoCorrection: AutoCorrection = ["before": "Lisence", "after": "License"]
   //    XCTAssertEqual(autoCorrection.before, "Lisence")

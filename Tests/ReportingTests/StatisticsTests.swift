@@ -2,6 +2,10 @@
 import XCTest
 
 final class StatisticsTests: XCTestCase {
+  func testSample() {
+    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  }
+
   //  func testFoundViolationsInCheck() {
   //    XCTAssert(Statistics.shared.executedChecks.isEmpty)
   //    XCTAssert(Statistics.shared.violationsBySeverity[.info]!.isEmpty)
@@ -48,7 +52,7 @@ final class StatisticsTests: XCTestCase {
   //    XCTAssertEqual(Statistics.shared.violationsPerCheck.keys.count, 3)
   //  }
   //
-  //  func testLogSummary() {  // swiftlint:disable:this function_body_length
+  //  func testLogSummary() {
   //    Statistics.shared.logCheckSummary()
   //    XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
   //    XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .warning)

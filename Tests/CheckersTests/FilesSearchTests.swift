@@ -1,9 +1,11 @@
 @testable import Checkers
 import XCTest
 
-// swiftlint:disable force_try
-
 final class FilesSearchTests: XCTestCase {
+  func testSample() {
+    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  }
+
   //  override func setUp() {
   //    log = Logger(outputType: .test)
   //    TestHelper.shared.reset()
