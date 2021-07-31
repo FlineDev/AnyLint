@@ -4,18 +4,21 @@ import Configuration
 import Core
 import ShellOut
 
+/// The `init` subcommand helping to get started with AnyLint by setting up a configuration file from a template.
 struct InitCommand: ParsableCommand {
   static var configuration: CommandConfiguration = .init(
     commandName: "init",
     abstract: "Initializes a new AnyLint configuration file (at specified path & using the specified template)."
   )
 
+  /// The template option to create the initial config file from.
   @Option(
     name: .shortAndLong,
     help: "The template to create the initial config file from. One of: \(Template.optionsDescription)."
   )
   var template: Template = .blank
 
+  /// Path option to the new config file to initialize it at.
   @Option(
     name: .shortAndLong,
     help: "Path to the new config file to initialize it at. If a directory is specified, creates 'anylint.yml' in it."

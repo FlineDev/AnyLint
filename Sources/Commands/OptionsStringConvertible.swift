@@ -3,7 +3,9 @@ import Core
 import Configuration
 import Reporting
 
+/// A protocol to output a set of configuration options when asking for help.
 protocol OptionsStringConvertible {
+  /// A human readable string representation of the possible options for help text.
   static var optionsDescription: String { get }
 }
 

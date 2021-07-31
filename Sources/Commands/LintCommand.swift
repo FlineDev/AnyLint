@@ -12,6 +12,7 @@ struct LintCommand: ParsableCommand {
     abstract: "Runs the configured checks & reports the results in the specified format."
   )
 
+  /// The path(s) option to run the checks from.
   @Option(
     name: .shortAndLong,
     parsing: .upToNextOption,
@@ -19,12 +20,14 @@ struct LintCommand: ParsableCommand {
   )
   var paths: [String] = [FileManager.default.currentDirectoryUrl.path]
 
+  /// Path option to the config file to execute.
   @Option(
     name: .shortAndLong,
     help: .init("Path to the config file to execute.", valueName: "path")
   )
   var config: String = FileManager.default.currentDirectoryUrl.appendingPathComponent("anylint.yml").path
 
+  /// The minimum severity level option to fail on if any checks produce violations.
   @Option(
     name: .shortAndLong,
     help: .init(
@@ -34,6 +37,7 @@ struct LintCommand: ParsableCommand {
   )
   var failLevel: Severity = .error
 
+  /// The expected format option of the output.
   @Option(
     name: .shortAndLong,
     help: .init(

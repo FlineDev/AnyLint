@@ -1,3 +1,4 @@
+import Core
 import XCTest
 
 final class RegexExtTests: XCTestCase {
