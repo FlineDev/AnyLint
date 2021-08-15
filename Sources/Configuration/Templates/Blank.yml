@@ -1,0 +1,40 @@
+FileContents:
+  - id: Readme
+    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
+    regex: '^README\.md$'
+    violateIfNoMatchesFound: true
+    matchingExamples: ['README.md']
+    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
+
+  - id: ReadmeTopLevelTitle
+    hint: 'The README.md file should only contain a single top level title.'
+    regex: '(^|\n)#[^#](.*\n)*\n#[^#]'
+    includeFilter: ['^README\.md$']
+    matchingExamples:
+      - |
+        # Title
+        ## Subtitle
+        Lorem ipsum
+
+        # Other Title
+        ## Other Subtitle
+    nonMatchingExamples:
+      - |
+        # Title
+        ## Subtitle
+        Lorem ipsum #1 and # 2.
+
+        ## Other Subtitle
+        ### Other Subsubtitle
+
+FilePaths:
+  - id: 'ReadmePath'
+    hint: 'The README file should be named exactly `README.md`.'
+    regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
+    matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
+    nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
+    autoCorrectReplacement: '$1README.md'
+    autoCorrectExamples:
+      - { before: 'api/readme.md', after: 'api/README.md' }
+      - { before: 'ReadMe.md', after: 'README.md' }
+      - { before: 'README.markdown', after: 'README.md' }

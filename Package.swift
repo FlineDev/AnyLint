@@ -35,6 +35,9 @@ let package = Package(
       dependencies: [
         "Core",
         .product(name: "Yams", package: "Yams"),
+      ],
+      resources: [
+        .copy("Templates"),
       ]
     ),
     .target(

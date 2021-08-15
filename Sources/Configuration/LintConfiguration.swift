@@ -4,8 +4,8 @@ import Core
 /// The configuration file type.
 public struct LintConfiguration: Codable {
   enum CodingKeys: String, CodingKey {
-    case fileContents = "CheckFileContents"
-    case filePaths = "CheckFilePaths"
+    case fileContents = "FileContents"
+    case filePaths = "FilePaths"
     case customScripts = "CustomScripts"
   }
 

@@ -42,7 +42,7 @@ struct InitCommand: ParsableCommand {
     log.message("Creating config file using template '\(template.rawValue)' ...", level: .info)
     FileManager.default.createFile(
       atPath: path,
-      contents: template.fileContents.data(using: .utf8),
+      contents: template.fileContents,
       attributes: nil
     )
 
