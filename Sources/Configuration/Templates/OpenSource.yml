@@ -50,5 +50,5 @@ FilePaths:
       - { before: 'ReadMe.md', after: 'README.md' }
       - { before: 'README.markdown', after: 'README.md' }
 
-CustomScripts:
+CustomScripts: []
 # TODO: add useful custom scripts, e.g. in Ruby/Python which are installed on most developer systems

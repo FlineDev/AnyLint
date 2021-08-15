@@ -1,4 +1,4 @@
-FileContents:
+FileContents: []
 #  - id: Readme
 #    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
 #    regex: '^README\.md$'
@@ -6,7 +6,7 @@ FileContents:
 #    matchingExamples: ['README.md']
 #    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
 
-FilePaths:
+FilePaths: []
 #  - id: 'ReadmePath'
 #    hint: 'The README file should be named exactly `README.md`.'
 #    regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
@@ -18,5 +18,5 @@ FilePaths:
 #      - { before: 'ReadMe.md', after: 'README.md' }
 #      - { before: 'README.markdown', after: 'README.md' }
 
-CustomScripts:
+CustomScripts: []
 # TODO: add sample entry

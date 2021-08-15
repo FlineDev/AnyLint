@@ -9,6 +9,10 @@ public struct FilePathsConfiguration: CheckConfiguration, Codable {
   /// A hint that should be shown on violations of this check. Should explain what's wrong and guide on fixing the issue.
   public let hint: String
 
+  // TODO: [cg_2021-08-15] continue here by fixing default decoding value issue, see also:
+  // https://swiftbysundell.com/tips/default-decoding-values/
+  // https://github.com/marksands/BetterCodable#defaultcodable
+
   /// The severity level of this check. One of `.info`, `.warning` or `.error`. Defaults to `.error`.
   public var severity: Severity = .error
 
