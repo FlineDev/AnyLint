@@ -33,6 +33,7 @@ public final class FilesSearch {
       excludeFilters: excludeFilters
     )
 
+    // AnyLint.skipHere: IfAsGuard
     if let cachedFilePaths: [String] = cachedFilePaths[searchOptions] {
       return cachedFilePaths
     }

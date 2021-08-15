@@ -19,7 +19,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- YAML-based configuration file. Supportts `FilePaths` and `FileContents` as well as `CustomScripts` for full feature parity with previous Swift-based configuration file.  
+- YAML-based configuration file. Supports `FilePaths` and `FileContents` as well as `CustomScripts` for full feature parity with previous Swift-based configuration file.  
   Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - Migrated from jakeheis/SwiftCLI to apple/swift-argument-parser for improved reliability & reduced maintenance.  
@@ -31,7 +31,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Removed
 - Swift-based configuration file support removed in favor of YAML-based configuration. All features supported via the Swift file still supported via YAML file. See README.md for more details. Parameters were not renamed to keep migration simple.  
   Author: [Cihat Gündüz](https://github.com/Jeehut)
-- Support for Swift versions below 5.5 was dropped to make use of the latest improvements in concurrency & SwiftPM plugin system. Use version `0.8.2` if you need to stay on lower Swift versions.  
+- Support for Swift versions below 5.4 was dropped to make use of the latest improvements in Swift & SwiftPM. Use version `0.8.2` if you need to stay on lower Swift versions.  
   Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Fixed
 - Issues with paths due to Swift scripting not being as easy to use now fixed by moving over to YAML-based configuration. For custom scripts, responsibility is moved to the user side by allowing to specify the exact command to run.  

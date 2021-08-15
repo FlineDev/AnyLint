@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
@@ -44,7 +44,7 @@ let package = Package(
         .product(name: "OrderedCollections", package: "swift-collections"),
       ]
     ),
-    .executableTarget(
+    .target(
       name: "Commands",
       dependencies: [
         "Checkers",

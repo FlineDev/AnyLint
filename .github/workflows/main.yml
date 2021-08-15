@@ -1,33 +1,10 @@
-name: CI
+name: Main
 
 on:
   push:
-    branches: [main, versions]
-  pull_request:
     branches: [main]
 
 jobs:
-  cancel-previous-runs:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Cancel previous runs of this workflow on same branch
-        uses: rokroskar/workflow-run-cleanup-action@v0.2.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  anylint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install AnyLint
-        run: brew tap Flinesoft/AnyLint https://github.com/Flinesoft/AnyLint.git && brew install anylint
-
-      - name: Run AnyLint
-        run: anylint
-
   test-linux:
     runs-on: ubuntu-latest
 

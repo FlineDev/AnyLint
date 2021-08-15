@@ -1,7 +1,6 @@
 import Foundation
 import ArgumentParser
 
-@main
 /// The entry point of the toot, defines the `anylint` primary command. Sets up any sub commands like `init` or `lint`.
 struct AnyLint: ParsableCommand {
   static var configuration: CommandConfiguration = .init(

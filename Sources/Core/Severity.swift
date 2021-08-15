@@ -1,5 +1,4 @@
 import Foundation
-import AppKit
 
 /// Defines the severity of a lint check.
 public enum Severity: String, CaseIterable, Codable {
