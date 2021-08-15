@@ -14,8 +14,8 @@ final class TemplateTests: XCTestCase {
     let configFileData = Template.blank.fileContents
     let lintConfig: LintConfiguration = try YAMLDecoder().decode(from: configFileData)
 
-    XCTAssertFalse(lintConfig.filePaths.isEmpty)
-    XCTAssertFalse(lintConfig.fileContents.isEmpty)
+    XCTAssert(lintConfig.filePaths.isEmpty)
+    XCTAssert(lintConfig.fileContents.isEmpty)
     XCTAssert(lintConfig.customScripts.isEmpty)
   }
 
@@ -25,6 +25,6 @@ final class TemplateTests: XCTestCase {
 
     XCTAssertFalse(lintConfig.filePaths.isEmpty)
     XCTAssertFalse(lintConfig.fileContents.isEmpty)
-    XCTAssert(lintConfig.customScripts.isEmpty)
+    XCTAssertFalse(lintConfig.customScripts.isEmpty)
   }
 }
