@@ -3,10 +3,14 @@ import PackageDescription
 
 let package = Package(
   name: "AnyLint",
+  platforms: [.macOS(.v10_12)],
   products: [
     .executable(name: "anylint", targets: ["Commands"]),
   ],
   dependencies: [
+    // Better Codable through Property Wrappers
+    .package(url: "https://github.com/marksands/BetterCodable.git", from: "0.4.0"),
+
     // Delightful console output for Swift developers.
     .package(url: "https://github.com/onevcat/Rainbow.git", from: "4.0.0"),
 
@@ -33,6 +37,7 @@ let package = Package(
     .target(
       name: "Configuration",
       dependencies: [
+        .product(name: "BetterCodable", package: "BetterCodable"),
         "Core",
         .product(name: "Yams", package: "Yams"),
       ],

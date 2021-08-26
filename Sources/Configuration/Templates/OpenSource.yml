@@ -39,7 +39,7 @@ FileContents:
       - { before: '## Lisence\n', after: '## License\n' }
 
 FilePaths:
-  - id: 'ReadmePath'
+  - id: ReadmePath
     hint: 'The README file should be named exactly `README.md`.'
     regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
     matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
@@ -50,5 +50,12 @@ FilePaths:
       - { before: 'ReadMe.md', after: 'README.md' }
       - { before: 'README.markdown', after: 'README.md' }
 
-CustomScripts: []
-# TODO: add useful custom scripts, e.g. in Ruby/Python which are installed on most developer systems
+CustomScripts:
+  - id: LintConfig
+    hint: 'Lint the AnyLint config file to conform to YAML best practices.'
+    command: |-
+      if which yamllint > /dev/null; then
+        yamllint anylint.yml
+      else
+        echo "{ warning: yamllint not installed, see installation instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint"
+      fi

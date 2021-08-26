@@ -1,5 +1,6 @@
 import Foundation
 import Core
+import BetterCodable
 
 /// The configuration file type.
 public struct LintConfiguration: Codable {
@@ -10,11 +11,14 @@ public struct LintConfiguration: Codable {
   }
 
   /// The list of `FileContents` checks.
-  public let fileContents: [FileContentsConfiguration]
+  @DefaultEmptyArray
+  public var fileContents: [FileContentsConfiguration]
 
   /// The list of `FilePaths` checks.
-  public let filePaths: [FilePathsConfiguration]
+  @DefaultEmptyArray
+  public var filePaths: [FilePathsConfiguration]
 
   /// The list of `CustomScripts` checks.
-  public let customScripts: [CustomScriptsConfiguration]
+  @DefaultEmptyArray
+  public var customScripts: [CustomScriptsConfiguration]
 }

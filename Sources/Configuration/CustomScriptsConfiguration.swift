@@ -1,5 +1,6 @@
 import Foundation
 import Core
+import BetterCodable
 
 /// The `CustomScripts` check configuration type.
 public struct CustomScriptsConfiguration: CheckConfiguration, Codable {
@@ -10,7 +11,8 @@ public struct CustomScriptsConfiguration: CheckConfiguration, Codable {
   public let hint: String
 
   /// The severity level of this check. One of `.info`, `.warning` or `.error`. Defaults to `.error`.
-  public var severity: Severity = .error
+  @DefaultCodable<Severity.DefaultToError>
+  public var severity: Severity
 
   /// The custom command line command to execute.
   /// If the output conforms to the ``LintResults`` structure formatted as JSON, then the results will be merged.
