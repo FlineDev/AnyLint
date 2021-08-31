@@ -314,7 +314,7 @@ extension Regex {
     // MARK: - CustomStringConvertible
     /// Returns a string describing the match.
     public var description: String {
-      "Match<\"\(string)\">"
+      #"Match<"\#(string)">"#
     }
   }
 }

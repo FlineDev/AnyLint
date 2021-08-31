@@ -3,8 +3,8 @@ import Core
 import XCTest
 
 final class ArrayExtTests: XCTestCase {
-  func testContainsLineAtIndexesMatchingRegex() {
-    let regex: Regex = #"foo:bar"#
+  func testContainsLineAtIndexesMatchingRegex() throws {
+    let regex: Regex = try .init(#"foo:bar"#)
     let lines: [String] = ["hello\n foo", "hello\n foo bar", "hello bar", "\nfoo:\nbar", "foo:bar", ":foo:bar"]
 
     XCTAssertFalse(lines.containsLine(at: [1, 2, 3], matchingRegex: regex))
