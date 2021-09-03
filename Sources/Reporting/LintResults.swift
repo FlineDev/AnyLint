@@ -14,6 +14,17 @@ extension LintResults {
     values.reduce(into: []) { $0.append(contentsOf: $1.values.flatMap { $0 }) }
   }
 
+  /// The highest severity with at least one violation.
+  func maxViolationSeverity(excludeAutocorrected: Bool) -> Severity? {
+    for severity in Severity.allCases.sorted().reversed() {
+      if let severityViolations = self[severity], !severityViolations.isEmpty {
+        return severity
+      }
+    }
+
+    return nil
+  }
+
   /// Merges the given lint results into this one.
   public mutating func mergeResults(_ other: LintResults) {
     merge(other) { currentDict, newDict in
@@ -72,64 +83,78 @@ extension LintResults {
     return violations.filter { $0.appliedAutoCorrection == nil }
   }
 
+  /// Used to get validations for a specific check.
+  ///
+  /// - Parameters:
+  ///   - check: The `CheckInfo` object to filter by.
+  ///   - excludeAutocorrected: If `true`, autocorrected violations will not be returned, else returns all violations of the given severity level.
+  /// - Returns: The violations for a specific check.
+  public func violations(check: CheckInfo, excludeAutocorrected: Bool) -> [Violation] {
+    guard let violations: [Violation] = self[check.severity]?[check] else { return [] }
+    guard excludeAutocorrected else { return violations }
+    return violations.filter { $0.appliedAutoCorrection == nil }
+  }
+
   private func reportToConsole() {
-    // TODO: [cg_2021-07-06] not yet implemented
-    //    for check in executedChecks {
-    //      if let checkViolations = violationsPerCheck[check], checkViolations.isFilled {
-    //        let violationsWithLocationMessage = checkViolations.filter { $0.locationMessage(pathType: .relative) != nil }
-    //
-    //        if violationsWithLocationMessage.isFilled {
-    //          log.message(
-    //            "\("[\(check.id)]".bold) Found \(checkViolations.count) violation(s) at:",
-    //            level: check.severity.logLevel
-    //          )
-    //          let numerationDigits = String(violationsWithLocationMessage.count).count
-    //
-    //          for (index, violation) in violationsWithLocationMessage.enumerated() {
-    //            let violationNumString = String(format: "%0\(numerationDigits)d", index + 1)
-    //            let prefix = "> \(violationNumString). "
-    //            log.message(prefix + violation.locationMessage(pathType: .relative)!, level: check.severity.logLevel)
-    //
-    //            let prefixLengthWhitespaces = (0..<prefix.count).map { _ in " " }.joined()
-    //            if let appliedAutoCorrection = violation.appliedAutoCorrection {
-    //              for messageLine in appliedAutoCorrection.appliedMessageLines {
-    //                log.message(prefixLengthWhitespaces + messageLine, level: .info)
-    //              }
-    //            }
-    //            else if let matchedString = violation.matchedString {
-    //              log.message(
-    //                prefixLengthWhitespaces + "Matching string:".bold + " (trimmed & reduced whitespaces)",
-    //                level: .info
-    //              )
-    //              let matchedStringOutput =
-    //                matchedString
-    //                .showNewlines()
-    //                .trimmingCharacters(in: .whitespacesAndNewlines)
-    //                .replacingOccurrences(of: "        ", with: "  ")
-    //                .replacingOccurrences(of: "      ", with: "  ")
-    //                .replacingOccurrences(of: "    ", with: "  ")
-    //              log.message(prefixLengthWhitespaces + "> " + matchedStringOutput, level: .info)
-    //            }
-    //          }
-    //        }
-    //        else {
-    //          log.message(
-    //            "\("[\(check.id)]".bold) Found \(checkViolations.count) violation(s).",
-    //            level: check.severity.logLevel
-    //          )
-    //        }
-    //
-    //        log.message(">> Hint: \(check.hint)".bold.italic, level: check.severity.logLevel)
-    //      }
-    //    }
-    //
-    //    let errors = "\(violationsBySeverity[.error]!.count) error(s)"
-    //    let warnings = "\(violationsBySeverity[.warning]!.count) warning(s)"
-    //
-    //    log.message(
-    //      "Performed \(executedChecks.count) check(s) in \(filesChecked.count) file(s) and found \(errors) & \(warnings).",
-    //      level: maxViolationSeverity!.logLevel
-    //    )
+    for check in allExecutedChecks {
+      let checkViolations = violations(check: check, excludeAutocorrected: false)
+
+      if checkViolations.isFilled {
+        let violationsWithLocationMessage = checkViolations.filter { $0.locationMessage(pathType: .relative) != nil }
+
+        if violationsWithLocationMessage.isFilled {
+          log.message(
+            "\("[\(check.id)]".bold) Found \(checkViolations.count) violation(s) at:",
+            level: check.severity.logLevel
+          )
+          let numerationDigits = String(violationsWithLocationMessage.count).count
+
+          for (index, violation) in violationsWithLocationMessage.enumerated() {
+            let violationNumString = String(format: "%0\(numerationDigits)d", index + 1)
+            let prefix = "> \(violationNumString). "
+            log.message(prefix + violation.locationMessage(pathType: .relative)!, level: check.severity.logLevel)
+
+            let prefixLengthWhitespaces = (0..<prefix.count).map { _ in " " }.joined()
+            if let appliedAutoCorrection = violation.appliedAutoCorrection {
+              for messageLine in appliedAutoCorrection.appliedMessageLines {
+                log.message(prefixLengthWhitespaces + messageLine, level: .info)
+              }
+            }
+            else if let matchedString = violation.matchedString {
+              log.message(
+                prefixLengthWhitespaces + "Matching string:".bold + " (trimmed & reduced whitespaces)",
+                level: .info
+              )
+              let matchedStringOutput =
+                matchedString
+                .showNewlines()
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .replacingOccurrences(of: "        ", with: "  ")
+                .replacingOccurrences(of: "      ", with: "  ")
+                .replacingOccurrences(of: "    ", with: "  ")
+              log.message(prefixLengthWhitespaces + "> " + matchedStringOutput, level: .info)
+            }
+          }
+        }
+        else {
+          log.message(
+            "\("[\(check.id)]".bold) Found \(checkViolations.count) violation(s).",
+            level: check.severity.logLevel
+          )
+        }
+
+        log.message(">> Hint: \(check.hint)".bold.italic, level: check.severity.logLevel)
+      }
+    }
+
+    let errors = "\(violations(severity: .error, excludeAutocorrected: false).count) error(s)"
+    let warnings = "\(violations(severity: .warning, excludeAutocorrected: false).count) warning(s)"
+
+    log.message(
+      "Performed \(allExecutedChecks.count) check(s) and found \(errors) & \(warnings).",
+      // TODO: [cg_2021-09-03] forward option "exclude autocorrected" to use here rather than using `false`
+      level: maxViolationSeverity(excludeAutocorrected: false)?.logLevel ?? .info
+    )
   }
 
   private func reportToXcode() {
@@ -150,6 +175,15 @@ extension LintResults {
   }
 
   private func reportToFile(at path: String) {
-    // TODO: [cg_2021-07-09] not yet implemented
+    let resultFileUrl = URL(fileURLWithPath: "anylint-results.json")
+
+    do {
+      let resultsData = try JSONEncoder.iso.encode(self)
+      try resultsData.write(to: resultFileUrl)
+    }
+    catch {
+      log.message("Failed to report results to file at \(resultFileUrl.path).", level: .error)
+      log.exit(fail: true)
+    }
   }
 }

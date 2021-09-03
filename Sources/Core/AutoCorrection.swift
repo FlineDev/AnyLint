@@ -14,7 +14,8 @@ public struct AutoCorrection: Codable {
   public let after: String
 
   // TODO: [cg_2021-08-31] consider migrating over to https://github.com/pointfreeco/swift-custom-dump#diff
-  var appliedMessageLines: [String] {
+  /// A summary of the applied autocorrections as human readable output.
+  public var appliedMessageLines: [String] {
     if useDiffOutput, #available(OSX 10.15, *) {
       var lines: [String] = ["Autocorrection applied, the diff is: (+ added, - removed)"]
 
