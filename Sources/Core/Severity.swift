@@ -23,3 +23,18 @@ extension Severity: Comparable {
     }
   }
 }
+
+extension Severity {
+  public var logLevel: PrintLevel {
+    switch self {
+    case .info:
+      return .info
+
+    case .warning:
+      return .warning
+
+    case .error:
+      return .error
+    }
+  }
+}

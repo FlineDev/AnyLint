@@ -2,13 +2,13 @@ import Foundation
 
 extension String {
   /// Returns the location info for a given line index.
-  public func fileLocation(of index: String.Index) -> FileLocation {
+  public func fileLocation(of index: String.Index, filePath: String) -> Location {
     let prefix = self[startIndex..<index]
     let prefixLines = prefix.components(separatedBy: .newlines)
-    guard let lastPrefixLine = prefixLines.last else { return .init(row: 1, column: 1) }
+    guard let lastPrefixLine = prefixLines.last else { return .init(filePath: filePath, row: 1, column: 1) }
 
     let charInLine = prefix.last == "\n" ? 1 : lastPrefixLine.count + 1
-    return .init(row: prefixLines.count, column: charInLine)
+    return .init(filePath: filePath, row: prefixLines.count, column: charInLine)
   }
 
   /// Returns a string that shows newlines as `\n`.

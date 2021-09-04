@@ -100,7 +100,7 @@ extension LintResults {
       let checkViolations = violations(check: check, excludeAutocorrected: false)
 
       if checkViolations.isFilled {
-        let violationsWithLocationMessage = checkViolations.filter { $0.locationMessage(pathType: .relative) != nil }
+        let violationsWithLocationMessage = checkViolations.filter { $0.fileLocation != nil }
 
         if violationsWithLocationMessage.isFilled {
           log.message(
@@ -112,7 +112,10 @@ extension LintResults {
           for (index, violation) in violationsWithLocationMessage.enumerated() {
             let violationNumString = String(format: "%0\(numerationDigits)d", index + 1)
             let prefix = "> \(violationNumString). "
-            log.message(prefix + violation.locationMessage(pathType: .relative)!, level: check.severity.logLevel)
+            log.message(
+              prefix + violation.fileLocation!.locationMessage(pathType: .relative),
+              level: check.severity.logLevel
+            )
 
             let prefixLengthWhitespaces = (0..<prefix.count).map { _ in " " }.joined()
             if let appliedAutoCorrection = violation.appliedAutoCorrection {
@@ -163,10 +166,10 @@ extension LintResults {
 
       for (checkInfo, violations) in checkResultsAtSeverity {
         for violation in violations where violation.appliedAutoCorrection == nil {
-          log.xcodeMessage(
+          log.message(
             "[\(checkInfo.id)] \(checkInfo.hint)",
             level: severity.logLevel,
-            location: violation.locationMessage(pathType: .absolute)
+            fileLocation: violation.fileLocation
           )
         }
       }
@@ -180,6 +183,8 @@ extension LintResults {
     do {
       let resultsData = try JSONEncoder.iso.encode(self)
       try resultsData.write(to: resultFileUrl)
+
+      log.message("Successfully executed checks & reported results to file at \(resultFileUrl.path)", level: .info)
     }
     catch {
       log.message("Failed to report results to file at \(resultFileUrl.path).", level: .error)

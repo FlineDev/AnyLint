@@ -33,7 +33,7 @@ extension FilePathsChecker: Checker {
       let matchingFilePathsCount = filePathsToCheck.filter { regex.matches($0) }.count
       if matchingFilePathsCount <= 0 {
         violations.append(
-          Violation(filePath: nil, fileLocation: nil, appliedAutoCorrection: nil)
+          Violation(fileLocation: nil, appliedAutoCorrection: nil)
         )
       }
     }
@@ -50,8 +50,7 @@ extension FilePathsChecker: Checker {
 
         violations.append(
           Violation(
-            filePath: filePath,
-            fileLocation: nil,
+            fileLocation: .init(filePath: filePath),
             appliedAutoCorrection: appliedAutoCorrection
           )
         )

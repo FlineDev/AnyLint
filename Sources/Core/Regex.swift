@@ -58,11 +58,9 @@ public struct Regex {
   ///
   /// - returns: An optional `Match` describing the first match, or `nil`.
   public func firstMatch(in string: String) -> Match? {
-    let firstMatch =
-      regularExpression
+    regularExpression
       .firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
       .map { Match(result: $0, in: string) }
-    return firstMatch
   }
 
   /// If the regex matches `string`, returns an array of `Match`, describing
@@ -73,11 +71,9 @@ public struct Regex {
   ///
   /// - returns: An array of `Match` describing every match in `string`.
   public func matches(in string: String) -> [Match] {
-    let matches =
-      regularExpression
+    regularExpression
       .matches(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
       .map { Match(result: $0, in: string) }
-    return matches
   }
 
   // MARK: Replacing
@@ -100,6 +96,7 @@ public struct Regex {
   public func replacingMatches(in input: String, with template: String, count: Int? = nil) -> String {
     var output = input
     let matches = self.matches(in: input)
+
     let rangedMatches = Array(matches[0..<min(matches.count, count ?? .max)])
     for match in rangedMatches.reversed() {
       let replacement = match.string(applyingTemplate: template)
@@ -300,15 +297,13 @@ extension Regex {
     ///
     /// - returns: A string with `template` applied to the matched string.
     public func string(applyingTemplate template: String) -> String {
-      let replacement = result.regularExpression!
+      result.regularExpression!
         .replacementString(
           for: result,
           in: baseString,
           offset: 0,
           template: template
         )
-
-      return replacement
     }
 
     // MARK: - CustomStringConvertible

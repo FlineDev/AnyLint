@@ -48,7 +48,9 @@ struct LintCommand: ParsableCommand {
   var outputFormat: OutputFormat = .commandLine
 
   mutating func run() throws {
-    log = Logger(outputFormat: outputFormat)
+    if outputFormat == .xcode {
+      log = Logger.xcode
+    }
 
     guard FileManager.default.fileExists(atPath: config) else {
       log.message(
