@@ -3,6 +3,7 @@ import Core
 
 public final class TestLogger: Loggable {
   public var loggedMessages: [String]
+  public var exitStatusCode: Int32?
 
   public init() {
     loggedMessages = []
@@ -19,5 +20,10 @@ public final class TestLogger: Loggable {
         "[\(level.rawValue)] \(message)"
       )
     }
+  }
+
+  public func exit(fail: Bool) -> Never {
+    exitStatusCode = fail ? EXIT_FAILURE : EXIT_SUCCESS
+    fatalError()
   }
 }

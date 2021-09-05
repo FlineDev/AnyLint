@@ -1,67 +1,59 @@
 @testable import Checkers
 import XCTest
+import Core
 
 final class FilesSearchTests: XCTestCase {
-  func testSample() {
-    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  func testAllFilesWithinPath() {
+    withTemporaryFiles(
+      [
+        (subpath: "Sources/Hello.swift", contents: ""),
+        (subpath: "Sources/World.swift", contents: ""),
+        (subpath: "Sources/.hidden_file", contents: ""),
+        (subpath: "Sources/.hidden_dir/unhidden_file", contents: ""),
+      ]
+    ) { _ in
+      let includeFilterFilePaths = FilesSearch.shared
+        .allFiles(
+          within: FileManager.default.currentDirectoryPath,
+          includeFilters: [try Regex("\(tempDir)/.*")],
+          excludeFilters: []
+        )
+        .sorted()
+      XCTAssertEqual(includeFilterFilePaths, ["\(tempDir)/Sources/Hello.swift", "\(tempDir)/Sources/World.swift"])
+
+      let excludeFilterFilePaths = FilesSearch.shared.allFiles(
+        within: FileManager.default.currentDirectoryPath,
+        includeFilters: [try Regex("\(tempDir)/.*")],
+        excludeFilters: [try Regex("World")]
+      )
+      XCTAssertEqual(excludeFilterFilePaths, ["\(tempDir)/Sources/Hello.swift"])
+    }
   }
 
-  //  override func setUp() {
-  //    log = Logger(outputType: .test)
-  //    TestHelper.shared.reset()
-  //  }
-  //
-  //  func testAllFilesWithinPath() {
-  //    withTemporaryFiles(
-  //      [
-  //        (subpath: "Sources/Hello.swift", contents: ""),
-  //        (subpath: "Sources/World.swift", contents: ""),
-  //        (subpath: "Sources/.hidden_file", contents: ""),
-  //        (subpath: "Sources/.hidden_dir/unhidden_file", contents: ""),
-  //      ]
-  //    ) { _ in
-  //      let includeFilterFilePaths = FilesSearch.shared
-  //        .allFiles(
-  //          within: FileManager.default.currentDirectoryPath,
-  //          includeFilters: [try Regex("\(tempDir)/.*")],
-  //          excludeFilters: []
-  //        )
-  //        .sorted()
-  //      XCTAssertEqual(includeFilterFilePaths, ["\(tempDir)/Sources/Hello.swift", "\(tempDir)/Sources/World.swift"])
-  //
-  //      let excludeFilterFilePaths = FilesSearch.shared.allFiles(
-  //        within: FileManager.default.currentDirectoryPath,
-  //        includeFilters: [try Regex("\(tempDir)/.*")],
-  //        excludeFilters: ["World"]
-  //      )
-  //      XCTAssertEqual(excludeFilterFilePaths, ["\(tempDir)/Sources/Hello.swift"])
-  //    }
-  //  }
-  //
-  //  func testPerformanceOfSameSearchOptions() {
-  //    let swiftSourcesFilePaths = (0...800)
-  //      .map { (subpath: "Sources/Foo\($0).swift", contents: "Lorem ipsum\ndolor sit amet\n") }
-  //    let testsFilePaths = (0...400).map { (subpath: "Tests/Foo\($0).swift", contents: "Lorem ipsum\ndolor sit amet\n") }
-  //    let storyboardSourcesFilePaths = (0...300)
-  //      .map { (subpath: "Sources/Foo\($0).storyboard", contents: "Lorem ipsum\ndolor sit amet\n") }
-  //
-  //    withTemporaryFiles(swiftSourcesFilePaths + testsFilePaths + storyboardSourcesFilePaths) { _ in
-  //      let fileSearchCode: () -> [String] = {
-  //        FilesSearch.shared.allFiles(
-  //          within: FileManager.default.currentDirectoryPath,
-  //          includeFilters: [try! Regex(#"\#(self.tempDir)/Sources/Foo.*"#)],
-  //          excludeFilters: [try! Regex(#"\#(self.tempDir)/.*\.storyboard"#)]
-  //        )
-  //      }
-  //
-  //      // first run
-  //      XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
-  //
-  //      measure {
-  //        // subsequent runs (should be much faster)
-  //        XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
-  //        XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
-  //      }
-  //    }
-  //  }
+  func testPerformanceOfSameSearchOptions() {
+    let swiftSourcesFilePaths = (0...800)
+      .map { (subpath: "Sources/Foo\($0).swift", contents: "Lorem ipsum\ndolor sit amet\n") }
+    let testsFilePaths = (0...400).map { (subpath: "Tests/Foo\($0).swift", contents: "Lorem ipsum\ndolor sit amet\n") }
+    let storyboardSourcesFilePaths = (0...300)
+      .map { (subpath: "Sources/Foo\($0).storyboard", contents: "Lorem ipsum\ndolor sit amet\n") }
+
+    withTemporaryFiles(swiftSourcesFilePaths + testsFilePaths + storyboardSourcesFilePaths) { _ in
+      let fileSearchCode: () -> [String] = {
+        FilesSearch.shared.allFiles(
+          within: FileManager.default.currentDirectoryPath,
+          includeFilters: [try! Regex(#"\#(self.tempDir)/Sources/Foo.*"#)],
+          excludeFilters: [try! Regex(#"\#(self.tempDir)/.*\.storyboard"#)]
+        )
+      }
+
+      // first run
+      XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
+
+      measure {
+        // subsequent runs (should be much faster)
+        XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
+        XCTAssertEqual(Set(fileSearchCode()), Set(swiftSourcesFilePaths.map { "\(tempDir)/\($0.subpath)" }))
+      }
+    }
+  }
 }
