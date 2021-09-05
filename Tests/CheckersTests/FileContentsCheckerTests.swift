@@ -1,90 +1,77 @@
 @testable import Checkers
 import XCTest
+import Core
+import TestSupport
 
 final class FileContentsCheckerTests: XCTestCase {
-  func testSample() {
-    XCTAssertTrue(true)  // TODO: [cg_2021-07-31] not yet implemented
+  func testPerformCheck() {
+    let temporaryFiles: [TemporaryFile] = [
+      (subpath: "Sources/Hello.swift", contents: "let x = 5\nvar y = 10"),
+      (subpath: "Sources/World.swift", contents: "let x=5\nvar y=10"),
+    ]
+
+    withTemporaryFiles(temporaryFiles) { filePathsToCheck in
+      let violations = try FileContentsChecker(
+        id: "Whitespacing",
+        hint: "Always add a single whitespace around '='.",
+        severity: .warning,
+        regex: Regex(#"(let|var) \w+=\w+"#),
+        filePathsToCheck: filePathsToCheck,
+        autoCorrectReplacement: nil,
+        repeatIfAutoCorrected: false
+      )
+      .performCheck()
+
+      XCTAssertEqual(violations.count, 2)
+
+      XCTAssertEqual(violations[0].matchedString, "let x=5")
+      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[0].fileLocation?.row, 1)
+      XCTAssertEqual(violations[0].fileLocation!.column, 1)
+
+      XCTAssertEqual(violations[1].matchedString, "var y=10")
+      XCTAssertEqual(violations[1].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[1].fileLocation?.row, 2)
+      XCTAssertEqual(violations[1].fileLocation?.column, 1)
+    }
   }
 
-  //  override func setUp() {
-  //    log = Logger(outputType: .test)
-  //    TestHelper.shared.reset()
-  //  }
-  //
-  //  func testPerformCheck() {
-  //    let temporaryFiles: [TemporaryFile] = [
-  //      (subpath: "Sources/Hello.swift", contents: "let x = 5\nvar y = 10"),
-  //      (subpath: "Sources/World.swift", contents: "let x=5\nvar y=10"),
-  //    ]
-  //
-  //    withTemporaryFiles(temporaryFiles) { filePathsToCheck in
-  //      let checkInfo = CheckInfo(
-  //        id: "Whitespacing",
-  //        hint: "Always add a single whitespace around '='.",
-  //        severity: .warning
-  //      )
-  //      let violations = try FileContentsChecker(
-  //        checkInfo: checkInfo,
-  //        regex: #"(let|var) \w+=\w+"#,
-  //        filePathsToCheck: filePathsToCheck,
-  //        autoCorrectReplacement: nil,
-  //        repeatIfAutoCorrected: false
-  //      )
-  //      .performCheck()
-  //
-  //      XCTAssertEqual(violations.count, 2)
-  //
-  //      XCTAssertEqual(violations[0].checkInfo, checkInfo)
-  //      XCTAssertEqual(violations[0].filePath, "\(tempDir)/Sources/World.swift")
-  //      XCTAssertEqual(violations[0].locationInfo!.line, 1)
-  //      XCTAssertEqual(violations[0].locationInfo!.charInLine, 1)
-  //
-  //      XCTAssertEqual(violations[1].checkInfo, checkInfo)
-  //      XCTAssertEqual(violations[1].filePath, "\(tempDir)/Sources/World.swift")
-  //      XCTAssertEqual(violations[1].locationInfo!.line, 2)
-  //      XCTAssertEqual(violations[1].locationInfo!.charInLine, 1)
-  //    }
-  //  }
-  //
-  //  func testSkipInFile() {
-  //    let temporaryFiles: [TemporaryFile] = [
-  //      (
-  //        subpath: "Sources/Hello.swift",
-  //        contents: "// AnyLint.skipInFile: OtherRule, Whitespacing\n\n\nlet x=5\nvar y=10"
-  //      ),
-  //      (subpath: "Sources/World.swift", contents: "// AnyLint.skipInFile: All\n\n\nlet x=5\nvar y=10"),
-  //      (subpath: "Sources/Foo.swift", contents: "// AnyLint.skipInFile: OtherRule\n\n\nlet x=5\nvar y=10"),
-  //    ]
-  //
-  //    withTemporaryFiles(temporaryFiles) { filePathsToCheck in
-  //      let checkInfo = CheckInfo(
-  //        id: "Whitespacing",
-  //        hint: "Always add a single whitespace around '='.",
-  //        severity: .warning
-  //      )
-  //      let violations = try FileContentsChecker(
-  //        checkInfo: checkInfo,
-  //        regex: #"(let|var) \w+=\w+"#,
-  //        filePathsToCheck: filePathsToCheck,
-  //        autoCorrectReplacement: nil,
-  //        repeatIfAutoCorrected: false
-  //      )
-  //      .performCheck()
-  //
-  //      XCTAssertEqual(violations.count, 2)
-  //
-  //      XCTAssertEqual(violations[0].checkInfo, checkInfo)
-  //      XCTAssertEqual(violations[0].filePath, "\(tempDir)/Sources/Foo.swift")
-  //      XCTAssertEqual(violations[0].locationInfo!.line, 4)
-  //      XCTAssertEqual(violations[0].locationInfo!.charInLine, 1)
-  //
-  //      XCTAssertEqual(violations[1].checkInfo, checkInfo)
-  //      XCTAssertEqual(violations[1].filePath, "\(tempDir)/Sources/Foo.swift")
-  //      XCTAssertEqual(violations[1].locationInfo!.line, 5)
-  //      XCTAssertEqual(violations[1].locationInfo!.charInLine, 1)
-  //    }
-  //  }
-  //
+  func testSkipInFile() {
+    let temporaryFiles: [TemporaryFile] = [
+      (
+        subpath: "Sources/Hello.swift",
+        contents: "// AnyLint.skipInFile: OtherRule, Whitespacing\n\n\nlet x=5\nvar y=10"
+      ),
+      (subpath: "Sources/World.swift", contents: "// AnyLint.skipInFile: All\n\n\nlet x=5\nvar y=10"),
+      (subpath: "Sources/Foo.swift", contents: "// AnyLint.skipInFile: OtherRule\n\n\nlet x=5\nvar y=10"),
+    ]
+
+    withTemporaryFiles(temporaryFiles) { filePathsToCheck in
+      let violations = try FileContentsChecker(
+        id: "Whitespacing",
+        hint: "Always add a single whitespace around '='.",
+        severity: .warning,
+        regex: Regex(#"(let|var) \w+=\w+"#),
+        filePathsToCheck: filePathsToCheck,
+        autoCorrectReplacement: nil,
+        repeatIfAutoCorrected: false
+      )
+      .performCheck()
+
+      XCTAssertEqual(violations.count, 2)
+
+      XCTAssertEqual(violations[0].matchedString, "let x=5")
+      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/Foo.swift")
+      XCTAssertEqual(violations[0].fileLocation?.row, 4)
+      XCTAssertEqual(violations[0].fileLocation?.column, 1)
+
+      XCTAssertEqual(violations[1].matchedString, "var y=10")
+      XCTAssertEqual(violations[1].fileLocation?.filePath, "\(tempDir)/Sources/Foo.swift")
+      XCTAssertEqual(violations[1].fileLocation?.row, 5)
+      XCTAssertEqual(violations[1].fileLocation?.column, 1)
+    }
+  }
+
   //  func testSkipHere() {
   //    let temporaryFiles: [TemporaryFile] = [
   //      (subpath: "Sources/Hello.swift", contents: "// AnyLint.skipHere: OtherRule, Whitespacing\n\n\nlet x=5\nvar y=10"),

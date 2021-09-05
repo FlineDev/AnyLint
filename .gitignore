@@ -85,3 +85,6 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# project-specific
+anylint-test-results.json

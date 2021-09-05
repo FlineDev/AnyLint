@@ -68,14 +68,16 @@ let package = Package(
     ),
 
     // test targets
-    .testTarget(name: "CoreTests", dependencies: ["Core"]),
-    .testTarget(name: "CheckersTests", dependencies: ["Checkers"]),
+    .target(name: "TestSupport", dependencies: ["Core"]),
+    .testTarget(name: "CoreTests", dependencies: ["Core", "TestSupport"]),
+    .testTarget(name: "CheckersTests", dependencies: ["Checkers", "TestSupport"]),
     .testTarget(name: "ConfigurationTests", dependencies: ["Configuration"]),
     .testTarget(
       name: "ReportingTests",
       dependencies: [
-        "Reporting",
         .product(name: "CustomDump", package: "swift-custom-dump"),
+        "Reporting",
+        "TestSupport",
       ]
     ),
     .testTarget(name: "CommandsTests", dependencies: ["Commands"]),

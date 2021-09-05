@@ -2,6 +2,7 @@
 import Core
 import XCTest
 import CustomDump
+import TestSupport
 
 final class LintResultsTests: XCTestCase {
   private var sampleLintResults: LintResults {

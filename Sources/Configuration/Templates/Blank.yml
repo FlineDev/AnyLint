@@ -19,4 +19,11 @@ FilePaths: []
 #      - { before: 'README.markdown', after: 'README.md' }
 
 CustomScripts: []
-# TODO: add sample entry
+#  - id: LintConfig
+#    hint: 'Lint the AnyLint config file to conform to YAML best practices.'
+#    command: |-
+#      if which yamllint > /dev/null; then
+#        yamllint anylint.yml
+#      else
+#        echo "{ warning: yamllint not installed, see installation instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint"
+#      fi
