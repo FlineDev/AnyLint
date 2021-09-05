@@ -17,7 +17,9 @@ extension LintResults {
   /// The highest severity with at least one violation.
   func maxViolationSeverity(excludeAutocorrected: Bool) -> Severity? {
     for severity in Severity.allCases.sorted().reversed() {
-      if let severityViolations = self[severity], !severityViolations.isEmpty {
+      if let severityViolations = self[severity],
+        severityViolations.values.elements.contains(where: { !$0.isEmpty })
+      {
         return severity
       }
     }
@@ -78,7 +80,7 @@ extension LintResults {
   ///   - excludeAutocorrected: If `true`, autocorrected violations will not be returned, else returns all violations of the given severity level.
   /// - Returns: The violations for a specific severity level.
   public func violations(severity: Severity, excludeAutocorrected: Bool) -> [Violation] {
-    guard let violations = self[severity]?.values.flatMap({ $0 }) else { return [] }
+    guard let violations = self[severity]?.values.elements.flatMap({ $0 }) else { return [] }
     guard excludeAutocorrected else { return violations }
     return violations.filter { $0.appliedAutoCorrection == nil }
   }
@@ -95,7 +97,7 @@ extension LintResults {
     return violations.filter { $0.appliedAutoCorrection == nil }
   }
 
-  private func reportToConsole() {
+  func reportToConsole() {
     for check in allExecutedChecks {
       let checkViolations = violations(check: check, excludeAutocorrected: false)
 
@@ -160,7 +162,7 @@ extension LintResults {
     )
   }
 
-  private func reportToXcode() {
+  func reportToXcode() {
     for severity in keys.sorted().reversed() {
       guard let checkResultsAtSeverity = self[severity] else { continue }
 
@@ -177,8 +179,8 @@ extension LintResults {
     }
   }
 
-  private func reportToFile(at path: String) {
-    let resultFileUrl = URL(fileURLWithPath: "anylint-results.json")
+  func reportToFile(at path: String) {
+    let resultFileUrl = URL(fileURLWithPath: path)
 
     do {
       let resultsData = try JSONEncoder.iso.encode(self)

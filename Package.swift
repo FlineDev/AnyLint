@@ -20,6 +20,9 @@ let package = Package(
     // Commonly used data structures for Swift`
     .package(url: "https://github.com/apple/swift-collections.git", from: "0.0.3"),
 
+    // A collection of tools for debugging, diffing, and testing your application's data structures.
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.1.2"),
+
     // Easily run shell commands from a Swift script or command line tool
     .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.3.0"),
 
@@ -30,7 +33,7 @@ let package = Package(
     .target(
       name: "Core",
       dependencies: [
-        .product(name: "Rainbow", package: "Rainbow")
+        .product(name: "Rainbow", package: "Rainbow"),
       ]
     ),
     .target(name: "Checkers", dependencies: ["Core"]),
@@ -68,7 +71,13 @@ let package = Package(
     .testTarget(name: "CoreTests", dependencies: ["Core"]),
     .testTarget(name: "CheckersTests", dependencies: ["Checkers"]),
     .testTarget(name: "ConfigurationTests", dependencies: ["Configuration"]),
-    .testTarget(name: "ReportingTests", dependencies: ["Reporting"]),
+    .testTarget(
+      name: "ReportingTests",
+      dependencies: [
+        "Reporting",
+        .product(name: "CustomDump", package: "swift-custom-dump"),
+      ]
+    ),
     .testTarget(name: "CommandsTests", dependencies: ["Commands"]),
   ]
 )
