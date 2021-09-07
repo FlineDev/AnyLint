@@ -1,7 +1,7 @@
 import Foundation
 
 /// Information about an autocorrection.
-public struct AutoCorrection: Codable {
+public struct AutoCorrection: Codable, Equatable {
   private enum Constants {
     /// The number of newlines required in both before and after of AutoCorrections required to use diff for outputs.
     static let newlinesRequiredForDiffing: Int = 3

@@ -6,11 +6,13 @@ import OrderedCollections
 public typealias LintResults = OrderedDictionary<Severity, OrderedDictionary<CheckInfo, [Violation]>>
 
 extension LintResults {
-  var allExecutedChecks: [CheckInfo] {
+  /// Returns a list of all executed checks.
+  public var allExecutedChecks: [CheckInfo] {
     values.reduce(into: []) { $0.append(contentsOf: $1.keys) }
   }
 
-  var allFoundViolations: [Violation] {
+  /// Returns a list of all found violations.
+  public var allFoundViolations: [Violation] {
     values.reduce(into: []) { $0.append(contentsOf: $1.values.flatMap { $0 }) }
   }
 
@@ -102,7 +104,7 @@ extension LintResults {
       let checkViolations = violations(check: check, excludeAutocorrected: false)
 
       if checkViolations.isFilled {
-        let violationsWithLocationMessage = checkViolations.filter { $0.fileLocation != nil }
+        let violationsWithLocationMessage = checkViolations.filter { $0.location != nil }
 
         if violationsWithLocationMessage.isFilled {
           log.message(
@@ -115,7 +117,7 @@ extension LintResults {
             let violationNumString = String(format: "%0\(numerationDigits)d", index + 1)
             let prefix = "> \(violationNumString). "
             log.message(
-              prefix + violation.fileLocation!.locationMessage(pathType: .relative),
+              prefix + violation.location!.locationMessage(pathType: .relative),
               level: check.severity.logLevel
             )
 
@@ -171,7 +173,7 @@ extension LintResults {
           log.message(
             "[\(checkInfo.id)] \(checkInfo.hint)",
             level: severity.logLevel,
-            fileLocation: violation.fileLocation
+            location: violation.location
           )
         }
       }

@@ -19,7 +19,7 @@ final class FilePathsCheckerTests: XCTestCase {
       let violations = try sayHelloChecker(filePathsToCheck: filePathsToCheck).performCheck()
 
       XCTAssertEqual(violations.count, 1)
-      XCTAssertNil(violations[0].fileLocation)
+      XCTAssertNil(violations[0].location)
     }
 
     withTemporaryFiles(
@@ -31,9 +31,9 @@ final class FilePathsCheckerTests: XCTestCase {
       let violations = try noWorldChecker(filePathsToCheck: filePathsToCheck).performCheck()
 
       XCTAssertEqual(violations.count, 1)
-      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertNil(violations[0].fileLocation?.row)
-      XCTAssertNil(violations[0].fileLocation?.column)
+      XCTAssertEqual(violations[0].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertNil(violations[0].location?.row)
+      XCTAssertNil(violations[0].location?.column)
     }
   }
 

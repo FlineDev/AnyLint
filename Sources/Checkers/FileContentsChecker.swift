@@ -43,11 +43,11 @@ extension FileContentsChecker: Checker {
         let skipHereRegex = try Regex(#"AnyLint\.skipHere:[^\n]*[, ]\#(id)"#)
 
         for match in regex.matches(in: fileContents).reversed() {
-          let fileLocation = fileContents.fileLocation(of: match.range.lowerBound, filePath: filePath)
+          let location = fileContents.fileLocation(of: match.range.lowerBound, filePath: filePath)
 
           // skip found match if contains `AnyLint.skipHere: <CheckInfo.ID>` in same line or one line before
           guard
-            !linesInFile.containsLine(at: [fileLocation.row! - 2, fileLocation.row! - 1], matchingRegex: skipHereRegex)
+            !linesInFile.containsLine(at: [location.row! - 2, location.row! - 1], matchingRegex: skipHereRegex)
           else { continue }
 
           let autoCorrection: AutoCorrection? = {
@@ -70,7 +70,7 @@ extension FileContentsChecker: Checker {
           violations.append(
             Violation(
               matchedString: match.string,
-              fileLocation: fileLocation,
+              location: location,
               appliedAutoCorrection: autoCorrection
             )
           )
@@ -93,7 +93,7 @@ extension FileContentsChecker: Checker {
     if repeatIfAutoCorrected && violations.contains(where: { $0.appliedAutoCorrection != nil }) {
       // only paths where auto-corrections were applied need to be re-checked
       let filePathsToReCheck = Array(
-        Set(violations.filter { $0.appliedAutoCorrection != nil }.map { $0.fileLocation!.filePath })
+        Set(violations.filter { $0.appliedAutoCorrection != nil }.map { $0.location!.filePath })
       )
       .sorted()
 

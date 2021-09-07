@@ -8,11 +8,11 @@ public final class XcodeLogger: Loggable {
   ///   - message: The message to be printed. Don't include `Error!`, `Warning!` or similar information at the beginning.
   ///   - level: The level of the print statement.
   ///   - location: The file, line and char in line location string.
-  public func message(_ message: String, level: PrintLevel, fileLocation: Location?) {
+  public func message(_ message: String, level: PrintLevel, location: Location?) {
     var locationPrefix = ""
 
-    if let fileLocation = fileLocation {
-      locationPrefix = fileLocation.locationMessage(pathType: .absolute) + " "
+    if let location = location {
+      locationPrefix = location.locationMessage(pathType: .absolute) + " "
     }
 
     print("\(locationPrefix)\(level.rawValue): AnyLint: \(message)")

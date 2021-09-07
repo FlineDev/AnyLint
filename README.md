@@ -529,7 +529,7 @@ multiline2: |+
   
 multiline3: |-
   This will ignore any trailing newlines and 
-  will end with the lest non-newline character (the following dot in this case -->).
+  will end with the last non-newline character (the following dot in this case -->).
   
   
 ```

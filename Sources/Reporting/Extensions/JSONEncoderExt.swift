@@ -1,9 +1,10 @@
 import Foundation
 
 extension JSONEncoder {
-  static var iso: JSONEncoder {
+  public static var iso: JSONEncoder {
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .iso8601
+    encoder.outputFormatting = .prettyPrinted
     return encoder
   }
 }

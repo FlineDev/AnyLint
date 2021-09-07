@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
   name: "AnyLint",
-  platforms: [.macOS(.v10_12)],
+  platforms: [.macOS(.v10_15)],
   products: [
     .executable(name: "anylint", targets: ["Commands"]),
   ],
@@ -36,7 +36,14 @@ let package = Package(
         .product(name: "Rainbow", package: "Rainbow"),
       ]
     ),
-    .target(name: "Checkers", dependencies: ["Core"]),
+    .target(
+      name: "Checkers",
+      dependencies: [
+        "Core",
+        "Reporting",
+        .product(name: "ShellOut", package: "ShellOut"),
+      ]
+    ),
     .target(
       name: "Configuration",
       dependencies: [
@@ -68,18 +75,17 @@ let package = Package(
     ),
 
     // test targets
-    .target(name: "TestSupport", dependencies: ["Core"]),
+    .target(
+      name: "TestSupport",
+      dependencies: [
+        "Core",
+        .product(name: "CustomDump", package: "swift-custom-dump"),
+      ]
+    ),
     .testTarget(name: "CoreTests", dependencies: ["Core", "TestSupport"]),
     .testTarget(name: "CheckersTests", dependencies: ["Checkers", "TestSupport"]),
     .testTarget(name: "ConfigurationTests", dependencies: ["Configuration"]),
-    .testTarget(
-      name: "ReportingTests",
-      dependencies: [
-        .product(name: "CustomDump", package: "swift-custom-dump"),
-        "Reporting",
-        "TestSupport",
-      ]
-    ),
+    .testTarget(name: "ReportingTests", dependencies: ["Reporting", "TestSupport"]),
     .testTarget(name: "CommandsTests", dependencies: ["Commands"]),
   ]
 )

@@ -8,7 +8,7 @@ public final class ConsoleLogger: Loggable {
   ///   - message: The message to be printed. Don't include `Error!`, `Warning!` or similar information at the beginning.
   ///   - level: The level of the print statement.
   ///   - location: The file, line and char in line location string.
-  public func message(_ message: String, level: PrintLevel, fileLocation: Location?) {
+  public func message(_ message: String, level: PrintLevel, location: Location?) {
     switch level {
     case .success:
       print(formattedCurrentTime(), "✅", message.green)

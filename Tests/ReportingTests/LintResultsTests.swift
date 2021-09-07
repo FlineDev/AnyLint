@@ -9,27 +9,27 @@ final class LintResultsTests: XCTestCase {
     [
       Severity.error: [
         CheckInfo(id: "1", hint: "hint #1", severity: .error): [
-          Violation(matchedString: "oink1", fileLocation: .init(filePath: "/sample/path1", row: 4, column: 2)),
-          Violation(matchedString: "boo1", fileLocation: .init(filePath: "/sample/path2", row: 40, column: 20)),
+          Violation(matchedString: "oink1", location: .init(filePath: "/sample/path1", row: 4, column: 2)),
+          Violation(matchedString: "boo1", location: .init(filePath: "/sample/path2", row: 40, column: 20)),
           Violation(
-            fileLocation: .init(filePath: "/sample/path2"),
+            location: .init(filePath: "/sample/path2"),
             appliedAutoCorrection: .init(before: "foo", after: "bar")
           ),
         ]
       ],
       Severity.warning: [
         CheckInfo(id: "2", hint: "hint #2", severity: .warning): [
-          Violation(matchedString: "oink2", fileLocation: .init(filePath: "/sample/path1", row: 5, column: 6)),
-          Violation(matchedString: "boo2", fileLocation: .init(filePath: "/sample/path3", row: 50, column: 60)),
+          Violation(matchedString: "oink2", location: .init(filePath: "/sample/path1", row: 5, column: 6)),
+          Violation(matchedString: "boo2", location: .init(filePath: "/sample/path3", row: 50, column: 60)),
           Violation(
-            fileLocation: .init(filePath: "/sample/path4"),
+            location: .init(filePath: "/sample/path4"),
             appliedAutoCorrection: .init(before: "fool", after: "barl")
           ),
         ]
       ],
       Severity.info: [
         CheckInfo(id: "3", hint: "hint #3", severity: .info): [
-          Violation(matchedString: "blubb", fileLocation: .init(filePath: "/sample/path0", row: 10, column: 20))
+          Violation(matchedString: "blubb", location: .init(filePath: "/sample/path0", row: 10, column: 20))
         ]
       ],
     ]
@@ -45,7 +45,7 @@ final class LintResultsTests: XCTestCase {
     let allFoundViolations = sampleLintResults.allFoundViolations
     XCTAssertNoDifference(allFoundViolations.count, 7)
     XCTAssertNoDifference(
-      allFoundViolations.map(\.fileLocation).map(\.?.filePath).map(\.?.last),
+      allFoundViolations.map(\.location).map(\.?.filePath).map(\.?.last),
       ["1", "2", "2", "1", "3", "4", "0"]
     )
     XCTAssertNoDifference(
@@ -58,15 +58,15 @@ final class LintResultsTests: XCTestCase {
     let otherLintResults: LintResults = [
       Severity.error: [
         CheckInfo(id: "1", hint: "hint #1", severity: .warning): [
-          Violation(matchedString: "muuh", fileLocation: .init(filePath: "/sample/path4", row: 6, column: 3)),
+          Violation(matchedString: "muuh", location: .init(filePath: "/sample/path4", row: 6, column: 3)),
           Violation(
-            fileLocation: .init(filePath: "/sample/path5"),
+            location: .init(filePath: "/sample/path5"),
             appliedAutoCorrection: .init(before: "fusion", after: "wario")
           ),
         ],
         CheckInfo(id: "2", hint: "hint #2 (alternative)", severity: .warning): [],
         CheckInfo(id: "4", hint: "hint #4", severity: .error): [
-          Violation(matchedString: "super", fileLocation: .init(filePath: "/sample/path1", row: 2, column: 200))
+          Violation(matchedString: "super", location: .init(filePath: "/sample/path1", row: 2, column: 200))
         ],
       ]
     ]
@@ -81,7 +81,7 @@ final class LintResultsTests: XCTestCase {
 
     XCTAssertNoDifference(allFoundViolations.count, 10)
     XCTAssertNoDifference(
-      allFoundViolations.map(\.fileLocation).map(\.?.filePath).map(\.?.last),
+      allFoundViolations.map(\.location).map(\.?.filePath).map(\.?.last),
       ["1", "2", "2", "4", "5", "1", "1", "3", "4", "0"]
     )
     XCTAssertNoDifference(
@@ -104,10 +104,10 @@ final class LintResultsTests: XCTestCase {
 
     lintResults.appendViolations(
       [
-        Violation(matchedString: "A", fileLocation: .init(filePath: "/sample/path5", row: 7, column: 7)),
-        Violation(matchedString: "B", fileLocation: .init(filePath: "/sample/path6", row: 70, column: 70)),
+        Violation(matchedString: "A", location: .init(filePath: "/sample/path5", row: 7, column: 7)),
+        Violation(matchedString: "B", location: .init(filePath: "/sample/path6", row: 70, column: 70)),
         Violation(
-          fileLocation: .init(filePath: "/sample/path7"),
+          location: .init(filePath: "/sample/path7"),
           appliedAutoCorrection: .init(before: "C", after: "D")
         ),
       ],
@@ -239,17 +239,17 @@ final class LintResultsTests: XCTestCase {
       ],
       Severity.warning: [
         CheckInfo(id: "2", hint: "hint #2", severity: .warning): [
-          Violation(matchedString: "oink2", fileLocation: .init(filePath: "/sample/path1", row: 5, column: 6)),
-          Violation(matchedString: "boo2", fileLocation: .init(filePath: "/sample/path3", row: 50, column: 60)),
+          Violation(matchedString: "oink2", location: .init(filePath: "/sample/path1", row: 5, column: 6)),
+          Violation(matchedString: "boo2", location: .init(filePath: "/sample/path3", row: 50, column: 60)),
           Violation(
-            fileLocation: .init(filePath: "/sample/path4"),
+            location: .init(filePath: "/sample/path4"),
             appliedAutoCorrection: .init(before: "fool", after: "barl")
           ),
         ]
       ],
       Severity.info: [
         CheckInfo(id: "3", hint: "hint #3", severity: .info): [
-          Violation(matchedString: "blubb", fileLocation: .init(filePath: "/sample/path0", row: 10, column: 20))
+          Violation(matchedString: "blubb", location: .init(filePath: "/sample/path0", row: 10, column: 20))
         ]
       ],
     ]
@@ -264,7 +264,7 @@ final class LintResultsTests: XCTestCase {
       ],
       Severity.info: [
         CheckInfo(id: "3", hint: "hint #3", severity: .info): [
-          Violation(matchedString: "blubb", fileLocation: .init(filePath: "/sample/path0", row: 10, column: 20))
+          Violation(matchedString: "blubb", location: .init(filePath: "/sample/path0", row: 10, column: 20))
         ]
       ],
     ]
@@ -284,5 +284,52 @@ final class LintResultsTests: XCTestCase {
     XCTAssertEqual(lintResults.maxViolationSeverity(excludeAutocorrected: false), nil)
 
     XCTAssertEqual(LintResults().maxViolationSeverity(excludeAutocorrected: false), nil)
+  }
+
+  func testCodable() throws {
+    let expectedJsonOutput = """
+      {
+        "warning": {
+          "1@error: hint for #1": [{
+
+            },
+            {
+              "appliedAutoCorrection": {
+                "after": "A",
+                "before": "AAA"
+              },
+              "matchedString": "A"
+            },
+            {
+              "location": {
+                "row": 5,
+                "column": 2,
+                "filePath": "/some/path"
+              },
+              "matchedString": "AAA"
+            }
+          ]
+        },
+        "info": {
+
+        }
+      }
+      """
+
+    let lintResults: LintResults = [
+      .warning: [
+        .init(id: "1", hint: "hint for #1"): [
+          .init(),
+          .init(matchedString: "A", appliedAutoCorrection: .init(before: "AAA", after: "A")),
+          .init(matchedString: "AAA", location: .init(filePath: "/some/path", row: 5, column: 2)),
+        ]
+      ],
+      .info: [:],
+    ]
+    let encodedData = try JSONEncoder.iso.encode(lintResults)
+    XCTAssertNoDifference(String(data: encodedData, encoding: .utf8), expectedJsonOutput)
+
+    let decodedLintResults = try JSONDecoder.iso.decode(LintResults.self, from: encodedData)
+    XCTAssertNoDifference(decodedLintResults, lintResults)
   }
 }

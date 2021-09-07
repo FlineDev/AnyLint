@@ -25,14 +25,14 @@ final class FileContentsCheckerTests: XCTestCase {
       XCTAssertEqual(violations.count, 2)
 
       XCTAssertEqual(violations[0].matchedString, "let x=5")
-      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[0].fileLocation?.row, 1)
-      XCTAssertEqual(violations[0].fileLocation!.column, 1)
+      XCTAssertEqual(violations[0].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[0].location?.row, 1)
+      XCTAssertEqual(violations[0].location!.column, 1)
 
       XCTAssertEqual(violations[1].matchedString, "var y=10")
-      XCTAssertEqual(violations[1].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[1].fileLocation?.row, 2)
-      XCTAssertEqual(violations[1].fileLocation?.column, 1)
+      XCTAssertEqual(violations[1].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[1].location?.row, 2)
+      XCTAssertEqual(violations[1].location?.column, 1)
     }
   }
 
@@ -61,14 +61,14 @@ final class FileContentsCheckerTests: XCTestCase {
       XCTAssertEqual(violations.count, 2)
 
       XCTAssertEqual(violations[0].matchedString, "let x=5")
-      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/Foo.swift")
-      XCTAssertEqual(violations[0].fileLocation?.row, 4)
-      XCTAssertEqual(violations[0].fileLocation?.column, 1)
+      XCTAssertEqual(violations[0].location?.filePath, "\(tempDir)/Sources/Foo.swift")
+      XCTAssertEqual(violations[0].location?.row, 4)
+      XCTAssertEqual(violations[0].location?.column, 1)
 
       XCTAssertEqual(violations[1].matchedString, "var y=10")
-      XCTAssertEqual(violations[1].fileLocation?.filePath, "\(tempDir)/Sources/Foo.swift")
-      XCTAssertEqual(violations[1].fileLocation?.row, 5)
-      XCTAssertEqual(violations[1].fileLocation?.column, 1)
+      XCTAssertEqual(violations[1].location?.filePath, "\(tempDir)/Sources/Foo.swift")
+      XCTAssertEqual(violations[1].location?.row, 5)
+      XCTAssertEqual(violations[1].location?.column, 1)
     }
   }
 
@@ -97,34 +97,34 @@ final class FileContentsCheckerTests: XCTestCase {
       XCTAssertEqual(violations.count, 6)
 
       XCTAssertEqual(violations[0].matchedString, "let x=5")
-      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/Hello.swift")
-      XCTAssertEqual(violations[0].fileLocation?.row, 4)
-      XCTAssertEqual(violations[0].fileLocation?.column, 1)
+      XCTAssertEqual(violations[0].location?.filePath, "\(tempDir)/Sources/Hello.swift")
+      XCTAssertEqual(violations[0].location?.row, 4)
+      XCTAssertEqual(violations[0].location?.column, 1)
 
       XCTAssertEqual(violations[1].matchedString, "var y=10")
-      XCTAssertEqual(violations[1].fileLocation?.filePath, "\(tempDir)/Sources/Hello.swift")
-      XCTAssertEqual(violations[1].fileLocation?.row, 5)
-      XCTAssertEqual(violations[1].fileLocation?.column, 1)
+      XCTAssertEqual(violations[1].location?.filePath, "\(tempDir)/Sources/Hello.swift")
+      XCTAssertEqual(violations[1].location?.row, 5)
+      XCTAssertEqual(violations[1].location?.column, 1)
 
       XCTAssertEqual(violations[2].matchedString, "var y=10")
-      XCTAssertEqual(violations[2].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[2].fileLocation?.row, 5)
-      XCTAssertEqual(violations[2].fileLocation?.column, 1)
+      XCTAssertEqual(violations[2].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[2].location?.row, 5)
+      XCTAssertEqual(violations[2].location?.column, 1)
 
       XCTAssertEqual(violations[3].matchedString, "let x=5")
-      XCTAssertEqual(violations[3].fileLocation?.filePath, "\(tempDir)/Sources/Foo.swift")
-      XCTAssertEqual(violations[3].fileLocation?.row, 4)
-      XCTAssertEqual(violations[3].fileLocation?.column, 1)
+      XCTAssertEqual(violations[3].location?.filePath, "\(tempDir)/Sources/Foo.swift")
+      XCTAssertEqual(violations[3].location?.row, 4)
+      XCTAssertEqual(violations[3].location?.column, 1)
 
       XCTAssertEqual(violations[4].matchedString, "let x=5")
-      XCTAssertEqual(violations[4].fileLocation?.filePath, "\(tempDir)/Sources/Bar.swift")
-      XCTAssertEqual(violations[4].fileLocation?.row, 4)
-      XCTAssertEqual(violations[4].fileLocation?.column, 1)
+      XCTAssertEqual(violations[4].location?.filePath, "\(tempDir)/Sources/Bar.swift")
+      XCTAssertEqual(violations[4].location?.row, 4)
+      XCTAssertEqual(violations[4].location?.column, 1)
 
       XCTAssertEqual(violations[5].matchedString, "var y=10")
-      XCTAssertEqual(violations[5].fileLocation?.filePath, "\(tempDir)/Sources/Bar.swift")
-      XCTAssertEqual(violations[5].fileLocation?.row, 5)
-      XCTAssertEqual(violations[5].fileLocation?.column, 1)
+      XCTAssertEqual(violations[5].location?.filePath, "\(tempDir)/Sources/Bar.swift")
+      XCTAssertEqual(violations[5].location?.row, 5)
+      XCTAssertEqual(violations[5].location?.column, 1)
     }
   }
 
@@ -149,14 +149,14 @@ final class FileContentsCheckerTests: XCTestCase {
       XCTAssertEqual(violations.count, 2)
 
       XCTAssertEqual(violations[0].matchedString, "let x =5")
-      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[0].fileLocation?.row, 1)
-      XCTAssertEqual(violations[0].fileLocation?.column, 1)
+      XCTAssertEqual(violations[0].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[0].location?.row, 1)
+      XCTAssertEqual(violations[0].location?.column, 1)
 
       XCTAssertEqual(violations[1].matchedString, "var y= 10")
-      XCTAssertEqual(violations[1].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[1].fileLocation?.row, 2)
-      XCTAssertEqual(violations[1].fileLocation?.column, 1)
+      XCTAssertEqual(violations[1].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[1].location?.row, 2)
+      XCTAssertEqual(violations[1].location?.column, 1)
     }
   }
 
@@ -181,45 +181,45 @@ final class FileContentsCheckerTests: XCTestCase {
       XCTAssertEqual(violations.count, 7)
 
       XCTAssertEqual(violations[0].matchedString, "10000")
-      XCTAssertEqual(violations[0].fileLocation?.filePath, "\(tempDir)/Sources/Hello.swift")
-      XCTAssertEqual(violations[0].fileLocation?.row, 2)
-      XCTAssertEqual(violations[0].fileLocation?.column, 9)
+      XCTAssertEqual(violations[0].location?.filePath, "\(tempDir)/Sources/Hello.swift")
+      XCTAssertEqual(violations[0].location?.row, 2)
+      XCTAssertEqual(violations[0].location?.column, 9)
       XCTAssertEqual(violations[0].appliedAutoCorrection!.after, "10_000")
 
       XCTAssertEqual(violations[1].matchedString, "50000000")
-      XCTAssertEqual(violations[1].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[1].fileLocation?.row, 1)
-      XCTAssertEqual(violations[1].fileLocation?.column, 9)
+      XCTAssertEqual(violations[1].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[1].location?.row, 1)
+      XCTAssertEqual(violations[1].location?.column, 9)
       XCTAssertEqual(violations[1].appliedAutoCorrection!.after, "50000_000")
 
       XCTAssertEqual(violations[2].matchedString, "100000000000000")
-      XCTAssertEqual(violations[2].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[2].fileLocation?.row, 2)
-      XCTAssertEqual(violations[2].fileLocation?.column, 9)
+      XCTAssertEqual(violations[2].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[2].location?.row, 2)
+      XCTAssertEqual(violations[2].location?.column, 9)
       XCTAssertEqual(violations[2].appliedAutoCorrection!.after, "100000000000_000")
 
       XCTAssertEqual(violations[3].matchedString, "50000")
-      XCTAssertEqual(violations[3].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[3].fileLocation?.row, 1)
-      XCTAssertEqual(violations[3].fileLocation?.column, 9)
+      XCTAssertEqual(violations[3].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[3].location?.row, 1)
+      XCTAssertEqual(violations[3].location?.column, 9)
       XCTAssertEqual(violations[3].appliedAutoCorrection!.after, "50_000")
 
       XCTAssertEqual(violations[4].matchedString, "100000000000")
-      XCTAssertEqual(violations[4].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[4].fileLocation?.row, 2)
-      XCTAssertEqual(violations[4].fileLocation?.column, 9)
+      XCTAssertEqual(violations[4].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[4].location?.row, 2)
+      XCTAssertEqual(violations[4].location?.column, 9)
       XCTAssertEqual(violations[4].appliedAutoCorrection!.after, "100000000_000")
 
       XCTAssertEqual(violations[5].matchedString, "100000000")
-      XCTAssertEqual(violations[5].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[5].fileLocation?.row, 2)
-      XCTAssertEqual(violations[5].fileLocation?.column, 9)
+      XCTAssertEqual(violations[5].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[5].location?.row, 2)
+      XCTAssertEqual(violations[5].location?.column, 9)
       XCTAssertEqual(violations[5].appliedAutoCorrection!.after, "100000_000")
 
       XCTAssertEqual(violations[6].matchedString, "100000")
-      XCTAssertEqual(violations[6].fileLocation?.filePath, "\(tempDir)/Sources/World.swift")
-      XCTAssertEqual(violations[6].fileLocation?.row, 2)
-      XCTAssertEqual(violations[6].fileLocation?.column, 9)
+      XCTAssertEqual(violations[6].location?.filePath, "\(tempDir)/Sources/World.swift")
+      XCTAssertEqual(violations[6].location?.row, 2)
+      XCTAssertEqual(violations[6].location?.column, 9)
       XCTAssertEqual(violations[6].appliedAutoCorrection!.after, "100_000")
     }
   }

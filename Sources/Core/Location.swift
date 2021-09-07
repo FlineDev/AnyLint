@@ -1,7 +1,7 @@
 import Foundation
 
 /// Info about the exact location of a character in a given file.
-public struct Location: Codable {
+public struct Location: Codable, Equatable {
   /// The path to the file.
   public let filePath: String
 

@@ -9,10 +9,10 @@ public final class TestLogger: Loggable {
     loggedMessages = []
   }
 
-  public func message(_ message: String, level: PrintLevel, fileLocation: Location?) {
-    if let fileLocation = fileLocation {
+  public func message(_ message: String, level: PrintLevel, location: Location?) {
+    if let location = location {
       loggedMessages.append(
-        "[\(level.rawValue)] \(fileLocation.locationMessage(pathType: .relative)) \(message)"
+        "[\(level.rawValue)] \(location.locationMessage(pathType: .relative)) \(message)"
       )
     }
     else {

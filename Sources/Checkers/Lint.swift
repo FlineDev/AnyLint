@@ -1,6 +1,8 @@
 import Foundation
 import Core
 import OrderedCollections
+import ShellOut
+import Reporting
 
 /// The linter type providing APIs for checking anything using regular expressions.
 public enum Lint {
@@ -129,9 +131,27 @@ public enum Lint {
 
   /// Run custom scripts as checks.
   ///
-  /// - Returns: If the command produces an output in the ``LintResults`` JSON format, will forward them. Else, it will report exactly one violation if the command has a non-zero exit code with the last line(s) of output.
-  public static func runCustomScript(checkInfo: CheckInfo, command: String) throws -> [Violation] {
-    fatalError()  // TODO: [cg_2021-07-09] not yet implemented
+  /// - Returns: If the command produces an output in the ``LintResults`` JSON format, will forward them. If the output iis an array of ``Violation`` instances, they will be wrapped in a ``LintResults`` object. Else, it will report exactly one violation if the command has a non-zero exit code with the last line(s) of output.
+  public static func runCustomScript(checkInfo: CheckInfo, command: String) throws -> LintResults {
+    let tempScriptFileUrl = URL(fileURLWithPath: "_\(checkInfo.id).tempscript")
+    try command.write(to: tempScriptFileUrl, atomically: true, encoding: .utf8)
+
+    let output = try shellOut(to: "/bin/bash", arguments: [tempScriptFileUrl.path])
+    if let jsonString = output.lintResultsJsonString,
+      let jsonData = jsonString.data(using: .utf8),
+      let lintResults: LintResults = try? JSONDecoder.iso.decode(LintResults.self, from: jsonData)
+    {
+      return lintResults
+    }
+    else if let jsonString = output.violationsArrayJsonString,
+      let jsonData = jsonString.data(using: .utf8),
+      let violations: [Violation] = try? JSONDecoder.iso.decode([Violation].self, from: jsonData)
+    {
+      return [checkInfo.severity: [checkInfo: violations]]
+    }
+    else {
+      return [checkInfo.severity: [checkInfo: [Violation()]]]
+    }
   }
 
   static func validate(regex: Regex, matchesForEach matchingExamples: [String], checkInfo: CheckInfo) {
@@ -196,10 +216,30 @@ public enum Lint {
 
     guard autoCorrectReplacement == nil || violateIfNoMatchesFound != true else {
       log.message(
-        "Incompatible options specified for check \(checkInfo.id): autoCorrectReplacement and violateIfNoMatchesFound can't be used together.",
+        "Incompatible options specified for check \(checkInfo.id): `autoCorrectReplacement` and `violateIfNoMatchesFound` can't be used together.",
         level: .error
       )
       log.exit(fail: true)
     }
+  }
+}
+
+fileprivate extension String {
+  var lintResultsJsonString: String? {
+    try! Regex(
+      #"\{.*(?:\"error\"\s*:|\"warning\"\s*:|\"info\"\s*:).*\}"#,
+      options: .dotMatchesLineSeparators
+    )
+    .firstMatch(in: self)?
+    .string
+  }
+
+  var violationsArrayJsonString: String? {
+    try! Regex(
+      #"\[(?:\s*\{.*\}\s*,)*(?:\s*\{.*\}\s*)?\]"#,
+      options: .dotMatchesLineSeparators
+    )
+    .firstMatch(in: self)?
+    .string
   }
 }

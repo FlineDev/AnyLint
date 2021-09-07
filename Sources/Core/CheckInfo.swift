@@ -35,10 +35,26 @@ extension CheckInfo: Codable {
   ) throws {
     let container = try decoder.singleValueContainer()
     let rawString = try container.decode(String.self)
+    self.init(rawValue: rawString)!
+  }
 
-    let customSeverityRegex = try Regex(#"^([^@:]+)@([^:]+): ?(.*)$"#)
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(rawValue)
+  }
+}
 
-    if let match = customSeverityRegex.firstMatch(in: rawString) {
+extension CheckInfo: RawRepresentable {
+  public var rawValue: String {
+    "\(id)@\(severity.rawValue): \(hint)"
+  }
+
+  public init?(
+    rawValue: String
+  ) {
+    let customSeverityRegex = try! Regex(#"^([^@:]+)@([^:]+): ?(.*)$"#)
+
+    if let match = customSeverityRegex.firstMatch(in: rawValue) {
       let id = match.captures[0]!
       let severityString = match.captures[1]!
       let hint = match.captures[2]!
@@ -54,11 +70,11 @@ extension CheckInfo: Codable {
       self = .init(id: id, hint: hint, severity: severity)
     }
     else {
-      let defaultSeverityRegex = try Regex(#"^([^@:]+): ?(.*$)"#)
+      let defaultSeverityRegex = try! Regex(#"^([^@:]+): ?(.*$)"#)
 
-      guard let defaultSeverityMatch = defaultSeverityRegex.firstMatch(in: rawString) else {
+      guard let defaultSeverityMatch = defaultSeverityRegex.firstMatch(in: rawValue) else {
         log.message(
-          "Could not convert String literal '\(rawString)' to type CheckInfo. Please check the structure to be: <id>(@<severity>): <hint>",
+          "Could not convert String literal '\(rawValue)' to type CheckInfo. Please check the structure to be: <id>(@<severity>): <hint>",
           level: .error
         )
         log.exit(fail: true)
@@ -69,10 +85,5 @@ extension CheckInfo: Codable {
 
       self = .init(id: id, hint: hint)
     }
-  }
-
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.singleValueContainer()
-    try container.encode("\(id)@\(severity.rawValue): \(hint)")
   }
 }

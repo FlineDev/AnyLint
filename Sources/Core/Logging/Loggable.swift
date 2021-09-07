@@ -4,7 +4,7 @@ import Foundation
 public var log: Loggable = ConsoleLogger()
 
 public protocol Loggable {
-  func message(_ message: String, level: PrintLevel, fileLocation: Location?)
+  func message(_ message: String, level: PrintLevel, location: Location?)
 }
 
 extension Loggable {
@@ -21,6 +21,6 @@ extension Loggable {
 
   /// Convenience overload of `message(:level:fileLocation:)` with `fileLocation` set to `nil`.
   public func message(_ message: String, level: PrintLevel) {
-    self.message(message, level: level, fileLocation: nil)
+    self.message(message, level: level, location: nil)
   }
 }

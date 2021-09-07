@@ -103,12 +103,12 @@ struct LintCommand: ParsableCommand {
 
     // run `CustomScripts` checks
     for customScriptConfig in lintConfig.customScripts {
-      let violations = try Lint.runCustomScript(
+      let customScriptLintResults = try Lint.runCustomScript(
         checkInfo: customScriptConfig.checkInfo,
         command: customScriptConfig.command
       )
 
-      lintResults.appendViolations(violations, forCheck: customScriptConfig.checkInfo)
+      lintResults.mergeResults(customScriptLintResults)
     }
 
     // report violations & exit with right status code
