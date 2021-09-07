@@ -9,7 +9,7 @@ public enum Lint {
   /// Checks the contents of files.
   ///
   /// - Parameters:
-  ///   - checkInfo: The info object providing some general information on the lint check.
+  ///   - check: The info object providing some general information on the lint check.
   ///   - regex: The regex to use for matching the contents of files. By defaults points to the start of the regex, unless you provide the named group 'pointer'.
   ///   - matchingExamples: An array of example contents where the `regex` is expected to trigger. Optionally, the expected pointer position can be marked with ↘.
   ///   - nonMatchingExamples: An array of example contents where the `regex` is expected not to trigger.
@@ -19,7 +19,7 @@ public enum Lint {
   ///   - autoCorrectExamples: An array of example structs with a `before` and an `after` String object to check if autocorrection works properly.
   ///   - repeatIfAutoCorrected: Repeat check if at least one auto-correction was applied in last run. Defaults to `false`.
   public static func checkFileContents(
-    checkInfo: CheckInfo,
+    check: Check,
     regex: Regex,
     matchingExamples: [String] = [],
     nonMatchingExamples: [String] = [],
@@ -29,11 +29,11 @@ public enum Lint {
     autoCorrectExamples: [AutoCorrection] = [],
     repeatIfAutoCorrected: Bool = false
   ) throws -> [Violation] {
-    validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
-    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
+    validate(regex: regex, matchesForEach: matchingExamples, check: check)
+    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, check: check)
 
     validateParameterCombinations(
-      checkInfo: checkInfo,
+      check: check,
       autoCorrectReplacement: autoCorrectReplacement,
       autoCorrectExamples: autoCorrectExamples,
       violateIfNoMatchesFound: nil
@@ -41,7 +41,7 @@ public enum Lint {
 
     if let autoCorrectReplacement = autoCorrectReplacement {
       validateAutocorrectsAll(
-        checkInfo: checkInfo,
+        check: check,
         examples: autoCorrectExamples,
         regex: regex,
         autocorrectReplacement: autoCorrectReplacement
@@ -55,9 +55,9 @@ public enum Lint {
     )
 
     let violations = try FileContentsChecker(
-      id: checkInfo.id,
-      hint: checkInfo.hint,
-      severity: checkInfo.severity,
+      id: check.id,
+      hint: check.hint,
+      severity: check.severity,
       regex: regex,
       filePathsToCheck: filePathsToCheck,
       autoCorrectReplacement: autoCorrectReplacement,
@@ -71,7 +71,7 @@ public enum Lint {
   /// Checks the names of files.
   ///
   /// - Parameters:
-  ///   - checkInfo: The info object providing some general information on the lint check.
+  ///   - check: The info object providing some general information on the lint check.
   ///   - regex: The regex to use for matching the paths of files. By defaults points to the start of the regex, unless you provide the named group 'pointer'.
   ///   - matchingExamples: An array of example paths where the `regex` is expected to trigger. Optionally, the expected pointer position can be marked with ↘.
   ///   - nonMatchingExamples: An array of example paths where the `regex` is expected not to trigger.
@@ -81,7 +81,7 @@ public enum Lint {
   ///   - autoCorrectExamples: An array of example structs with a `before` and an `after` String object to check if autocorrection works properly.
   ///   - violateIfNoMatchesFound: Inverts the violation logic to report a single violation if no matches are found instead of reporting a violation for each match.
   public static func checkFilePaths(
-    checkInfo: CheckInfo,
+    check: Check,
     regex: Regex,
     matchingExamples: [String] = [],
     nonMatchingExamples: [String] = [],
@@ -91,10 +91,10 @@ public enum Lint {
     autoCorrectExamples: [AutoCorrection] = [],
     violateIfNoMatchesFound: Bool = false
   ) throws -> [Violation] {
-    validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
-    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
+    validate(regex: regex, matchesForEach: matchingExamples, check: check)
+    validate(regex: regex, doesNotMatchAny: nonMatchingExamples, check: check)
     validateParameterCombinations(
-      checkInfo: checkInfo,
+      check: check,
       autoCorrectReplacement: autoCorrectReplacement,
       autoCorrectExamples: autoCorrectExamples,
       violateIfNoMatchesFound: violateIfNoMatchesFound
@@ -102,7 +102,7 @@ public enum Lint {
 
     if let autoCorrectReplacement = autoCorrectReplacement {
       validateAutocorrectsAll(
-        checkInfo: checkInfo,
+        check: check,
         examples: autoCorrectExamples,
         regex: regex,
         autocorrectReplacement: autoCorrectReplacement
@@ -116,9 +116,9 @@ public enum Lint {
     )
 
     let violations = try FilePathsChecker(
-      id: checkInfo.id,
-      hint: checkInfo.hint,
-      severity: checkInfo.severity,
+      id: check.id,
+      hint: check.hint,
+      severity: check.severity,
       regex: regex,
       filePathsToCheck: filePathsToCheck,
       autoCorrectReplacement: autoCorrectReplacement,
@@ -132,8 +132,8 @@ public enum Lint {
   /// Run custom scripts as checks.
   ///
   /// - Returns: If the command produces an output in the ``LintResults`` JSON format, will forward them. If the output iis an array of ``Violation`` instances, they will be wrapped in a ``LintResults`` object. Else, it will report exactly one violation if the command has a non-zero exit code with the last line(s) of output.
-  public static func runCustomScript(checkInfo: CheckInfo, command: String) throws -> LintResults {
-    let tempScriptFileUrl = URL(fileURLWithPath: "_\(checkInfo.id).tempscript")
+  public static func runCustomScript(check: Check, command: String) throws -> LintResults {
+    let tempScriptFileUrl = URL(fileURLWithPath: "_\(check.id).tempscript")
     try command.write(to: tempScriptFileUrl, atomically: true, encoding: .utf8)
 
     let output = try shellOut(to: "/bin/bash", arguments: [tempScriptFileUrl.path])
@@ -147,18 +147,18 @@ public enum Lint {
       let jsonData = jsonString.data(using: .utf8),
       let violations: [Violation] = try? JSONDecoder.iso.decode([Violation].self, from: jsonData)
     {
-      return [checkInfo.severity: [checkInfo: violations]]
+      return [check.severity: [check: violations]]
     }
     else {
-      return [checkInfo.severity: [checkInfo: [Violation()]]]
+      return [check.severity: [check: [Violation()]]]
     }
   }
 
-  static func validate(regex: Regex, matchesForEach matchingExamples: [String], checkInfo: CheckInfo) {
+  static func validate(regex: Regex, matchesForEach matchingExamples: [String], check: Check) {
     for example in matchingExamples {
       if !regex.matches(example) {
         log.message(
-          "Couldn't find a match for regex \(regex) in check '\(checkInfo.id)' within matching example:\n\(example)",
+          "Couldn't find a match for regex \(regex) in check '\(check.id)' within matching example:\n\(example)",
           level: .error
         )
         log.exit(fail: true)
@@ -166,11 +166,11 @@ public enum Lint {
     }
   }
 
-  static func validate(regex: Regex, doesNotMatchAny nonMatchingExamples: [String], checkInfo: CheckInfo) {
+  static func validate(regex: Regex, doesNotMatchAny nonMatchingExamples: [String], check: Check) {
     for example in nonMatchingExamples {
       if regex.matches(example) {
         log.message(
-          "Unexpectedly found a match for regex \(regex) in check '\(checkInfo.id)' within non-matching example:\n\(example)",
+          "Unexpectedly found a match for regex \(regex) in check '\(check.id)' within non-matching example:\n\(example)",
           level: .error
         )
         log.exit(fail: true)
@@ -179,7 +179,7 @@ public enum Lint {
   }
 
   static func validateAutocorrectsAll(
-    checkInfo: CheckInfo,
+    check: Check,
     examples: [AutoCorrection],
     regex: Regex,
     autocorrectReplacement: String
@@ -189,7 +189,7 @@ public enum Lint {
       if autocorrected != autocorrect.after {
         log.message(
           """
-          Autocorrecting example for \(checkInfo.id) did not result in expected output.
+          Autocorrecting example for \(check.id) did not result in expected output.
           Before:   '\(autocorrect.before.showWhitespacesAndNewlines())'
           After:    '\(autocorrected.showWhitespacesAndNewlines())'
           Expected: '\(autocorrect.after.showWhitespacesAndNewlines())'
@@ -202,21 +202,21 @@ public enum Lint {
   }
 
   static func validateParameterCombinations(
-    checkInfo: CheckInfo,
+    check: Check,
     autoCorrectReplacement: String?,
     autoCorrectExamples: [AutoCorrection],
     violateIfNoMatchesFound: Bool?
   ) {
     if autoCorrectExamples.isFilled && autoCorrectReplacement == nil {
       log.message(
-        "`autoCorrectExamples` provided for check \(checkInfo.id) without specifying an `autoCorrectReplacement`.",
+        "`autoCorrectExamples` provided for check \(check.id) without specifying an `autoCorrectReplacement`.",
         level: .warning
       )
     }
 
     guard autoCorrectReplacement == nil || violateIfNoMatchesFound != true else {
       log.message(
-        "Incompatible options specified for check \(checkInfo.id): `autoCorrectReplacement` and `violateIfNoMatchesFound` can't be used together.",
+        "Incompatible options specified for check \(check.id): `autoCorrectReplacement` and `violateIfNoMatchesFound` can't be used together.",
         level: .error
       )
       log.exit(fail: true)

@@ -36,7 +36,7 @@ extension FileContentsChecker: Checker {
         var newFileContents: String = fileContents
         let linesInFile: [String] = fileContents.components(separatedBy: .newlines)
 
-        // skip check in file if contains `AnyLint.skipInFile: <All or CheckInfo.ID>`
+        // skip check in file if contains `AnyLint.skipInFile: <All or Check.ID>`
         let skipInFileRegex = try Regex(#"AnyLint\.skipInFile:[^\n]*([, ]All[,\s]|[, ]\#(id)[,\s])"#)
         guard !skipInFileRegex.matches(fileContents) else { continue }
 
@@ -45,7 +45,7 @@ extension FileContentsChecker: Checker {
         for match in regex.matches(in: fileContents).reversed() {
           let location = fileContents.fileLocation(of: match.range.lowerBound, filePath: filePath)
 
-          // skip found match if contains `AnyLint.skipHere: <CheckInfo.ID>` in same line or one line before
+          // skip found match if contains `AnyLint.skipHere: <Check.ID>` in same line or one line before
           guard
             !linesInFile.containsLine(at: [location.row! - 2, location.row! - 1], matchingRegex: skipHereRegex)
           else { continue }

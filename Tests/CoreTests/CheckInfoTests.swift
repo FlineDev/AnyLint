@@ -1,26 +1,26 @@
 @testable import Core
 import XCTest
 
-final class CheckInfoTests: XCTestCase {
+final class CheckTests: XCTestCase {
   func testInit() {
-    let checkInfo = CheckInfo(id: "SampleId", hint: "Some hint.", severity: .warning)
-    XCTAssertEqual(checkInfo.id, "SampleId")
-    XCTAssertEqual(checkInfo.hint, "Some hint.")
-    XCTAssertEqual(checkInfo.severity, .warning)
+    let check = Check(id: "SampleId", hint: "Some hint.", severity: .warning)
+    XCTAssertEqual(check.id, "SampleId")
+    XCTAssertEqual(check.hint, "Some hint.")
+    XCTAssertEqual(check.severity, .warning)
 
-    XCTAssertEqual(CheckInfo(id: "id", hint: "hint").severity, .error)
+    XCTAssertEqual(Check(id: "id", hint: "hint").severity, .error)
   }
 
   func testCodable() throws {
-    let checkInfo = CheckInfo(id: "SampleId", hint: "Some hint.", severity: .warning)
-    let encodedData = try JSONEncoder().encode(checkInfo)
+    let check = Check(id: "SampleId", hint: "Some hint.", severity: .warning)
+    let encodedData = try JSONEncoder().encode(check)
     let encodedString = String(data: encodedData, encoding: .utf8)!
 
     XCTAssertEqual(encodedString, #""SampleId@warning: Some hint.""#)
 
-    let decodedCheckInfo = try JSONDecoder().decode(CheckInfo.self, from: encodedData)
-    XCTAssertEqual(decodedCheckInfo.id, "SampleId")
-    XCTAssertEqual(decodedCheckInfo.hint, "Some hint.")
-    XCTAssertEqual(decodedCheckInfo.severity, .warning)
+    let decodedCheck = try JSONDecoder().decode(Check.self, from: encodedData)
+    XCTAssertEqual(decodedCheck.id, "SampleId")
+    XCTAssertEqual(decodedCheck.hint, "Some hint.")
+    XCTAssertEqual(decodedCheck.severity, .warning)
   }
 }

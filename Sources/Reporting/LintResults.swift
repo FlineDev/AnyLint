@@ -2,25 +2,30 @@ import Foundation
 import Core
 import OrderedCollections
 
-/// The linting output type. Can be merged from multiple
-public typealias LintResults = OrderedDictionary<Severity, OrderedDictionary<CheckInfo, [Violation]>>
+/// The linting output type. Can be merged from multiple instances into one.
+public struct LintResults {
+  /// The checks and their validations accessible by severity level.
+  public var checkViolationsBySeverity: Dictionary<Severity, Dictionary<Check, [Violation]>>
 
-extension LintResults {
+  public init() {
+    self.checkViolationsBySeverity = [:]
+  }
+
   /// Returns a list of all executed checks.
-  public var allExecutedChecks: [CheckInfo] {
-    values.reduce(into: []) { $0.append(contentsOf: $1.keys) }
+  public var allExecutedChecks: [Check] {
+    checkViolationsBySeverity.values.reduce(into: []) { $0.append(contentsOf: $1.keys) }.sorted()
   }
 
   /// Returns a list of all found violations.
   public var allFoundViolations: [Violation] {
-    values.reduce(into: []) { $0.append(contentsOf: $1.values.flatMap { $0 }) }
+    checkViolationsBySeverity.values.reduce(into: []) { $0.append(contentsOf: $1.values.flatMap { $0 }) }.sorted()
   }
 
   /// The highest severity with at least one violation.
   func maxViolationSeverity(excludeAutocorrected: Bool) -> Severity? {
     for severity in Severity.allCases.sorted().reversed() {
-      if let severityViolations = self[severity],
-        severityViolations.values.elements.contains(where: { !$0.isEmpty })
+      if let severityViolations = checkViolationsBySeverity[severity],
+        severityViolations.values.contains(where: { !$0.isEmpty })
       {
         return severity
       }
@@ -31,7 +36,7 @@ extension LintResults {
 
   /// Merges the given lint results into this one.
   public mutating func mergeResults(_ other: LintResults) {
-    merge(other) { currentDict, newDict in
+    checkViolationsBySeverity.merge(other.checkViolationsBySeverity) { currentDict, newDict in
       currentDict.merging(newDict) { currentViolations, newViolations in
         currentViolations + newViolations
       }
@@ -39,13 +44,13 @@ extension LintResults {
   }
 
   /// Appends the violations for the provided check to the results.
-  public mutating func appendViolations(_ violations: [Violation], forCheck checkInfo: CheckInfo) {
+  public mutating func appendViolations(_ violations: [Violation], forCheck check: Check) {
     assert(
-      keys.contains(checkInfo.severity),
-      "Trying to add violations for severity \(checkInfo.severity) to LintResults without having initialized the severity key."
+      checkViolationsBySeverity.keys.contains(check.severity),
+      "Trying to add violations for severity \(check.severity) to LintResults without having initialized the severity key."
     )
 
-    self[checkInfo.severity]![checkInfo] = violations
+    checkViolationsBySeverity[check.severity]![check] = violations
   }
 
   /// Logs the summary of the violations in the specified output format.
@@ -55,7 +60,7 @@ extension LintResults {
     if executedChecks.isEmpty {
       log.message("No checks found to perform.", level: .warning)
     }
-    else if values.contains(where: { $0.values.isFilled }) {
+    else if checkViolationsBySeverity.values.contains(where: { $0.values.isFilled }) {
       switch outputFormat {
       case .commandLine:
         reportToConsole()
@@ -82,7 +87,7 @@ extension LintResults {
   ///   - excludeAutocorrected: If `true`, autocorrected violations will not be returned, else returns all violations of the given severity level.
   /// - Returns: The violations for a specific severity level.
   public func violations(severity: Severity, excludeAutocorrected: Bool) -> [Violation] {
-    guard let violations = self[severity]?.values.elements.flatMap({ $0 }) else { return [] }
+    guard let violations = checkViolationsBySeverity[severity]?.values.flatMap({ $0 }) else { return [] }
     guard excludeAutocorrected else { return violations }
     return violations.filter { $0.appliedAutoCorrection == nil }
   }
@@ -90,11 +95,11 @@ extension LintResults {
   /// Used to get validations for a specific check.
   ///
   /// - Parameters:
-  ///   - check: The `CheckInfo` object to filter by.
+  ///   - check: The `Check` object to filter by.
   ///   - excludeAutocorrected: If `true`, autocorrected violations will not be returned, else returns all violations of the given severity level.
   /// - Returns: The violations for a specific check.
-  public func violations(check: CheckInfo, excludeAutocorrected: Bool) -> [Violation] {
-    guard let violations: [Violation] = self[check.severity]?[check] else { return [] }
+  public func violations(check: Check, excludeAutocorrected: Bool) -> [Violation] {
+    guard let violations: [Violation] = checkViolationsBySeverity[check.severity]?[check] else { return [] }
     guard excludeAutocorrected else { return violations }
     return violations.filter { $0.appliedAutoCorrection == nil }
   }
@@ -165,13 +170,13 @@ extension LintResults {
   }
 
   func reportToXcode() {
-    for severity in keys.sorted().reversed() {
-      guard let checkResultsAtSeverity = self[severity] else { continue }
+    for severity in checkViolationsBySeverity.keys.sorted().reversed() {
+      guard let checkResultsAtSeverity = checkViolationsBySeverity[severity] else { continue }
 
-      for (checkInfo, violations) in checkResultsAtSeverity {
+      for (check, violations) in checkResultsAtSeverity {
         for violation in violations where violation.appliedAutoCorrection == nil {
           log.message(
-            "[\(checkInfo.id)] \(checkInfo.hint)",
+            "[\(check.id)] \(check.hint)",
             level: severity.logLevel,
             location: violation.location
           )
@@ -196,3 +201,70 @@ extension LintResults {
     }
   }
 }
+
+enum LintResultsDecodingError: Error {
+  case unknownSeverityRawValue(String)
+  case unknownCheckRawValue(String)
+}
+
+/// Custom ``Codable`` implementation due to a Swift bug with custom key types: https://bugs.swift.org/browse/SR-7788
+extension LintResults: Codable {
+  public init(
+    from decoder: Decoder
+  ) throws {
+    let rawKeyedDictionary: [String: [String: [Violation]]] = try .init(from: decoder)
+
+    self.checkViolationsBySeverity = [:]
+
+    for (rawSeverity, checkRawValueViolationsDict) in rawKeyedDictionary {
+      guard let severity = Severity(rawValue: rawSeverity) else {
+        throw LintResultsDecodingError.unknownSeverityRawValue(rawSeverity)
+      }
+
+      var checkViolationsDict: [Check: [Violation]] = .init()
+
+      for (checkRawValue, violations) in checkRawValueViolationsDict {
+        guard let check = Check(rawValue: checkRawValue) else {
+          throw LintResultsDecodingError.unknownCheckRawValue(checkRawValue)
+        }
+
+        checkViolationsDict[check] = violations
+      }
+
+      self.checkViolationsBySeverity[severity] = checkViolationsDict
+    }
+  }
+
+  public func encode(to encoder: Encoder) throws {
+    var rawKeyedOuterDict: Dictionary<String, Dictionary<String, [Violation]>> = .init()
+
+    for (severity, checkViolationsDict) in checkViolationsBySeverity {
+      var rawKeyedInnerDict: Dictionary<String, [Violation]> = .init()
+
+      for (check, violations) in checkViolationsDict {
+        rawKeyedInnerDict[check.rawValue] = violations
+      }
+
+      rawKeyedOuterDict[severity.rawValue] = rawKeyedInnerDict
+    }
+
+    var container = encoder.singleValueContainer()
+    try container.encode(rawKeyedOuterDict)
+  }
+}
+
+extension LintResults: ExpressibleByDictionaryLiteral {
+  public init(
+    dictionaryLiteral elements: (Severity, Dictionary<Check, [Violation]>)...
+  ) {
+    var newDict: Dictionary<Severity, Dictionary<Check, [Violation]>> = .init()
+
+    for (key, value) in elements {
+      newDict[key] = value
+    }
+
+    self.checkViolationsBySeverity = newDict
+  }
+}
+
+extension LintResults: Equatable {}

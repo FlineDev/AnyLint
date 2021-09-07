@@ -70,7 +70,7 @@ struct LintCommand: ParsableCommand {
     // run `FileContents` checks
     for fileContentsConfig in lintConfig.fileContents {
       let violations = try Lint.checkFileContents(
-        checkInfo: fileContentsConfig.checkInfo,
+        check: fileContentsConfig.check,
         regex: fileContentsConfig.regex,
         matchingExamples: fileContentsConfig.matchingExamples,
         nonMatchingExamples: fileContentsConfig.nonMatchingExamples,
@@ -81,13 +81,13 @@ struct LintCommand: ParsableCommand {
         repeatIfAutoCorrected: fileContentsConfig.repeatIfAutoCorrected
       )
 
-      lintResults.appendViolations(violations, forCheck: fileContentsConfig.checkInfo)
+      lintResults.appendViolations(violations, forCheck: fileContentsConfig.check)
     }
 
     // run `FilePaths` checks
     for filePathsConfig in lintConfig.filePaths {
       let violations = try Lint.checkFilePaths(
-        checkInfo: filePathsConfig.checkInfo,
+        check: filePathsConfig.check,
         regex: filePathsConfig.regex,
         matchingExamples: filePathsConfig.matchingExamples,
         nonMatchingExamples: filePathsConfig.nonMatchingExamples,
@@ -98,13 +98,13 @@ struct LintCommand: ParsableCommand {
         violateIfNoMatchesFound: filePathsConfig.violateIfNoMatchesFound
       )
 
-      lintResults.appendViolations(violations, forCheck: filePathsConfig.checkInfo)
+      lintResults.appendViolations(violations, forCheck: filePathsConfig.check)
     }
 
     // run `CustomScripts` checks
     for customScriptConfig in lintConfig.customScripts {
       let customScriptLintResults = try Lint.runCustomScript(
-        checkInfo: customScriptConfig.checkInfo,
+        check: customScriptConfig.check,
         command: customScriptConfig.command
       )
 
@@ -133,7 +133,7 @@ extension Severity: ExpressibleByArgument {}
 extension OutputFormat: ExpressibleByArgument {}
 
 extension CheckConfiguration {
-  var checkInfo: CheckInfo {
+  var check: Check {
     .init(id: id, hint: hint, severity: severity)
   }
 }

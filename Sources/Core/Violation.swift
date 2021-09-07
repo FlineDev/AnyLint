@@ -2,6 +2,9 @@ import Foundation
 
 /// A violation found in a check.
 public struct Violation: Codable, Equatable {
+  /// The exact time this violation was discovered. Needed for sorting purposes.
+  public let discoverDate: Date
+
   /// The matched string that violates the check.
   public let matchedString: String?
 
@@ -13,12 +16,20 @@ public struct Violation: Codable, Equatable {
 
   /// Initializes a violation object.
   public init(
+    discoverDate: Date = Date(),
     matchedString: String? = nil,
     location: Location? = nil,
     appliedAutoCorrection: AutoCorrection? = nil
   ) {
+    self.discoverDate = discoverDate
     self.matchedString = matchedString
     self.location = location
     self.appliedAutoCorrection = appliedAutoCorrection
+  }
+}
+
+extension Violation: Comparable {
+  public static func < (lhs: Violation, rhs: Violation) -> Bool {
+    lhs.discoverDate < rhs.discoverDate
   }
 }

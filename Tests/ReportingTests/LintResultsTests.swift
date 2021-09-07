@@ -8,28 +8,50 @@ final class LintResultsTests: XCTestCase {
   private var sampleLintResults: LintResults {
     [
       Severity.error: [
-        CheckInfo(id: "1", hint: "hint #1", severity: .error): [
-          Violation(matchedString: "oink1", location: .init(filePath: "/sample/path1", row: 4, column: 2)),
-          Violation(matchedString: "boo1", location: .init(filePath: "/sample/path2", row: 40, column: 20)),
+        Check(id: "1", hint: "hint #1", severity: .error): [
           Violation(
+            discoverDate: .sample(seed: 0),
+            matchedString: "oink1",
+            location: .init(filePath: "/sample/path1", row: 4, column: 2)
+          ),
+          Violation(
+            discoverDate: .sample(seed: 1),
+            matchedString: "boo1",
+            location: .init(filePath: "/sample/path2", row: 40, column: 20)
+          ),
+          Violation(
+            discoverDate: .sample(seed: 2),
             location: .init(filePath: "/sample/path2"),
             appliedAutoCorrection: .init(before: "foo", after: "bar")
           ),
         ]
       ],
       Severity.warning: [
-        CheckInfo(id: "2", hint: "hint #2", severity: .warning): [
-          Violation(matchedString: "oink2", location: .init(filePath: "/sample/path1", row: 5, column: 6)),
-          Violation(matchedString: "boo2", location: .init(filePath: "/sample/path3", row: 50, column: 60)),
+        Check(id: "2", hint: "hint #2", severity: .warning): [
           Violation(
+            discoverDate: .sample(seed: 3),
+            matchedString: "oink2",
+            location: .init(filePath: "/sample/path1", row: 5, column: 6)
+          ),
+          Violation(
+            discoverDate: .sample(seed: 4),
+            matchedString: "boo2",
+            location: .init(filePath: "/sample/path3", row: 50, column: 60)
+          ),
+          Violation(
+            discoverDate: .sample(seed: 5),
             location: .init(filePath: "/sample/path4"),
             appliedAutoCorrection: .init(before: "fool", after: "barl")
           ),
         ]
       ],
       Severity.info: [
-        CheckInfo(id: "3", hint: "hint #3", severity: .info): [
-          Violation(matchedString: "blubb", location: .init(filePath: "/sample/path0", row: 10, column: 20))
+        Check(id: "3", hint: "hint #3", severity: .info): [
+          Violation(
+            discoverDate: .sample(seed: 6),
+            matchedString: "blubb",
+            location: .init(filePath: "/sample/path0", row: 10, column: 20)
+          )
         ]
       ],
     ]
@@ -57,15 +79,15 @@ final class LintResultsTests: XCTestCase {
   func testMergeResults() {
     let otherLintResults: LintResults = [
       Severity.error: [
-        CheckInfo(id: "1", hint: "hint #1", severity: .warning): [
+        Check(id: "1", hint: "hint #1", severity: .warning): [
           Violation(matchedString: "muuh", location: .init(filePath: "/sample/path4", row: 6, column: 3)),
           Violation(
             location: .init(filePath: "/sample/path5"),
             appliedAutoCorrection: .init(before: "fusion", after: "wario")
           ),
         ],
-        CheckInfo(id: "2", hint: "hint #2 (alternative)", severity: .warning): [],
-        CheckInfo(id: "4", hint: "hint #4", severity: .error): [
+        Check(id: "2", hint: "hint #2 (alternative)", severity: .warning): [],
+        Check(id: "4", hint: "hint #4", severity: .error): [
           Violation(matchedString: "super", location: .init(filePath: "/sample/path1", row: 2, column: 200))
         ],
       ]
@@ -77,16 +99,16 @@ final class LintResultsTests: XCTestCase {
     let allFoundViolations = lintResults.allFoundViolations
 
     XCTAssertNoDifference(allExecutedChecks.count, 6)
-    XCTAssertNoDifference(allExecutedChecks.map(\.id), ["1", "1", "2", "4", "2", "3"])
+    XCTAssertNoDifference(allExecutedChecks.map(\.id), ["1", "1", "2", "2", "3", "4"])
 
     XCTAssertNoDifference(allFoundViolations.count, 10)
     XCTAssertNoDifference(
       allFoundViolations.map(\.location).map(\.?.filePath).map(\.?.last),
-      ["1", "2", "2", "4", "5", "1", "1", "3", "4", "0"]
+      ["1", "2", "2", "1", "3", "4", "0", "4", "5", "1"]
     )
     XCTAssertNoDifference(
       allFoundViolations.map(\.matchedString),
-      ["oink1", "boo1", nil, "muuh", nil, "super", "oink2", "boo2", nil, "blubb"]
+      ["oink1", "boo1", nil, "oink2", "boo2", nil, "blubb", "muuh", nil, "super"]
     )
   }
 
@@ -118,9 +140,9 @@ final class LintResultsTests: XCTestCase {
     XCTAssertNoDifference(lintResults.allExecutedChecks.count, 4)
     XCTAssertNoDifference(
       lintResults.allFoundViolations.map(\.matchedString).map(\.?.first),
-      ["o", "b", nil, "A", "B", nil, "o", "b", nil, "b"]
+      ["o", "b", nil, "o", "b", nil, "b", "A", "B", nil]
     )
-    XCTAssertNoDifference(lintResults.allExecutedChecks.map(\.id), ["1", "Added", "2", "3"])
+    XCTAssertNoDifference(lintResults.allExecutedChecks.map(\.id), ["1", "2", "3", "Added"])
   }
 
   func testReportToConsole() {
@@ -200,7 +222,7 @@ final class LintResultsTests: XCTestCase {
     let reportedContents = try Data(contentsOf: resultFileUrl)
     let reportedLintResults = try JSONDecoder.iso.decode(LintResults.self, from: reportedContents)
 
-    XCTAssertNoDifference(sampleLintResults.map(\.key), reportedLintResults.map(\.key))
+    XCTAssertNoDifference(sampleLintResults, reportedLintResults)
   }
 
   func testViolations() {
@@ -235,10 +257,10 @@ final class LintResultsTests: XCTestCase {
 
     lintResults = [
       Severity.error: [
-        CheckInfo(id: "1", hint: "hint #1", severity: .error): []
+        Check(id: "1", hint: "hint #1", severity: .error): []
       ],
       Severity.warning: [
-        CheckInfo(id: "2", hint: "hint #2", severity: .warning): [
+        Check(id: "2", hint: "hint #2", severity: .warning): [
           Violation(matchedString: "oink2", location: .init(filePath: "/sample/path1", row: 5, column: 6)),
           Violation(matchedString: "boo2", location: .init(filePath: "/sample/path3", row: 50, column: 60)),
           Violation(
@@ -248,7 +270,7 @@ final class LintResultsTests: XCTestCase {
         ]
       ],
       Severity.info: [
-        CheckInfo(id: "3", hint: "hint #3", severity: .info): [
+        Check(id: "3", hint: "hint #3", severity: .info): [
           Violation(matchedString: "blubb", location: .init(filePath: "/sample/path0", row: 10, column: 20))
         ]
       ],
@@ -257,13 +279,13 @@ final class LintResultsTests: XCTestCase {
 
     lintResults = [
       Severity.error: [
-        CheckInfo(id: "1", hint: "hint #1", severity: .error): []
+        Check(id: "1", hint: "hint #1", severity: .error): []
       ],
       Severity.warning: [
-        CheckInfo(id: "2", hint: "hint #2", severity: .warning): []
+        Check(id: "2", hint: "hint #2", severity: .warning): []
       ],
       Severity.info: [
-        CheckInfo(id: "3", hint: "hint #3", severity: .info): [
+        Check(id: "3", hint: "hint #3", severity: .info): [
           Violation(matchedString: "blubb", location: .init(filePath: "/sample/path0", row: 10, column: 20))
         ]
       ],
@@ -272,13 +294,13 @@ final class LintResultsTests: XCTestCase {
 
     lintResults = [
       Severity.error: [
-        CheckInfo(id: "1", hint: "hint #1", severity: .error): []
+        Check(id: "1", hint: "hint #1", severity: .error): []
       ],
       Severity.warning: [
-        CheckInfo(id: "2", hint: "hint #2", severity: .warning): []
+        Check(id: "2", hint: "hint #2", severity: .warning): []
       ],
       Severity.info: [
-        CheckInfo(id: "3", hint: "hint #3", severity: .info): []
+        Check(id: "3", hint: "hint #3", severity: .info): []
       ],
     ]
     XCTAssertEqual(lintResults.maxViolationSeverity(excludeAutocorrected: false), nil)
@@ -287,41 +309,52 @@ final class LintResultsTests: XCTestCase {
   }
 
   func testCodable() throws {
-    let expectedJsonOutput = """
+    let expectedJsonOutput = #"""
       {
-        "warning": {
-          "1@error: hint for #1": [{
-
+        "warning" : {
+          "1@error: hint for #1" : [
+            {
+              "discoverDate" : "2001-01-01T00:00:00Z"
             },
             {
-              "appliedAutoCorrection": {
-                "after": "A",
-                "before": "AAA"
+              "discoverDate" : "2001-01-01T01:00:00Z",
+              "appliedAutoCorrection" : {
+                "after" : "A",
+                "before" : "AAA"
               },
-              "matchedString": "A"
+              "matchedString" : "A"
             },
             {
-              "location": {
-                "row": 5,
-                "column": 2,
-                "filePath": "/some/path"
+              "discoverDate" : "2001-01-01T02:00:00Z",
+              "location" : {
+                "row" : 5,
+                "column" : 2,
+                "filePath" : "\/some\/path"
               },
-              "matchedString": "AAA"
+              "matchedString" : "AAA"
             }
           ]
         },
-        "info": {
+        "info" : {
 
         }
       }
-      """
+      """#
 
     let lintResults: LintResults = [
       .warning: [
         .init(id: "1", hint: "hint for #1"): [
-          .init(),
-          .init(matchedString: "A", appliedAutoCorrection: .init(before: "AAA", after: "A")),
-          .init(matchedString: "AAA", location: .init(filePath: "/some/path", row: 5, column: 2)),
+          .init(discoverDate: .sample(seed: 0)),
+          .init(
+            discoverDate: .sample(seed: 1),
+            matchedString: "A",
+            appliedAutoCorrection: .init(before: "AAA", after: "A")
+          ),
+          .init(
+            discoverDate: .sample(seed: 2),
+            matchedString: "AAA",
+            location: .init(filePath: "/some/path", row: 5, column: 2)
+          ),
         ]
       ],
       .info: [:],

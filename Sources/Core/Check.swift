@@ -1,7 +1,7 @@
 import Foundation
 
 /// Provides some basic information needed in each lint check.
-public struct CheckInfo {
+public struct Check {
   /// The identifier of the check defined here. Can be used when defining exceptions within files for specific lint checks.
   public let id: String
 
@@ -23,13 +23,13 @@ public struct CheckInfo {
   }
 }
 
-extension CheckInfo: Hashable {
+extension Check: Hashable {
   public func hash(into hasher: inout Hasher) {
     hasher.combine(id)
   }
 }
 
-extension CheckInfo: Codable {
+extension Check: Codable {
   public init(
     from decoder: Decoder
   ) throws {
@@ -44,7 +44,7 @@ extension CheckInfo: Codable {
   }
 }
 
-extension CheckInfo: RawRepresentable {
+extension Check: RawRepresentable {
   public var rawValue: String {
     "\(id)@\(severity.rawValue): \(hint)"
   }
@@ -74,7 +74,7 @@ extension CheckInfo: RawRepresentable {
 
       guard let defaultSeverityMatch = defaultSeverityRegex.firstMatch(in: rawValue) else {
         log.message(
-          "Could not convert String literal '\(rawValue)' to type CheckInfo. Please check the structure to be: <id>(@<severity>): <hint>",
+          "Could not convert String literal '\(rawValue)' to type Check. Please check the structure to be: <id>(@<severity>): <hint>",
           level: .error
         )
         log.exit(fail: true)
@@ -85,5 +85,11 @@ extension CheckInfo: RawRepresentable {
 
       self = .init(id: id, hint: hint)
     }
+  }
+}
+
+extension Check: Comparable {
+  public static func < (lhs: Check, rhs: Check) -> Bool {
+    lhs.id < rhs.id
   }
 }

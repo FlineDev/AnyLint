@@ -17,12 +17,12 @@ final class LintTests: XCTestCase {
     XCTAssertNil(testLogger.exitStatusCode)
 
     let regex = try! Regex(#"foo[0-9]?bar"#)
-    let checkInfo = CheckInfo(id: "foo_bar", hint: "do bar", severity: .warning)
+    let check = Check(id: "foo_bar", hint: "do bar", severity: .warning)
 
     Lint.validate(
       regex: regex,
       matchesForEach: ["foo1bar", "foobar", "myfoo4barbeque"],
-      checkInfo: checkInfo
+      check: check
     )
     XCTAssertNil(testLogger.exitStatusCode)
 
@@ -30,7 +30,7 @@ final class LintTests: XCTestCase {
     //    Lint.validate(
     //      regex: regex,
     //      matchesForEach: ["foo1bar", "FooBar", "myfoo4barbeque"],
-    //      checkInfo: checkInfo
+    //      check: check
     //    )
     //    XCTAssertEqual(testLogger.exitStatusCode, EXIT_FAILURE)
   }
@@ -39,12 +39,12 @@ final class LintTests: XCTestCase {
     XCTAssertNil(testLogger.exitStatusCode)
 
     let regex = try! Regex(#"foo[0-9]?bar"#)
-    let checkInfo = CheckInfo(id: "foo_bar", hint: "do bar", severity: .warning)
+    let check = Check(id: "foo_bar", hint: "do bar", severity: .warning)
 
     Lint.validate(
       regex: regex,
       doesNotMatchAny: ["fooLbar", "FooBar", "myfoo40barbeque"],
-      checkInfo: checkInfo
+      check: check
     )
     XCTAssertNil(testLogger.exitStatusCode)
 
@@ -52,7 +52,7 @@ final class LintTests: XCTestCase {
     //    Lint.validate(
     //      regex: regex,
     //      doesNotMatchAny: ["fooLbar", "foobar", "myfoo40barbeque"],
-    //      checkInfo: checkInfo
+    //      check: check
     //    )
     //    XCTAssertEqual(testLogger.exitStatusCode, EXIT_FAILURE)
   }
@@ -63,7 +63,7 @@ final class LintTests: XCTestCase {
     let anonymousCaptureRegex = try? Regex(#"([^\.]+)(\.)([^\.]+)(\.)([^\.]+)"#)
 
     Lint.validateAutocorrectsAll(
-      checkInfo: CheckInfo(id: "id", hint: "hint"),
+      check: Check(id: "id", hint: "hint"),
       examples: [
         AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
         AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
@@ -76,7 +76,7 @@ final class LintTests: XCTestCase {
 
     // TODO: [cg_2021-09-05] Swift / XCTest doesn't have a way to test for functions returning `Never`
     //    Lint.validateAutocorrectsAll(
-    //      checkInfo: CheckInfo(id: "id", hint: "hint"),
+    //      check: Check(id: "id", hint: "hint"),
     //      examples: [
     //        AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
     //        AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
@@ -94,7 +94,7 @@ final class LintTests: XCTestCase {
     let namedCaptureRegex = try! Regex(#"([^\.]+)\.([^\.]+)\.([^\.]+)"#)
 
     Lint.validateAutocorrectsAll(
-      checkInfo: CheckInfo(id: "id", hint: "hint"),
+      check: Check(id: "id", hint: "hint"),
       examples: [
         AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
         AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
@@ -107,7 +107,7 @@ final class LintTests: XCTestCase {
 
     // TODO: [cg_2021-09-05] Swift / XCTest doesn't have a way to test for functions returning `Never`
     //    Lint.validateAutocorrectsAll(
-    //      checkInfo: CheckInfo(id: "id", hint: "hint"),
+    //      check: Check(id: "id", hint: "hint"),
     //      examples: [
     //        AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
     //        AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
@@ -121,7 +121,7 @@ final class LintTests: XCTestCase {
 
   func testRunCustomScript() throws {
     var lintResults: LintResults = try Lint.runCustomScript(
-      checkInfo: .init(id: "1", hint: "hint #1"),
+      check: .init(id: "1", hint: "hint #1"),
       command: """
         if which echo > /dev/null; then
           echo 'Executed custom checks with following result:
@@ -154,15 +154,15 @@ final class LintTests: XCTestCase {
     XCTAssertEqual(lintResults.allFoundViolations.dropFirst().first?.location?.filePath, "/some/path")
     XCTAssertEqual(lintResults.allFoundViolations.dropFirst().first?.location?.row, 5)
     XCTAssertEqual(lintResults.allFoundViolations.dropFirst().first?.appliedAutoCorrection?.after, "A")
-    XCTAssertNil(lintResults[.error]?.keys.first)
-    XCTAssertEqual(lintResults[.info]?.keys.first?.id, "B")
+    XCTAssertNil(lintResults.checkViolationsBySeverity[.error]?.keys.first)
+    XCTAssertEqual(lintResults.checkViolationsBySeverity[.info]?.keys.first?.id, "B")
   }
 
   func testValidateParameterCombinations() {
     XCTAssertNoDifference(testLogger.loggedMessages, [])
 
     Lint.validateParameterCombinations(
-      checkInfo: .init(id: "1", hint: "hint #1"),
+      check: .init(id: "1", hint: "hint #1"),
       autoCorrectReplacement: nil,
       autoCorrectExamples: [.init(before: "abc", after: "cba")],
       violateIfNoMatchesFound: false
@@ -175,7 +175,7 @@ final class LintTests: XCTestCase {
 
     // TODO: [cg_2021-09-05] Swift / XCTest doesn't have a way to test for functions returning `Never`
     //    Lint.validateParameterCombinations(
-    //      checkInfo: .init(id: "2", hint: "hint #2"),
+    //      check: .init(id: "2", hint: "hint #2"),
     //      autoCorrectReplacement: "$3$2$1",
     //      autoCorrectExamples: [.init(before: "abc", after: "cba")],
     //      violateIfNoMatchesFound: true

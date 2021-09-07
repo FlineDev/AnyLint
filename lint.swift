@@ -14,7 +14,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: - Checks
     // MARK: Changelog
     try Lint.checkFilePaths(
-        checkInfo: "Changelog: Each project should have a CHANGELOG.md file, tracking the changes within a project over time.",
+        check: "Changelog: Each project should have a CHANGELOG.md file, tracking the changes within a project over time.",
         regex: changelogFile,
         matchingExamples: ["CHANGELOG.md"],
         nonMatchingExamples: ["CHANGELOG.markdown", "Changelog.md", "ChangeLog.md"],
@@ -23,7 +23,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: ChangelogEntryTrailingWhitespaces
     try Lint.checkFileContents(
-        checkInfo: "ChangelogEntryTrailingWhitespaces: The summary line of a Changelog entry should end with two whitespaces.",
+        check: "ChangelogEntryTrailingWhitespaces: The summary line of a Changelog entry should end with two whitespaces.",
         regex: #"\n([-–] (?!None\.).*[^ ])( {0,1}| {3,})\n"#,
         matchingExamples: ["\n- Fixed a bug.\n  Issue:", "\n- Added a new option. (see [Link](#)) \nPR:"],
         nonMatchingExamples: ["\n- Fixed a bug.  \n  Issue:", "\n- Added a new option. (see [Link](#))  \nPR:"],
@@ -41,7 +41,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: ChangelogEntryLeadingWhitespaces
     try Lint.checkFileContents(
-        checkInfo: "ChangelogEntryLeadingWhitespaces: The links line of a Changelog entry should start with two whitespaces.",
+        check: "ChangelogEntryLeadingWhitespaces: The links line of a Changelog entry should start with two whitespaces.",
         regex: #"\n( {0,1}| {3,})(Tasks?:|Issues?:|PRs?:|Authors?:)"#,
         matchingExamples: ["\n- Fixed a bug.\nIssue: [Link](#)", "\n- Fixed a bug. \nIssue: [Link](#)", "\n- Fixed a bug.    \nIssue: [Link](#)"],
         nonMatchingExamples: ["- Fixed a bug.\n  Issue: [Link](#)"],
@@ -56,7 +56,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: EmptyMethodBody
     try Lint.checkFileContents(
-        checkInfo: "EmptyMethodBody: Don't use whitespace or newlines for the body of empty methods.",
+        check: "EmptyMethodBody: Don't use whitespace or newlines for the body of empty methods.",
         regex: ["declaration": #"(init|func [^\(\s]+)\([^{}]*\)"#, "spacing": #"\s*"#, "body": #"\{\s+\}"#],
         matchingExamples: [
             "init() { }",
@@ -83,7 +83,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: EmptyTodo
     try Lint.checkFileContents(
-        checkInfo: "EmptyTodo: `// TODO:` comments should not be empty.",
+        check: "EmptyTodo: `// TODO:` comments should not be empty.",
         regex: #"// TODO: ?(\[[\d\-_a-z]+\])? *\n"#,
         matchingExamples: ["// TODO:\n", "// TODO: [2020-03-19]\n", "// TODO: [cg_2020-03-19]  \n"],
         nonMatchingExamples: ["// TODO: refactor", "// TODO: not yet implemented", "// TODO: [cg_2020-03-19] not yet implemented"],
@@ -92,7 +92,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: EmptyType
     try Lint.checkFileContents(
-        checkInfo: "EmptyType: Don't keep empty types in code without commenting inside why they are needed.",
+        check: "EmptyType: Don't keep empty types in code without commenting inside why they are needed.",
         regex: #"(class|protocol|struct|enum) [^\{]+\{\s*\}"#,
         matchingExamples: ["class Foo {}", "enum Constants {\n    \n}", "struct MyViewModel(x: Int, y: Int, closure: () -> Void) {}"],
         nonMatchingExamples: ["class Foo { /* TODO: not yet implemented */ }", "func foo() {}", "init() {}", "enum Bar { case x, y }"],
@@ -101,7 +101,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: GuardMultiline2
     try Lint.checkFileContents(
-        checkInfo: "GuardMultiline2: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+        check: "GuardMultiline2: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
         regex: [
             "newline": #"\n"#,
             "guardIndent": #" *"#,
@@ -170,7 +170,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: GuardMultiline3
     try Lint.checkFileContents(
-        checkInfo: "GuardMultiline3: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+        check: "GuardMultiline3: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
         regex: [
             "newline": #"\n"#,
             "guardIndent": #" *"#,
@@ -246,7 +246,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: GuardMultiline4
     try Lint.checkFileContents(
-        checkInfo: "GuardMultiline4: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+        check: "GuardMultiline4: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
         regex: [
             "newline": #"\n"#,
             "guardIndent": #" *"#,
@@ -329,7 +329,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: GuardMultilineN
     try Lint.checkFileContents(
-        checkInfo: "GuardMultilineN: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
+        check: "GuardMultilineN: Close a multiline guard via `else {` on a new line indented like the opening `guard`.",
         regex: #"\n *guard *([^\n]+,\n){4,}[^\n]*\S\s*else\s*\{\s*"#,
         matchingExamples: [
             """
@@ -370,7 +370,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: IfAsGuard
     try Lint.checkFileContents(
-        checkInfo: "IfAsGuard: Don't use an if statement to just return – use guard for such cases instead.",
+        check: "IfAsGuard: Don't use an if statement to just return – use guard for such cases instead.",
         regex: #" +if [^\{]+\{\s*return\s*[^\}]*\}(?! *else)"#,
         matchingExamples: [" if x == 5 { return }", " if x == 5 {\n    return nil\n}", " if x == 5 { return 500 }", " if x == 5 { return do(x: 500, y: 200) }"],
         nonMatchingExamples: [" if x == 5 {\n    let y = 200\n    return y\n}", " if x == 5 { someMethod(x: 500, y: 200) }", " if x == 500 { return } else {"],
@@ -379,7 +379,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: LateForceUnwrapping3
     try Lint.checkFileContents(
-        checkInfo: "LateForceUnwrapping3: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
+        check: "LateForceUnwrapping3: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
         regex: [
             "openingBrace": #"\("#,
             "callPart1": #"[^\s\?\.]+"#,
@@ -402,7 +402,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: LateForceUnwrapping2
     try Lint.checkFileContents(
-        checkInfo: "LateForceUnwrapping2: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
+        check: "LateForceUnwrapping2: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
         regex: [
             "openingBrace": #"\("#,
             "callPart1": #"[^\s\?\.]+"#,
@@ -423,7 +423,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: LateForceUnwrapping1
     try Lint.checkFileContents(
-        checkInfo: "LateForceUnwrapping1: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
+        check: "LateForceUnwrapping1: Don't use ? first to force unwrap later – directly unwrap within the parantheses.",
         regex: [
             "openingBrace": #"\("#,
             "callPart1": #"[^\s\?\.]+"#,
@@ -442,7 +442,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: Logger
     try Lint.checkFileContents(
-        checkInfo: "Logger: Don't use `print` – use `log.message` instead.",
+        check: "Logger: Don't use `print` – use `log.message` instead.",
         regex: #"print\([^\n]+\)"#,
         matchingExamples: [#"print("Hellow World!")"#, #"print(5)"#, #"print(\n    "hi"\n)"#],
         nonMatchingExamples: [#"log.message("Hello world!")"#],
@@ -452,7 +452,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: Readme
     try Lint.checkFilePaths(
-        checkInfo: "Readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
+        check: "Readme: Each project should have a README.md file, explaining how to use or contribute to the project.",
         regex: #"^README\.md$"#,
         matchingExamples: ["README.md"],
         nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
@@ -461,7 +461,7 @@ try Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: ReadmePath
     try Lint.checkFilePaths(
-        checkInfo: "ReadmePath: The README file should be named exactly `README.md`.",
+        check: "ReadmePath: The README file should be named exactly `README.md`.",
         regex: #"^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$"#,
         matchingExamples: ["README.markdown", "readme.md", "ReadMe.md"],
         nonMatchingExamples: ["README.md", "CHANGELOG.md", "CONTRIBUTING.md", "api/help.md"],

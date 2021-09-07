@@ -205,9 +205,9 @@ The `.anchorsMatchLines` option is always activated on literal usage as we stron
 
 </details>
 
-#### CheckInfo
+#### Check
 
-A `CheckInfo` contains the basic information about a lint check. It consists of:
+A `Check` contains the basic information about a lint check. It consists of:
 
 1. `id`: The identifier of your lint check. For example: `EmptyTodo`
 2. `hint`: The hint explaining the cause of the violation or the steps to fix it.
@@ -217,8 +217,8 @@ While there is an initializer available, we recommend using a String Literal ins
 
 ```swift
 // accepted structure: <id>(@<severity>): <hint>
-let checkInfo: CheckInfo = "ReadmePath: The README file should be named exactly `README.md`."
-let checkInfoCustomSeverity: CheckInfo = "ReadmePath@warning: The README file should be named exactly `README.md`."
+let check: Check = "ReadmePath: The README file should be named exactly `README.md`."
+let checkCustomSeverity: Check = "ReadmePath@warning: The README file should be named exactly `README.md`."
 ```
 
 #### AutoCorrection
@@ -241,12 +241,12 @@ let example: AutoCorrection = ["before": "Lisence", "after": "License"]
 
 AnyLint has rich support for checking the contents of a file using a regex. The design follows the approach "make simple things simple and hard things possible". Thus, let's explain the `checkFileContents` method with a simple and a complex example.
 
-In its simplest form, the method just requires a `checkInfo` and a `regex`:
+In its simplest form, the method just requires a `check` and a `regex`:
 
 ```swift
 // MARK: EmptyTodo
 try Lint.checkFileContents(
-    checkInfo: "EmptyTodo: TODO comments should not be empty.",
+    check: "EmptyTodo: TODO comments should not be empty.",
     regex: #"// TODO: *\n"#
 )
 ```
@@ -271,7 +271,7 @@ let swiftTestFiles: Regex = #"Tests/.*\.swift"#
 // MARK: - Checks
 // MARK: empty_todo
 try Lint.checkFileContents(
-    checkInfo: "EmptyTodo: TODO comments should not be empty.",
+    check: "EmptyTodo: TODO comments should not be empty.",
     regex: #"// TODO: *\n"#,
     matchingExamples: ["// TODO:\n"],
     nonMatchingExamples: ["// TODO: not yet implemented\n"],
@@ -302,7 +302,7 @@ let swiftTestFiles: Regex = #"Tests/.*\.swift"#
 // MARK: - Checks
 // MARK: empty_method_body
 try Lint.checkFileContents(
-    checkInfo: "EmptyMethodBody: Don't use whitespaces for the body of empty methods.",
+    check: "EmptyMethodBody: Don't use whitespaces for the body of empty methods.",
     regex: [
       "declaration": #"func [^\(\s]+\([^{]*\)"#,
       "spacing": #"\s*"#,
@@ -347,7 +347,7 @@ While the `includeFilters` and `excludeFilters` arguments in the config file can
 
 For such cases, there are **2 ways to skip checks** within the files themselves:
 
-1. `AnyLint.skipHere: <CheckInfo.ID>`: Will skip the specified check(s) on the same line and the next line.
+1. `AnyLint.skipHere: <Check.ID>`: Will skip the specified check(s) on the same line and the next line.
 
   ```swift
   var x: Int = 5 // AnyLint.skipHere: MinVarNameLength
@@ -358,7 +358,7 @@ For such cases, there are **2 ways to skip checks** within the files themselves:
   var x: Int = 5
   ```
 
-2. `AnyLint.skipInFile: <All or CheckInfo.ID>`: Will skip `All` or specificed check(s) in the entire file.
+2. `AnyLint.skipInFile: <All or Check.ID>`: Will skip `All` or specificed check(s) in the entire file.
 
   ```swift
   // AnyLint.skipInFile: MinVarNameLength
@@ -398,10 +398,10 @@ TODO: Update to new custom script format supporting all languages as long as the
 
 AnyLint allows you to do any kind of lint checks (thus its name) as it gives you the full power of the Swift programming language and it's packages [ecosystem](https://swiftpm.co/). The `customCheck` method needs to be used to profit from this flexibility. And it's actually the simplest of the three methods, consisting of only two parameters:
 
-1. `checkInfo`: Provides some general information on the lint check.
+1. `check`: Provides some general information on the lint check.
 2. `customClosure`: Your custom logic which produces an array of `Violation` objects.
 
-Note that the `Violation` type just holds some additional information on the file, matched string, location in the file and applied autocorrection and that all these fields are optional. It is a simple struct used by the AnyLint reporter for more detailed output, no logic attached. The only required field is the `CheckInfo` object which caused the violation.
+Note that the `Violation` type just holds some additional information on the file, matched string, location in the file and applied autocorrection and that all these fields are optional. It is a simple struct used by the AnyLint reporter for more detailed output, no logic attached. The only required field is the `Check` object which caused the violation.
 
 If you want to use regexes in your custom code, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/Flinesoft/HandySwift#regex) (the project, the class was taken from) or read the [code documentation comments](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift).
 
@@ -418,7 +418,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: - Checks
     // MARK: LinuxMainUpToDate
-    try Lint.customCheck(checkInfo: "LinuxMainUpToDate: The tests in Tests/LinuxMain.swift should be up-to-date.") { checkInfo in
+    try Lint.customCheck(check: "LinuxMainUpToDate: The tests in Tests/LinuxMain.swift should be up-to-date.") { check in
         var violations: [Violation] = []
 
         let linuxMainFilePath = "Tests/LinuxMain.swift"
@@ -436,7 +436,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
         if linuxMainContentsBeforeRegeneration != linuxMainContentsAfterRegeneration {
             violations.append(
                 Violation(
-                    checkInfo: checkInfo,
+                    check: check,
                     filePath: linuxMainFilePath,
                     appliedAutoCorrection: AutoCorrection(
                         before: linuxMainContentsBeforeRegeneration,
