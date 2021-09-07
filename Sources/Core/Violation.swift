@@ -14,17 +14,22 @@ public struct Violation: Codable, Equatable {
   /// The autocorrection applied to fix this violation.
   public let appliedAutoCorrection: AutoCorrection?
 
+  /// A custom violation message.
+  public let message: String?
+
   /// Initializes a violation object.
   public init(
     discoverDate: Date = Date(),
     matchedString: String? = nil,
     location: Location? = nil,
-    appliedAutoCorrection: AutoCorrection? = nil
+    appliedAutoCorrection: AutoCorrection? = nil,
+    message: String? = nil
   ) {
     self.discoverDate = discoverDate
     self.matchedString = matchedString
     self.location = location
     self.appliedAutoCorrection = appliedAutoCorrection
+    self.message = message
   }
 }
 

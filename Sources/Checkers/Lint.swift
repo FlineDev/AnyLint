@@ -131,26 +131,46 @@ public enum Lint {
 
   /// Run custom scripts as checks.
   ///
-  /// - Returns: If the command produces an output in the ``LintResults`` JSON format, will forward them. If the output iis an array of ``Violation`` instances, they will be wrapped in a ``LintResults`` object. Else, it will report exactly one violation if the command has a non-zero exit code with the last line(s) of output.
+  /// - Returns: If the command produces an output in the ``LintResults`` JSON format, will forward them.
+  ///            If the output iis an array of ``Violation`` instances, they will be wrapped in a ``LintResults`` object.
+  ///            Else, it will report exactly one violation if the command has a non-zero exit code with the last line(s) of output.
   public static func runCustomScript(check: Check, command: String) throws -> LintResults {
     let tempScriptFileUrl = URL(fileURLWithPath: "_\(check.id).tempscript")
     try command.write(to: tempScriptFileUrl, atomically: true, encoding: .utf8)
 
-    let output = try shellOut(to: "/bin/bash", arguments: [tempScriptFileUrl.path])
-    if let jsonString = output.lintResultsJsonString,
-      let jsonData = jsonString.data(using: .utf8),
-      let lintResults: LintResults = try? JSONDecoder.iso.decode(LintResults.self, from: jsonData)
-    {
-      return lintResults
+    do {
+      let output = try shellOut(to: "/bin/bash", arguments: [tempScriptFileUrl.path])
+      try FileManager.default.removeItem(at: tempScriptFileUrl)
+
+      if let jsonString = output.lintResultsJsonString,
+        let jsonData = jsonString.data(using: .utf8),
+        let lintResults: LintResults = try? JSONDecoder.iso.decode(LintResults.self, from: jsonData)
+      {
+        return lintResults
+      }
+      else if let jsonString = output.violationsArrayJsonString,
+        let jsonData = jsonString.data(using: .utf8),
+        let violations: [Violation] = try? JSONDecoder.iso.decode([Violation].self, from: jsonData)
+      {
+        return [check.severity: [check: violations]]
+      }
+      else {
+        // if the command fails, a ShellOutError will be thrown – here, none is thrown, so no violations
+        return [check.severity: [check: []]]
+      }
     }
-    else if let jsonString = output.violationsArrayJsonString,
-      let jsonData = jsonString.data(using: .utf8),
-      let violations: [Violation] = try? JSONDecoder.iso.decode([Violation].self, from: jsonData)
-    {
-      return [check.severity: [check: violations]]
-    }
-    else {
-      return [check.severity: [check: [Violation()]]]
+    catch {
+      if let shellOutError = error as? ShellOutError, shellOutError.terminationStatus != 0 {
+        return [
+          check.severity: [
+            check: [
+              Violation(message: shellOutError.output.components(separatedBy: .newlines).last)
+            ]
+          ]
+        ]
+      }
+
+      throw error
     }
   }
 
