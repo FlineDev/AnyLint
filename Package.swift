@@ -80,6 +80,7 @@ let package = Package(
       dependencies: [
         "Core",
         .product(name: "CustomDump", package: "swift-custom-dump"),
+        .product(name: "Rainbow", package: "Rainbow"),
       ]
     ),
     .testTarget(name: "CoreTests", dependencies: ["Core", "TestSupport"]),

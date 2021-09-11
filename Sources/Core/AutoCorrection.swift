@@ -25,10 +25,10 @@ public struct AutoCorrection: Codable, Equatable {
       for difference in afterLines.difference(from: beforeLines).sorted() {
         switch difference {
         case let .insert(offset, element, _):
-          lines.append("+ [L\(offset + 1)] \(element)".green)
+          lines.append("+ [L\(offset + 1)] \(element)".coloredAsAdded)
 
         case let .remove(offset, element, _):
-          lines.append("- [L\(offset + 1)] \(element)".red)
+          lines.append("- [L\(offset + 1)] \(element)".coloredAsRemoved)
         }
       }
 
@@ -37,8 +37,8 @@ public struct AutoCorrection: Codable, Equatable {
     else {
       return [
         "Autocorrection applied, the diff is: (+ added, - removed)",
-        "- \(before.showWhitespacesAndNewlines())".red,
-        "+ \(after.showWhitespacesAndNewlines())".green,
+        "- \(before.showWhitespacesAndNewlines())".coloredAsRemoved,
+        "+ \(after.showWhitespacesAndNewlines())".coloredAsAdded,
       ]
     }
   }
@@ -84,5 +84,23 @@ extension CollectionDifference.Change: Comparable where ChangeElement == String 
     case (.remove, .insert), (.insert, .remove):
       return false
     }
+  }
+}
+
+fileprivate extension String {
+  var coloredAsAdded: String {
+    #if DEBUG
+      return self  // do not color when running tests
+    #else
+      return green
+    #endif
+  }
+
+  var coloredAsRemoved: String {
+    #if DEBUG
+      return self  // do not color when running tests
+    #else
+      return red
+    #endif
   }
 }

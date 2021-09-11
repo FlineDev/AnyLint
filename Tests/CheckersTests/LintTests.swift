@@ -276,6 +276,7 @@ final class LintTests: XCTestCase {
         check: .init(id: "1", hint: "hint #1"),
         regex: .init(#"(let|var) (\w+)=(\w+)"#),
         matchingExamples: ["let x=4"],
+        includeFilters: [try! Regex(#"\#(tempDir)/*"#)],
         autoCorrectReplacement: "$1 $2 = $3",
         autoCorrectExamples: [.init(before: "let x=4", after: "let x = 4")]
       )
@@ -306,7 +307,7 @@ final class LintTests: XCTestCase {
   func testCheckFilePaths() throws {
     let violations = try Lint.checkFilePaths(
       check: .init(id: "2", hint: "hint for #2", severity: .warning),
-      regex: .init(#"README\.md"#),
+      regex: .init(#"README\.markdown"#),
       violateIfNoMatchesFound: true
     )
 

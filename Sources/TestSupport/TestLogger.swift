@@ -1,5 +1,6 @@
 import Foundation
 import Core
+import Rainbow
 
 public final class TestLogger: Loggable {
   public var loggedMessages: [String]
@@ -12,12 +13,12 @@ public final class TestLogger: Loggable {
   public func message(_ message: String, level: PrintLevel, location: Location?) {
     if let location = location {
       loggedMessages.append(
-        "[\(level.rawValue)] \(location.locationMessage(pathType: .relative)) \(message)"
+        "[\(level.rawValue)] \(location.locationMessage(pathType: .relative)) \(message.clearColor.clearStyles)"
       )
     }
     else {
       loggedMessages.append(
-        "[\(level.rawValue)] \(message)"
+        "[\(level.rawValue)] \(message.clearColor.clearStyles)"
       )
     }
   }
