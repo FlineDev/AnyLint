@@ -334,7 +334,6 @@ final class LintResultsTests: XCTestCase {
     XCTAssert(encodedString.contains(#""discoverDate" : "2001-01-01T01:00:00Z","#))
     XCTAssert(encodedString.contains(#""matchedString" : "A""#))
     XCTAssert(encodedString.contains(#""filePath" : "\/some\/path""#))
-    XCTAssert(encodedString.contains(#""discoverDate" : "2001-01-01T02:00:00Z","#))
 
     let decodedLintResults = try JSONDecoder.iso.decode(LintResults.self, from: encodedData)
     XCTAssertNoDifference(decodedLintResults, lintResults)
