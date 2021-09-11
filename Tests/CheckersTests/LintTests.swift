@@ -60,29 +60,29 @@ final class LintTests: XCTestCase {
   func testValidateAutocorrectsAllExamplesWithAnonymousGroups() {
     XCTAssertNil(testLogger.exitStatusCode)
 
-    let anonymousCaptureRegex = try? Regex(#"([^\.]+)(\.)([^\.]+)(\.)([^\.]+)"#)
+    let anonymousCaptureRegex = try? Regex(#"([^\.]+)\.([^\.]+)\.([^\.]+)"#)
 
-    Lint.validateAutocorrectsAll(
+    Lint.validateAutocorrectsAllExamples(
       check: Check(id: "id", hint: "hint"),
       examples: [
         AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
         AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
       ],
       regex: anonymousCaptureRegex!,
-      autocorrectReplacement: "$5$2$3$4$1"
+      autocorrectReplacement: "$3.$2.$1"
     )
 
     XCTAssertNil(testLogger.exitStatusCode)
 
     // TODO: [cg_2021-09-05] Swift / XCTest doesn't have a way to test for functions returning `Never`
-    //    Lint.validateAutocorrectsAll(
+    //    Lint.validateAutocorrectsAllExamples(
     //      check: Check(id: "id", hint: "hint"),
     //      examples: [
     //        AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
     //        AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
     //      ],
     //      regex: anonymousCaptureRegex!,
-    //      autocorrectReplacement: "$4$1$2$3$0"
+    //      autocorrectReplacement: "$2.$1.$0"
     //    )
     //
     //    XCTAssertEqual(testLogger.exitStatusCode, EXIT_FAILURE)
@@ -91,29 +91,29 @@ final class LintTests: XCTestCase {
   func testValidateAutocorrectsAllExamplesWithNamedGroups() {
     XCTAssertNil(testLogger.exitStatusCode)
 
-    let namedCaptureRegex = try! Regex(#"([^\.]+)\.([^\.]+)\.([^\.]+)"#)
+    let namedCaptureRegex = try! Regex(#"(?<prefix>[^\.]+)\.(?<content>[^\.]+)\.(?<suffix>[^\.]+)"#)
 
-    Lint.validateAutocorrectsAll(
+    Lint.validateAutocorrectsAllExamples(
       check: Check(id: "id", hint: "hint"),
       examples: [
         AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
         AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
       ],
       regex: namedCaptureRegex,
-      autocorrectReplacement: "$3.$2.$1"
+      autocorrectReplacement: "$suffix.$content.$prefix"
     )
 
     XCTAssertNil(testLogger.exitStatusCode)
 
     // TODO: [cg_2021-09-05] Swift / XCTest doesn't have a way to test for functions returning `Never`
-    //    Lint.validateAutocorrectsAll(
+    //    Lint.validateAutocorrectsAllExamples(
     //      check: Check(id: "id", hint: "hint"),
     //      examples: [
     //        AutoCorrection(before: "prefix.content.suffix", after: "suffix.content.prefix"),
     //        AutoCorrection(before: "forums.swift.org", after: "org.swift.forums"),
     //      ],
     //      regex: namedCaptureRegex,
-    //      autocorrectReplacement: "$sfx$sep1$cnt$sep2$pref"
+    //      autocorrectReplacement: "$sfx.$cnt.$pref"
     //    )
     //
     //    XCTAssertEqual(testLogger.exitStatusCode, EXIT_FAILURE)
@@ -248,11 +248,80 @@ final class LintTests: XCTestCase {
     //    )
   }
 
-  func testCheckFileContents() {
-    // TODO: [cg_2021-09-05] not yet implemented
+  func testCheckFileContents() throws {
+    let temporaryFiles: [TemporaryFile] = [
+      (
+        subpath: "Sources/Hello.swift",
+        contents: """
+          let x = 5
+          var y = 10
+          """
+      ),
+      (
+        subpath: "Sources/World.swift",
+        contents: """
+          let x=5
+          var y=10
+          """
+      ),
+    ]
+
+    withTemporaryFiles(temporaryFiles) { filePathsToCheck in
+      var fileContents: [String] = try filePathsToCheck.map { try String(contentsOfFile: $0) }
+
+      XCTAssertNoDifference(temporaryFiles[0].contents, fileContents[0])
+      XCTAssertNoDifference(temporaryFiles[1].contents, fileContents[1])
+
+      let violations = try Lint.checkFileContents(
+        check: .init(id: "1", hint: "hint #1"),
+        regex: .init(#"(let|var) (\w+)=(\w+)"#),
+        matchingExamples: ["let x=4"],
+        autoCorrectReplacement: "$1 $2 = $3",
+        autoCorrectExamples: [.init(before: "let x=4", after: "let x = 4")]
+      )
+
+      fileContents = try filePathsToCheck.map { try String(contentsOfFile: $0) }
+
+      XCTAssertEqual(violations.count, 2)
+      XCTAssertNoDifference(violations.map(\.matchedString), ["let x=5", "var y=10"])
+      XCTAssertNoDifference(
+        violations.map(\.location)[0],
+        Location(filePath: "\(tempDir)/Sources/World.swift", row: 1, column: 1)
+      )
+      XCTAssertNoDifference(
+        violations.map(\.location)[1],
+        Location(filePath: "\(tempDir)/Sources/World.swift", row: 2, column: 1)
+      )
+      XCTAssertNoDifference(fileContents[0], temporaryFiles[0].contents)
+      XCTAssertNoDifference(
+        fileContents[1],
+        """
+        let x = 5
+        var y = 10
+        """
+      )
+    }
   }
 
-  func testCheckFilePaths() {
-    // TODO: [cg_2021-09-05] not yet implemented
+  func testCheckFilePaths() throws {
+    let violations = try Lint.checkFilePaths(
+      check: .init(id: "2", hint: "hint for #2", severity: .warning),
+      regex: .init(#"README\.md"#),
+      violateIfNoMatchesFound: true
+    )
+
+    XCTAssertEqual(violations.count, 1)
+    XCTAssertNoDifference(
+      violations.map(\.matchedString),
+      [nil]
+    )
+    XCTAssertNoDifference(
+      violations.map(\.location),
+      [nil]
+    )
+    XCTAssertNoDifference(
+      violations.map(\.appliedAutoCorrection),
+      [nil]
+    )
   }
 }

@@ -40,7 +40,7 @@ public enum Lint {
     )
 
     if let autoCorrectReplacement = autoCorrectReplacement {
-      validateAutocorrectsAll(
+      validateAutocorrectsAllExamples(
         check: check,
         examples: autoCorrectExamples,
         regex: regex,
@@ -101,7 +101,7 @@ public enum Lint {
     )
 
     if let autoCorrectReplacement = autoCorrectReplacement {
-      validateAutocorrectsAll(
+      validateAutocorrectsAllExamples(
         check: check,
         examples: autoCorrectExamples,
         regex: regex,
@@ -140,6 +140,8 @@ public enum Lint {
 
     do {
       let output = try shellOut(to: "/bin/bash", arguments: [tempScriptFileUrl.path])
+
+      // clean up temporary script file after successful execution
       try FileManager.default.removeItem(at: tempScriptFileUrl)
 
       if let jsonString = output.lintResultsJsonString,
@@ -160,6 +162,9 @@ public enum Lint {
       }
     }
     catch {
+      // clean up temporary script file after failed execution
+      try? FileManager.default.removeItem(at: tempScriptFileUrl)
+
       if let shellOutError = error as? ShellOutError, shellOutError.terminationStatus != 0 {
         return [
           check.severity: [
@@ -198,7 +203,7 @@ public enum Lint {
     }
   }
 
-  static func validateAutocorrectsAll(
+  static func validateAutocorrectsAllExamples(
     check: Check,
     examples: [AutoCorrection],
     regex: Regex,

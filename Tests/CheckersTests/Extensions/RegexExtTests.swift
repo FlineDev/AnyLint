@@ -11,4 +11,18 @@ final class RegexExtTests: XCTestCase {
       "\n- Sample Text.  \n"
     )
   }
+
+  func testReplaceAllCaptures() throws {
+    let anonymousRefsRegex = try Regex(#"(\w+)\.(\w+)\.(\w+)"#)
+    XCTAssertEqual(
+      anonymousRefsRegex.replaceAllCaptures(in: "prefix.content.suffix", with: "$3-$2-$1"),
+      "suffix-content-prefix"
+    )
+
+    let namedRefsRegex = try Regex(#"(?<prefix>\w+)\.(?<content>\w+)\.(?<suffix>\w+)"#)
+    XCTAssertEqual(
+      namedRefsRegex.replaceAllCaptures(in: "prefix.content.suffix", with: "$suffix-$content-$prefix"),
+      "suffix-content-prefix"
+    )
+  }
 }
