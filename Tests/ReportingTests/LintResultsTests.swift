@@ -309,38 +309,6 @@ final class LintResultsTests: XCTestCase {
   }
 
   func testCodable() throws {
-    let expectedJsonOutput = #"""
-      {
-        "warning" : {
-          "1@error: hint for #1" : [
-            {
-              "discoverDate" : "2001-01-01T00:00:00Z"
-            },
-            {
-              "discoverDate" : "2001-01-01T01:00:00Z",
-              "appliedAutoCorrection" : {
-                "after" : "A",
-                "before" : "AAA"
-              },
-              "matchedString" : "A"
-            },
-            {
-              "discoverDate" : "2001-01-01T02:00:00Z",
-              "location" : {
-                "row" : 5,
-                "column" : 2,
-                "filePath" : "\/some\/path"
-              },
-              "matchedString" : "AAA"
-            }
-          ]
-        },
-        "info" : {
-
-        }
-      }
-      """#
-
     let lintResults: LintResults = [
       .warning: [
         .init(id: "1", hint: "hint for #1"): [
@@ -360,7 +328,13 @@ final class LintResultsTests: XCTestCase {
       .info: [:],
     ]
     let encodedData = try JSONEncoder.iso.encode(lintResults)
-    XCTAssertNoDifference(String(data: encodedData, encoding: .utf8), expectedJsonOutput)
+    let encodedString = String(data: encodedData, encoding: .utf8)!
+    XCTAssert(encodedString.contains(#""warning" : {"#))
+    XCTAssert(encodedString.contains(#""1@error: hint for #1" : ["#))
+    XCTAssert(encodedString.contains(#""discoverDate" : "2001-01-01T01:00:00Z","#))
+    XCTAssert(encodedString.contains(#""matchedString" : "A""#))
+    XCTAssert(encodedString.contains(#""filePath" : "\/some\/path""#))
+    XCTAssert(encodedString.contains(#""discoverDate" : "2001-01-01T02:00:00Z","#))
 
     let decodedLintResults = try JSONDecoder.iso.decode(LintResults.self, from: encodedData)
     XCTAssertNoDifference(decodedLintResults, lintResults)
