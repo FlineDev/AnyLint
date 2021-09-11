@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run tests
-        run: swift test -v --enable-test-discovery
+        run: swift test -v
 
   test-macos:
     runs-on: macos-latest
@@ -78,4 +78,4 @@ jobs:
           Get-ChildItem Env: | % { echo "$($_.Name)=$($_.Value)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append }
 
       - name: Run tests
-        run: swift test -v --enable-test-discovery
+        run: swift test -v
