@@ -53,8 +53,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - tag: 5.4.3-RELEASE
-            branch: swift-5.4.3-release
+          - tag: 5.5-DEVELOPMENT-SNAPSHOT-2021-08-30-a
+            branch: swift-5.5-branch
 
     steps:
       - uses: actions/checkout@v2
