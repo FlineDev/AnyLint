@@ -46,11 +46,7 @@ struct InitCommand: ParsableCommand {
       attributes: nil
     )
 
-    log.message("Making config file executable ...", level: .info)
-    try shellOut(to: "chmod", arguments: ["+x", path])
-
     log.message("Successfully created config file at \(path)", level: .success)
-
   }
 }
 

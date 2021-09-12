@@ -76,63 +76,42 @@ mint install Flinesoft/AnyLint
 To initialize AnyLint in a project, run:
 
 ```bash
-anylint --init blank
+anylint init
 ```
 
 This will create the Swift script file `anylint.yml` with something like the following contents:
 
 ```yaml
-CheckFileContents:
-  - id: Readme
-    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
-    regex: '^README\.md$'
-    violateIfNoMatchesFound: true
-    matchingExamples: ['README.md']
-    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
+FileContents: []
+#  - id: Readme
+#    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
+#    regex: '^README\.md$'
+#    violateIfNoMatchesFound: true
+#    matchingExamples: ['README.md']
+#    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
 
-  - id: ReadmeTopLevelTitle
-    hint: 'The README.md file should only contain a single top level title.'
-    regex: '(^|\n)#[^#](.*\n)*\n#[^#]'
-    includeFilter: ['^README\.md$']
-    matchingExamples:
-      - |
-        # Title
-        ## Subtitle
-        Lorem ipsum
+FilePaths: []
+#  - id: 'ReadmePath'
+#    hint: 'The README file should be named exactly `README.md`.'
+#    regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
+#    matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
+#    nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
+#    autoCorrectReplacement: '$1README.md'
+#    autoCorrectExamples:
+#      - { before: 'api/readme.md', after: 'api/README.md' }
+#      - { before: 'ReadMe.md', after: 'README.md' }
+#      - { before: 'README.markdown', after: 'README.md' }
 
-        # Other Title
-        ## Other Subtitle
-    nonMatchingExamples:
-      - |
-        # Title
-        ## Subtitle
-        Lorem ipsum #1 and # 2.
+CustomScripts: []
+#  - id: LintConfig
+#    hint: 'Lint the AnyLint config file to conform to YAML best practices.'
+#    command: |-
+#      if which yamllint > /dev/null; then
+#        yamllint anylint.yml
+#      else
+#        echo '{ "warning": { "YamlLint: Not installed, see instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint": [{}] } }'
+#      fi
 
-        ## Other Subtitle
-        ### Other Subsubtitle
-
-  - id: ReadmeTypoLicense
-    hint: 'ReadmeTypoLicense: Misspelled word `license`.'
-    regex: '([\s#]L|l)isence([\s\.,:;])'
-    matchingExamples: [' lisence:', '## Lisence\n']
-    nonMatchingExamples: [' license:', '## License\n']
-    includeFilters: ['^README\.md$']
-    autoCorrectReplacement: '$1icense$2'
-    autoCorrectExamples:
-      - { before: ' lisence:', after: ' license:' }
-      - { before: '## Lisence\n', after: '## License\n' }
-
-CheckFilePaths:
-  - id: 'ReadmePath'
-    hint: 'The README file should be named exactly `README.md`.'
-    regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
-    matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
-    nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
-    autoCorrectReplacement: '$1README.md'
-    autoCorrectExamples:
-      - { before: 'api/readme.md', after: 'api/README.md' }
-      - { before: 'ReadMe.md', after: 'README.md' }
-      - { before: 'README.markdown', after: 'README.md' }
 ```
 
 Having this configuration file, you can now run `anylint` to run your lint checks. By default, if any check fails, the entire command fails and reports the violation reason. To learn more about how to configure your own checks, see the [Configuration](#configuration) section below.
@@ -141,7 +120,7 @@ If you want to create and run multiple configuration files or if you want a diff
 
 Initializes the configuration files at the given locations:
 ```bash
-anylint --init blank --path Sources/anylint.yml --path Tests/anylint.yml
+anylint --init template=OpenSource --path Sources/anylint.yml --path Tests/anylint.yml
 ```
 
 Runs the lint checks for both configuration files:

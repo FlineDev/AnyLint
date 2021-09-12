@@ -54,7 +54,7 @@ struct LintCommand: ParsableCommand {
 
     guard FileManager.default.fileExists(atPath: config) else {
       log.message(
-        "No configuration file found at \(config) – consider running `anylint --init` with a template.",
+        "No configuration file found at \(config) – consider running `anylint init` with a template.",
         level: .error
       )
       log.exit(fail: true)

@@ -27,6 +27,8 @@ jobs:
   test-windows:
     runs-on: windows-latest
 
+    timeout-minutes: 15
+
     strategy:
       matrix:
         include:
