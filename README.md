@@ -479,7 +479,7 @@ Here are some **advanced Regex features** you might want to use or learn more ab
    For example, consider a regex violating if there's an empty line after an opening curly brace like so: `{\n\s*\n\s*\S`. This would match the lines of `func do() {\n\n    return 5}`, but what you actually want is it to start matching on the empty newline like so: `(?<={\n)\s*\n\s*\S`.
 
    See also [#3](https://github.com/Flinesoft/AnyLint/issues/3)
-   
+
 ## YAML Cheat Sheet
 
 Please be aware that in YAML indentation (whitespaces) and newlines are actually important.
@@ -491,6 +491,8 @@ string1: This is without quotes.
 string2: 'This is with single quotes.'
 string3: "This is with double quotes."
 ```
+
+Note that only in double-quoted strings you can escape characters, e.g. `'Line1\nLine2'` will keep the `\n` as two characters in the result, whereas `"Line1\nLine2"` will escape `\n` to a newline. We recommend to use single quotes for `regex` arguments (the escaping will happen in the Regex parser) and double-quotes for any examples where you need escaping to be evaluated.
 
 **Multi-line strings** can be written by specifying `|` and then a newline:
 ```yaml
@@ -504,13 +506,13 @@ An additional `+` or `-` specified what to do with trailing newlines:
 ```yaml
 multiline2: |+
   This will make sure both trailing newlines are kept (ends with ".\n\n").
-  
-  
+
+
 multiline3: |-
-  This will ignore any trailing newlines and 
+  This will ignore any trailing newlines and
   will end with the last non-newline character (the following dot in this case -->).
-  
-  
+
+
 ```
 
 **Arrays** can be written in two ways:

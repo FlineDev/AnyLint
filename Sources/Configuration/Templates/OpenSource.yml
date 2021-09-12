@@ -1,15 +1,8 @@
 FileContents:
-  - id: Readme
-    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
-    regex: '^README\.md$'
-    violateIfNoMatchesFound: true
-    matchingExamples: ['README.md']
-    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
-
   - id: ReadmeTopLevelTitle
     hint: 'The README.md file should only contain a single top level title.'
     regex: '(^|\n)#[^#](.*\n)*\n#[^#]'
-    includeFilter: ['^README\.md$']
+    includeFilters: ['^README\.md$']
     matchingExamples:
       - |
         # Title
@@ -30,15 +23,22 @@ FileContents:
   - id: ReadmeTypoLicense
     hint: 'ReadmeTypoLicense: Misspelled word `license`.'
     regex: '([\s#]L|l)isence([\s\.,:;])'
-    matchingExamples: [' lisence:', '## Lisence\n']
-    nonMatchingExamples: [' license:', '## License\n']
+    matchingExamples: [' lisence:', "## Lisence\n"]
+    nonMatchingExamples: [' license:', "## License\n"]
     includeFilters: ['^README\.md$']
     autoCorrectReplacement: '$1icense$2'
     autoCorrectExamples:
       - { before: ' lisence:', after: ' license:' }
-      - { before: '## Lisence\n', after: '## License\n' }
+      - { before: "## Lisence\n", after: "## License\n" }
 
 FilePaths:
+  - id: Readme
+    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
+    regex: '^README\.md$'
+    violateIfNoMatchesFound: true
+    matchingExamples: ['README.md']
+    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
+
   - id: ReadmePath
     hint: 'The README file should be named exactly `README.md`.'
     regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
