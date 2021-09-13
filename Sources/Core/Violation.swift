@@ -4,7 +4,7 @@ import BetterCodable
 /// A violation found in a check.
 public struct Violation: Codable, Equatable {
   /// The exact time this violation was discovered. Needed for sorting purposes.
-  @DefaultCodable<Date.DefaultToNow>
+  @DateValue<Date.DefaultToNowISO8601>
   public var discoverDate: Date
 
   /// The matched string that violates the check.
