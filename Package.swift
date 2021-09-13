@@ -33,6 +33,7 @@ let package = Package(
     .target(
       name: "Core",
       dependencies: [
+        .product(name: "BetterCodable", package: "BetterCodable"),
         .product(name: "Rainbow", package: "Rainbow"),
       ]
     ),

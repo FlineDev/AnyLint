@@ -137,6 +137,7 @@ public enum Lint {
   public static func runCustomScript(check: Check, command: String) throws -> LintResults {
     let tempScriptFileUrl = URL(fileURLWithPath: "_\(check.id).tempscript")
     try command.write(to: tempScriptFileUrl, atomically: true, encoding: .utf8)
+    try shellOut(to: "chmod", arguments: ["+x", tempScriptFileUrl.path])
 
     do {
       let output = try shellOut(to: "/bin/bash", arguments: [tempScriptFileUrl.path])

@@ -83,34 +83,48 @@ This will create the Swift script file `anylint.yml` with something like the fol
 
 ```yaml
 FileContents: []
-#  - id: Readme
-#    hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
-#    regex: '^README\.md$'
-#    violateIfNoMatchesFound: true
-#    matchingExamples: ['README.md']
-#    nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
+# TODO: replace below sample checks with your custom checks and remove empty array specifier `[]` from above
+  # - id: ReadmeTypoLicense
+  #   hint: 'ReadmeTypoLicense: Misspelled word `license`.'
+  #   regex: '([\s#]L|l)isence([\s\.,:;])'
+  #   matchingExamples: [' lisence:', "## Lisence\n"]
+  #   nonMatchingExamples: [' license:', "## License\n"]
+  #   includeFilters: ['^README\.md$']
+  #   autoCorrectReplacement: '$1icense$2'
+  #   autoCorrectExamples:
+  #     - { before: ' lisence:', after: ' license:' }
+  #     - { before: "## Lisence\n", after: "## License\n" }
 
 FilePaths: []
-#  - id: 'ReadmePath'
-#    hint: 'The README file should be named exactly `README.md`.'
-#    regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
-#    matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
-#    nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
-#    autoCorrectReplacement: '$1README.md'
-#    autoCorrectExamples:
-#      - { before: 'api/readme.md', after: 'api/README.md' }
-#      - { before: 'ReadMe.md', after: 'README.md' }
-#      - { before: 'README.markdown', after: 'README.md' }
+# TODO: replace below sample checks with your custom checks and remove empty array specifier `[]` from above
+  # - id: Readme
+  #   hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
+  #   regex: '^README\.md$'
+  #   violateIfNoMatchesFound: true
+  #   matchingExamples: ['README.md']
+  #   nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
+  #
+  # - id: ReadmePath
+  #   hint: 'The README file should be named exactly `README.md`.'
+  #   regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
+  #   matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
+  #   nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
+  #   autoCorrectReplacement: '$1README.md'
+  #   autoCorrectExamples:
+  #     - { before: 'api/readme.md', after: 'api/README.md' }
+  #     - { before: 'ReadMe.md', after: 'README.md' }
+  #     - { before: 'README.markdown', after: 'README.md' }
 
 CustomScripts: []
-#  - id: LintConfig
-#    hint: 'Lint the AnyLint config file to conform to YAML best practices.'
-#    command: |-
-#      if which yamllint > /dev/null; then
-#        yamllint anylint.yml
-#      else
-#        echo '{ "warning": { "YamlLint: Not installed, see instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint": [{}] } }'
-#      fi
+# TODO: replace below sample check with your custom checks and remove empty array specifier `[]` from above
+  # - id: LintConfig
+  #   hint: 'Lint the AnyLint config file to conform to YAML best practices.'
+  #   command: |-
+  #     if which yamllint > /dev/null; then
+  #       yamllint anylint.yml
+  #     else
+  #       echo '{ "warning": { "YamlLint@warning: Not installed, see instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint": [{}] } }'
+  #     fi
 
 ```
 

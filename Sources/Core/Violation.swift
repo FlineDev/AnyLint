@@ -1,9 +1,11 @@
 import Foundation
+import BetterCodable
 
 /// A violation found in a check.
 public struct Violation: Codable, Equatable {
   /// The exact time this violation was discovered. Needed for sorting purposes.
-  public let discoverDate: Date
+  @DefaultCodable<Date.DefaultToNow>
+  public var discoverDate: Date
 
   /// The matched string that violates the check.
   public let matchedString: String?

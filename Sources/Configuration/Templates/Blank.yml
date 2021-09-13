@@ -60,5 +60,5 @@ CustomScripts: []
   #     if which yamllint > /dev/null; then
   #       yamllint anylint.yml
   #     else
-  #       echo '{ "warning": { "YamlLint: Not installed, see instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint": [{}] } }'
+  #       echo '{ "warning": { "YamlLint@warning: Not installed, see instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint": [{}] } }'
   #     fi
