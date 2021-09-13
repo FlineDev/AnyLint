@@ -8,14 +8,6 @@
         <img src="https://github.com/Flinesoft/AnyLint/workflows/CI/badge.svg"
             alt="CI">
     </a>
-    <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
-        <img src="https://api.codacy.com/project/badge/Grade/c881ee12938145d3bfd398eff1571228"
-             alt="Code Quality"/>
-    </a>
-    <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
-        <img src="https://api.codacy.com/project/badge/Coverage/c881ee12938145d3bfd398eff1571228"
-             alt="Coverage"/>
-    </a>
     <a href="https://github.com/Flinesoft/AnyLint/releases">
         <img src="https://img.shields.io/badge/Version-0.8.2-blue.svg"
              alt="Version: 0.8.2">
@@ -52,7 +44,7 @@
 
 # AnyLint
 
-Lint any project in any language using Swift and regular expressions. With built-in support for matching and non-matching examples validation & autocorrect replacement. Replaces SwiftLint custom rules & works for other languages as well! 🎉
+Lint anything by combining the power of scripts & regular expressions. With built-in support for matching and non-matching examples validation & autocorrect replacement. Replaces SwiftLint custom rules & works for/with other languages as well! 🎉
 
 ## Installation
 
@@ -84,49 +76,57 @@ mint install Flinesoft/AnyLint
 To initialize AnyLint in a project, run:
 
 ```bash
-anylint --init blank
+anylint init
 ```
 
-This will create the Swift script file `lint.swift` with something like the following contents:
+This will create the Swift script file `anylint.yml` with something like the following contents:
 
-```swift
-#!/usr/local/bin/swift-sh
-import AnyLint // @Flinesoft
+```yaml
+FileContents: []
+# TODO: replace below sample checks with your custom checks and remove empty array specifier `[]` from above
+  # - id: ReadmeTypoLicense
+  #   hint: 'ReadmeTypoLicense: Misspelled word `license`.'
+  #   regex: '([\s#]L|l)isence([\s\.,:;])'
+  #   matchingExamples: [' lisence:', "## Lisence\n"]
+  #   nonMatchingExamples: [' license:', "## License\n"]
+  #   includeFilters: ['^README\.md$']
+  #   autoCorrectReplacement: '$1icense$2'
+  #   autoCorrectExamples:
+  #     - { before: ' lisence:', after: ' license:' }
+  #     - { before: "## Lisence\n", after: "## License\n" }
 
-Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
-    // MARK: - Variables
-    let readmeFile: Regex = #"README\.md"#
+FilePaths: []
+# TODO: replace below sample checks with your custom checks and remove empty array specifier `[]` from above
+  # - id: Readme
+  #   hint: 'Each project should have a README.md file, explaining how to use or contribute to the project.'
+  #   regex: '^README\.md$'
+  #   violateIfNoMatchesFound: true
+  #   matchingExamples: ['README.md']
+  #   nonMatchingExamples: ['README.markdown', 'Readme.md', 'ReadMe.md']
+  #
+  # - id: ReadmePath
+  #   hint: 'The README file should be named exactly `README.md`.'
+  #   regex: '^(.*/)?([Rr][Ee][Aa][Dd][Mm][Ee]\.markdown|readme\.md|Readme\.md|ReadMe\.md)$'
+  #   matchingExamples: ['README.markdown', 'readme.md', 'ReadMe.md']
+  #   nonMatchingExamples: ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'api/help.md']
+  #   autoCorrectReplacement: '$1README.md'
+  #   autoCorrectExamples:
+  #     - { before: 'api/readme.md', after: 'api/README.md' }
+  #     - { before: 'ReadMe.md', after: 'README.md' }
+  #     - { before: 'README.markdown', after: 'README.md' }
 
-    // MARK: - Checks
-    // MARK: Readme
-    try Lint.checkFilePaths(
-        checkInfo: "Readme: Each project should have a README.md file explaining the project.",
-        regex: readmeFile,
-        matchingExamples: ["README.md"],
-        nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
-        violateIfNoMatchesFound: true
-    )
-
-    // MARK: ReadmeTypoLicense
-    try Lint.checkFileContents(
-        checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
-        regex: #"([\s#]L|l)isence([\s\.,:;])"#,
-        matchingExamples: [" license:", "## Lisence\n"],
-        nonMatchingExamples: [" license:", "## License\n"],
-        includeFilters: [readmeFile],
-        autoCorrectReplacement: "$1icense$2",
-        autoCorrectExamples: [
-            ["before": " lisence:", "after": " license:"],
-            ["before": "## Lisence\n", "after": "## License\n"],
-        ]
-    )
-}
+CustomScripts: []
+# TODO: replace below sample check with your custom checks and remove empty array specifier `[]` from above
+  # - id: LintConfig
+  #   hint: 'Lint the AnyLint config file to conform to YAML best practices.'
+  #   command: |-
+  #     if which yamllint > /dev/null; then
+  #       yamllint anylint.yml
+  #     else
+  #       echo '{ "warning": { "YamlLint@warning: Not installed, see instructions at https://yamllint.readthedocs.io/en/stable/quickstart.html#installing-yamllint": [{}] } }'
+  #     fi
 
 ```
-
-The most important thing to note is that the **first three lines are required** for AnyLint to work properly.
-
-All the other code can be adjusted and that's actually where you configure your lint checks (a few examples are provided by default in the `blank` template). Note that the first two lines declare the file to be a Swift script using [swift-sh](https://github.com/mxcl/swift-sh). Thus, you can run any Swift code and even import Swift packages (see the [swift-sh docs](https://github.com/mxcl/swift-sh#usage)) if you need to. The third line makes sure that all violations found in the process of running the code in the completion block are reported properly and exits the script with the proper exit code at the end.
 
 Having this configuration file, you can now run `anylint` to run your lint checks. By default, if any check fails, the entire command fails and reports the violation reason. To learn more about how to configure your own checks, see the [Configuration](#configuration) section below.
 
@@ -134,12 +134,12 @@ If you want to create and run multiple configuration files or if you want a diff
 
 Initializes the configuration files at the given locations:
 ```bash
-anylint --init blank --path Sources/lint.swift --path Tests/lint.swift
+anylint --init template=OpenSource --path Sources/anylint.yml --path Tests/anylint.yml
 ```
 
 Runs the lint checks for both configuration files:
 ```bash
-anylint --path Sources/lint.swift --path Tests/lint.swift
+anylint --path Sources/anylint.yml --path Tests/anylint.yml
 ```
 
 There are also several flags you can pass to `anylint`:
@@ -154,11 +154,11 @@ There are also several flags you can pass to `anylint`:
 
 AnyLint provides three different kinds of lint checks:
 
-1. `checkFileContents`: Matches the contents of a text file to a given regex.
-2. `checkFilePaths`: Matches the file paths of the current directory to a given regex.
-3. `customCheck`: Allows to write custom Swift code to do other kinds of checks.
+1. `CheckFileContents`: Matches the contents of a text file to a given regex.
+2. `CheckFilePaths`: Matches the file paths of the current directory to a given regex.
+3. `CustomScripts`: Allows to write custom scripts in any language to do other kinds of checks. (TODO)
 
-Several examples of lint checks can be found in the [`lint.swift` file of this very project](https://github.com/Flinesoft/AnyLint/blob/main/lint.swift).
+Several examples of lint checks can be found in the [`anylint.yml` file of this very project](https://github.com/Flinesoft/AnyLint/blob/main/anylint.yml).
 
 ### Basic Types
 
@@ -198,9 +198,9 @@ The `.anchorsMatchLines` option is always activated on literal usage as we stron
 
 </details>
 
-#### CheckInfo
+#### Check
 
-A `CheckInfo` contains the basic information about a lint check. It consists of:
+A `Check` contains the basic information about a lint check. It consists of:
 
 1. `id`: The identifier of your lint check. For example: `EmptyTodo`
 2. `hint`: The hint explaining the cause of the violation or the steps to fix it.
@@ -210,8 +210,8 @@ While there is an initializer available, we recommend using a String Literal ins
 
 ```swift
 // accepted structure: <id>(@<severity>): <hint>
-let checkInfo: CheckInfo = "ReadmePath: The README file should be named exactly `README.md`."
-let checkInfoCustomSeverity: CheckInfo = "ReadmePath@warning: The README file should be named exactly `README.md`."
+let check: Check = "ReadmePath: The README file should be named exactly `README.md`."
+let checkCustomSeverity: Check = "ReadmePath@warning: The README file should be named exactly `README.md`."
 ```
 
 #### AutoCorrection
@@ -234,12 +234,12 @@ let example: AutoCorrection = ["before": "Lisence", "after": "License"]
 
 AnyLint has rich support for checking the contents of a file using a regex. The design follows the approach "make simple things simple and hard things possible". Thus, let's explain the `checkFileContents` method with a simple and a complex example.
 
-In its simplest form, the method just requires a `checkInfo` and a `regex`:
+In its simplest form, the method just requires a `check` and a `regex`:
 
 ```swift
 // MARK: EmptyTodo
 try Lint.checkFileContents(
-    checkInfo: "EmptyTodo: TODO comments should not be empty.",
+    check: "EmptyTodo: TODO comments should not be empty.",
     regex: #"// TODO: *\n"#
 )
 ```
@@ -264,7 +264,7 @@ let swiftTestFiles: Regex = #"Tests/.*\.swift"#
 // MARK: - Checks
 // MARK: empty_todo
 try Lint.checkFileContents(
-    checkInfo: "EmptyTodo: TODO comments should not be empty.",
+    check: "EmptyTodo: TODO comments should not be empty.",
     regex: #"// TODO: *\n"#,
     matchingExamples: ["// TODO:\n"],
     nonMatchingExamples: ["// TODO: not yet implemented\n"],
@@ -295,7 +295,7 @@ let swiftTestFiles: Regex = #"Tests/.*\.swift"#
 // MARK: - Checks
 // MARK: empty_method_body
 try Lint.checkFileContents(
-    checkInfo: "EmptyMethodBody: Don't use whitespaces for the body of empty methods.",
+    check: "EmptyMethodBody: Don't use whitespaces for the body of empty methods.",
     regex: [
       "declaration": #"func [^\(\s]+\([^{]*\)"#,
       "spacing": #"\s*"#,
@@ -340,7 +340,7 @@ While the `includeFilters` and `excludeFilters` arguments in the config file can
 
 For such cases, there are **2 ways to skip checks** within the files themselves:
 
-1. `AnyLint.skipHere: <CheckInfo.ID>`: Will skip the specified check(s) on the same line and the next line.
+1. `AnyLint.skipHere: <Check.ID>`: Will skip the specified check(s) on the same line and the next line.
 
   ```swift
   var x: Int = 5 // AnyLint.skipHere: MinVarNameLength
@@ -351,7 +351,7 @@ For such cases, there are **2 ways to skip checks** within the files themselves:
   var x: Int = 5
   ```
 
-2. `AnyLint.skipInFile: <All or CheckInfo.ID>`: Will skip `All` or specificed check(s) in the entire file.
+2. `AnyLint.skipInFile: <All or Check.ID>`: Will skip `All` or specificed check(s) in the entire file.
 
   ```swift
   // AnyLint.skipInFile: MinVarNameLength
@@ -387,12 +387,14 @@ By default, `checkFilePaths` will fail if the given `regex` matches a file. If y
 
 ### Custom Checks
 
+TODO: Update to new custom script format supporting all languages as long as they output Violation JOSN format.
+
 AnyLint allows you to do any kind of lint checks (thus its name) as it gives you the full power of the Swift programming language and it's packages [ecosystem](https://swiftpm.co/). The `customCheck` method needs to be used to profit from this flexibility. And it's actually the simplest of the three methods, consisting of only two parameters:
 
-1. `checkInfo`: Provides some general information on the lint check.
+1. `check`: Provides some general information on the lint check.
 2. `customClosure`: Your custom logic which produces an array of `Violation` objects.
 
-Note that the `Violation` type just holds some additional information on the file, matched string, location in the file and applied autocorrection and that all these fields are optional. It is a simple struct used by the AnyLint reporter for more detailed output, no logic attached. The only required field is the `CheckInfo` object which caused the violation.
+Note that the `Violation` type just holds some additional information on the file, matched string, location in the file and applied autocorrection and that all these fields are optional. It is a simple struct used by the AnyLint reporter for more detailed output, no logic attached. The only required field is the `Check` object which caused the violation.
 
 If you want to use regexes in your custom code, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/Flinesoft/HandySwift#regex) (the project, the class was taken from) or read the [code documentation comments](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift).
 
@@ -409,7 +411,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 
     // MARK: - Checks
     // MARK: LinuxMainUpToDate
-    try Lint.customCheck(checkInfo: "LinuxMainUpToDate: The tests in Tests/LinuxMain.swift should be up-to-date.") { checkInfo in
+    try Lint.customCheck(check: "LinuxMainUpToDate: The tests in Tests/LinuxMain.swift should be up-to-date.") { check in
         var violations: [Violation] = []
 
         let linuxMainFilePath = "Tests/LinuxMain.swift"
@@ -427,7 +429,7 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
         if linuxMainContentsBeforeRegeneration != linuxMainContentsAfterRegeneration {
             violations.append(
                 Violation(
-                    checkInfo: checkInfo,
+                    check: check,
                     filePath: linuxMainFilePath,
                     appliedAutoCorrection: AutoCorrection(
                         before: linuxMainContentsBeforeRegeneration,
@@ -491,6 +493,93 @@ Here are some **advanced Regex features** you might want to use or learn more ab
    For example, consider a regex violating if there's an empty line after an opening curly brace like so: `{\n\s*\n\s*\S`. This would match the lines of `func do() {\n\n    return 5}`, but what you actually want is it to start matching on the empty newline like so: `(?<={\n)\s*\n\s*\S`.
 
    See also [#3](https://github.com/Flinesoft/AnyLint/issues/3)
+
+## YAML Cheat Sheet
+
+Please be aware that in YAML indentation (whitespaces) and newlines are actually important.
+Natively supported types are: String, Integer, Float, Bool and Date.
+
+**Strings** (unlike in most other languages) don't need to be put between quotes, but can:
+```yaml
+string1: This is without quotes.
+string2: 'This is with single quotes.'
+string3: "This is with double quotes."
+```
+
+Note that only in double-quoted strings you can escape characters, e.g. `'Line1\nLine2'` will keep the `\n` as two characters in the result, whereas `"Line1\nLine2"` will escape `\n` to a newline. We recommend to use single quotes for `regex` arguments (the escaping will happen in the Regex parser) and double-quotes for any examples where you need escaping to be evaluated.
+
+**Multi-line strings** can be written by specifying `|` and then a newline:
+```yaml
+multiline1: |
+  This is a multi line string.
+  Newlines are going to be preserved.
+  By default, only one trailing newline is kept.
+```
+
+An additional `+` or `-` specified what to do with trailing newlines:
+```yaml
+multiline2: |+
+  This will make sure both trailing newlines are kept (ends with ".\n\n").
+
+
+multiline3: |-
+  This will ignore any trailing newlines and
+  will end with the last non-newline character (the following dot in this case -->).
+
+
+```
+
+**Arrays** can be written in two ways:
+```yaml
+array1: [1, 2, 3]
+array2:
+  - 1
+  - 2
+  - 3
+```
+
+**Dictionaries**, too, can be written in two similar ways:
+```yaml
+array1: { key1: 1, key2: 2, key3: 3 }
+array2:
+  - 1
+  - 2
+  - 3
+```
+
+Dictionaries and Arrays can be nested indefinitely. Dictionaries within Arrays are denoted with one `-` before the keys:
+```yaml
+level1dict:
+  level2dict:
+    level3dict1:
+      leaf1: foo
+      leaf2: bar
+    level3dict2:
+      array1: [a, b, c]
+      array2:
+        - [a, b, c]
+        - [x, y, z]
+    level3array:
+      - level4dict1: a
+        level4dict2: b
+        level4dict3: c
+```
+
+You can also reuse Dictionaries defined earlier (at the top) down the file via `<<: *`:
+```yaml
+swiftFileFilters:
+  includeFilters: ['.*\.swift']
+  excludeFilters: ['.*\.generated\.swift']
+
+FileContents:
+  - id: Check1
+    regex: 'a*b*'
+    <<: *swiftFileFilters
+
+  - id: Check2
+    regex: 'c*d*'
+    <<: *swiftFileFilters
+```
 
 ## Donation
 

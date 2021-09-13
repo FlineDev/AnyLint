@@ -19,15 +19,23 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- YAML-based configuration file. Supports `FilePaths` and `FileContents` as well as `CustomScripts` for full feature parity with previous Swift-based configuration file.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
-- None.
+- Migrated from jakeheis/SwiftCLI to apple/swift-argument-parser for improved reliability & reduced maintenance.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+- Vastly improved configuration reading performance by migrating over to a YAML-based approach rather than a Swift config file.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Deprecated
 - None.
 ### Removed
-- None.
+- Swift-based configuration file support removed in favor of YAML-based configuration. All features supported via the Swift file still supported via YAML file. See README.md for more details. Parameters were not renamed to keep migration simple.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+- Support for Swift versions below 5.4 was dropped to make use of the latest improvements in Swift & SwiftPM. Use version `0.8.2` if you need to stay on lower Swift versions.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Fixed
-- None.
+- Issues with paths due to Swift scripting not being as easy to use now fixed by moving over to YAML-based configuration. For custom scripts, responsibility is moved to the user side by allowing to specify the exact command to run.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Security
 - None.
 
@@ -101,7 +109,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - Made `AutoCorrection` expressible by Dictionary literals and updated the `README.md` accordingly.  
   Issue: [#5](https://github.com/Flinesoft/AnyLint/issues/5) | PR: [#11](https://github.com/Flinesoft/AnyLint/pull/11) | Author: [Cihat Gündüz](https://github.com/Jeehut)
-- Added option to skip checks within file contents by specifying `AnyLint.skipHere: <CheckInfo.ID>` or `AnyLint.skipInFile: <All or CheckInfo.ID>`. Checkout the [Skip file content checks](https://github.com/Flinesoft/AnyLint#skip-file-content-checks) README section for more info.  
+- Added option to skip checks within file contents by specifying `AnyLint.skipHere: <Check.ID>` or `AnyLint.skipInFile: <All or Check.ID>`. Checkout the [Skip file content checks](https://github.com/Flinesoft/AnyLint#skip-file-content-checks) README section for more info.  
   Issue: [#9](https://github.com/Flinesoft/AnyLint/issues/9) | PR: [#12](https://github.com/Flinesoft/AnyLint/pull/12) | Author: [Cihat Gündüz](https://github.com/Jeehut)
 
 ## [0.2.0] - 2020-04-10
@@ -114,7 +122,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 - Added two simple lint check examples in first code sample in README. (Thanks for the pointer, [Dave Verwer](https://github.com/daveverwer)!)  
   Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
-- Changed `CheckInfo` id casing convention from snake_case to UpperCamelCase in `blank` template.  
+- Changed `Check` id casing convention from snake_case to UpperCamelCase in `blank` template.  
   Author: [Cihat Gündüz](https://github.com/Jeehut)
 
 ## [0.1.0] - 2020-03-22
