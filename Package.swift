@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.4
 import PackageDescription
 
 let package = Package(
@@ -20,7 +20,7 @@ let package = Package(
             name: "AnyLintTests",
             dependencies: ["AnyLint"]
         ),
-        .target(
+        .executableTarget(
             name: "AnyLintCLI",
             dependencies: ["Rainbow", "SwiftCLI", "Utility"]
         ),

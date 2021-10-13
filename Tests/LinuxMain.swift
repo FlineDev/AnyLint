@@ -15,7 +15,8 @@ extension ArrayExtTests {
 
 extension AutoCorrectionTests {
     static var allTests: [(String, (AutoCorrectionTests) -> () throws -> Void)] = [
-        ("testInitWithDictionaryLiteral", testInitWithDictionaryLiteral)
+        ("testInitWithDictionaryLiteral", testInitWithDictionaryLiteral),
+        ("testAppliedMessageLines", testAppliedMessageLines)
     ]
 }
 
@@ -30,7 +31,8 @@ extension FileContentsCheckerTests {
         ("testPerformCheck", testPerformCheck),
         ("testSkipInFile", testSkipInFile),
         ("testSkipHere", testSkipHere),
-        ("testSkipIfEqualsToAutocorrectReplacement", testSkipIfEqualsToAutocorrectReplacement)
+        ("testSkipIfEqualsToAutocorrectReplacement", testSkipIfEqualsToAutocorrectReplacement),
+        ("testRepeatIfAutoCorrected", testRepeatIfAutoCorrected)
     ]
 }
 

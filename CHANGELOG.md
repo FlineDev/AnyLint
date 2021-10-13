@@ -31,6 +31,13 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.8.3] - 2021-10-13
+### Changed
+- Bumped minimum required Swift tools version to 5.4.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+- Removed `Package.resolved` file to prevent pinning dependency versions.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.8.2] - 2020-06-09
 ### Changed
 - Made internal extension methos public for usage in `customCheck`.  
