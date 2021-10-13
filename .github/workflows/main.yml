@@ -27,8 +27,8 @@ jobs:
           latest_version() {
             curl --silent "https://api.github.com/repos/$1/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
           }
-          echo "::set-env name=ANYLINT_LATEST_VERSION::$( latest_version Flinesoft/AnyLint )"
-          echo "::set-env name=SWIFT_SH_LATEST_VERSION::$( latest_version mxcl/swift-sh )"
+          echo "ANYLINT_LATEST_VERSION=$( latest_version Flinesoft/AnyLint )" >> $GITHUB_ENV
+          echo "SWIFT_SH_LATEST_VERSION=$( latest_version mxcl/swift-sh )" >> $GITHUB_ENV
 
       - name: AnyLint Cache
         uses: actions/cache@v1
@@ -93,7 +93,7 @@ jobs:
         run: swift test -v
 
   test-macos:
-    runs-on: macos-latest
+    runs-on: macos-11
 
     steps:
       - uses: actions/checkout@v2
