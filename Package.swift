@@ -12,25 +12,25 @@ let package = Package(
         .package(url: "https://github.com/jakeheis/SwiftCLI.git", from: "6.0.1"),
     ],
     targets: [
+        .executableTarget(
+            name: "AnyLintCLI",
+            dependencies: ["Rainbow", "SwiftCLI", "Utility"]
+        ),
         .target(
             name: "AnyLint",
             dependencies: ["Utility"]
+        ),
+        .target(
+            name: "Utility",
+            dependencies: ["Rainbow"]
         ),
         .testTarget(
             name: "AnyLintTests",
             dependencies: ["AnyLint"]
         ),
-        .executableTarget(
-            name: "AnyLintCLI",
-            dependencies: ["Rainbow", "SwiftCLI", "Utility"]
-        ),
         .testTarget(
             name: "AnyLintCLITests",
             dependencies: ["AnyLintCLI"]
-        ),
-        .target(
-            name: "Utility",
-            dependencies: ["Rainbow"]
         ),
         .testTarget(
             name: "UtilityTests",

@@ -90,7 +90,7 @@ anylint --init blank
 This will create the Swift script file `lint.swift` with something like the following contents:
 
 ```swift
-#!/usr/local/bin/swift-sh
+#!/opt/local/bin/swift-sh
 import AnyLint // @Flinesoft
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
@@ -399,7 +399,7 @@ If you want to use regexes in your custom code, you can learn more about how you
 When using the `customCheck`, you might want to also include some Swift packages for [easier file handling](https://github.com/JohnSundell/Files) or [running shell commands](https://github.com/JohnSundell/ShellOut). You can do so by adding them at the top of the file like so:
 
 ```swift
-#!/usr/local/bin/swift-sh
+#!/opt/local/bin/swift-sh
 import AnyLint // @Flinesoft
 import ShellOut // @JohnSundell
 

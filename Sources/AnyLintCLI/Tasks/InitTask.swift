@@ -26,6 +26,8 @@ extension InitTask: TaskHandler {
             return // only reachable in unit tests
         }
 
+        ValidateOrFail.swiftShInstalled()
+
         log.message("Making sure config file directory exists ...", level: .info)
         try Task.run(bash: "mkdir -p '\(configFilePath.parentDirectoryPath)'")
 

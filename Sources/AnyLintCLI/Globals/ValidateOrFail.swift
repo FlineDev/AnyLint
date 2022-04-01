@@ -7,7 +7,7 @@ enum ValidateOrFail {
     static func swiftShInstalled() {
         guard fileManager.fileExists(atPath: CLIConstants.swiftShPath) else {
             log.message(
-                "swift-sh not installed – please follow instructions on https://github.com/mxcl/swift-sh#installation to install.",
+                "swift-sh not installed – please try `brew install swift-sh` or follow instructions on https://github.com/mxcl/swift-sh#installation",
                 level: .error
             )
             log.exit(status: .failure)
@@ -18,7 +18,7 @@ enum ValidateOrFail {
     static func configFileExists(at configFilePath: String) throws {
         guard fileManager.fileExists(atPath: configFilePath) else {
             log.message(
-                "No configuration file found at \(configFilePath) – consider running `\(CLIConstants.commandName) --init` with a template.",
+                "No configuration file found at \(configFilePath) – consider running `--init` with a template, e.g.`\(CLIConstants.commandName) --init blank`.",
                 level: .error
             )
             log.exit(status: .failure)
