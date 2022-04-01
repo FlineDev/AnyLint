@@ -31,6 +31,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.8.4] - 2022-04-01
+### Fixed
+- Fixed an issue with pointing to the wrong Swift-SH path on Apple Silicon Macs. Should also fix the path on Linux.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut) | Issue: [#46](https://github.com/Flinesoft/AnyLint/issues/46)
+
 ## [0.8.3] - 2021-10-13
 ### Changed
 - Bumped minimum required Swift tools version to 5.4.  
