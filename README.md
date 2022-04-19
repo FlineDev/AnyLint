@@ -1,26 +1,26 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Flinesoft/AnyLint/main/Logo.png"
+    <img src="https://raw.githubusercontent.com/FlineDev/AnyLint/main/Logo.png"
       width=562 />
 </p>
 
 <p align="center">
-    <a href="https://github.com/Flinesoft/AnyLint/actions?query=branch%3Amain">
-        <img src="https://github.com/Flinesoft/AnyLint/workflows/CI/badge.svg"
+    <a href="https://github.com/FlineDev/AnyLint/actions?query=branch%3Amain">
+        <img src="https://github.com/FlineDev/AnyLint/workflows/CI/badge.svg"
             alt="CI">
     </a>
-    <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
+    <a href="https://www.codacy.com/gh/FlineDev/AnyLint">
         <img src="https://api.codacy.com/project/badge/Grade/c881ee12938145d3bfd398eff1571228"
              alt="Code Quality"/>
     </a>
-    <a href="https://www.codacy.com/gh/Flinesoft/AnyLint">
+    <a href="https://www.codacy.com/gh/FlineDev/AnyLint">
         <img src="https://api.codacy.com/project/badge/Coverage/c881ee12938145d3bfd398eff1571228"
              alt="Coverage"/>
     </a>
-    <a href="https://github.com/Flinesoft/AnyLint/releases">
+    <a href="https://github.com/FlineDev/AnyLint/releases">
         <img src="https://img.shields.io/badge/Version-0.8.4-blue.svg"
              alt="Version: 0.8.4">
     </a>
-    <a href="https://github.com/Flinesoft/AnyLint/blob/main/LICENSE">
+    <a href="https://github.com/FlineDev/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
              alt="License: MIT">
     </a>
@@ -45,7 +45,7 @@
   • <a href="#configuration">Configuration</a>
   • <a href="#xcode-build-script">Xcode Build Script</a>
   • <a href="#donation">Donation</a>
-  • <a href="https://github.com/Flinesoft/AnyLint/issues">Issues</a>
+  • <a href="https://github.com/FlineDev/AnyLint/issues">Issues</a>
   • <a href="#regex-cheat-sheet">Regex Cheat Sheet</a>
   • <a href="#license">License</a>
 </p>
@@ -61,7 +61,7 @@ Lint any project in any language using Swift and regular expressions. With built
 To **install** AnyLint the first time, run these commands:
 
 ```bash
-brew tap Flinesoft/AnyLint https://github.com/Flinesoft/AnyLint.git
+brew tap FlineDev/AnyLint https://github.com/FlineDev/AnyLint.git
 brew install anylint
 ```
 
@@ -76,7 +76,7 @@ brew upgrade anylint
 To **install** AnyLint or **update** to the latest version, run this command:
 
 ```bash
-mint install Flinesoft/AnyLint
+mint install FlineDev/AnyLint
 ```
 
 ## Getting Started
@@ -91,7 +91,7 @@ This will create the Swift script file `lint.swift` with something like the foll
 
 ```swift
 #!/opt/local/bin/swift-sh
-import AnyLint // @Flinesoft
+import AnyLint // @FlineDev
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
     // MARK: - Variables
@@ -158,7 +158,7 @@ AnyLint provides three different kinds of lint checks:
 2. `checkFilePaths`: Matches the file paths of the current directory to a given regex.
 3. `customCheck`: Allows to write custom Swift code to do other kinds of checks.
 
-Several examples of lint checks can be found in the [`lint.swift` file of this very project](https://github.com/Flinesoft/AnyLint/blob/main/lint.swift).
+Several examples of lint checks can be found in the [`lint.swift` file of this very project](https://github.com/FlineDev/AnyLint/blob/main/lint.swift).
 
 ### Basic Types
 
@@ -394,13 +394,13 @@ AnyLint allows you to do any kind of lint checks (thus its name) as it gives you
 
 Note that the `Violation` type just holds some additional information on the file, matched string, location in the file and applied autocorrection and that all these fields are optional. It is a simple struct used by the AnyLint reporter for more detailed output, no logic attached. The only required field is the `CheckInfo` object which caused the violation.
 
-If you want to use regexes in your custom code, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/Flinesoft/HandySwift#regex) (the project, the class was taken from) or read the [code documentation comments](https://github.com/Flinesoft/AnyLint/blob/main/Sources/Utility/Regex.swift).
+If you want to use regexes in your custom code, you can learn more about how you can match strings with a `Regex` object on [the HandySwift docs](https://github.com/FlineDev/HandySwift#regex) (the project, the class was taken from) or read the [code documentation comments](https://github.com/FlineDev/AnyLint/blob/main/Sources/Utility/Regex.swift).
 
 When using the `customCheck`, you might want to also include some Swift packages for [easier file handling](https://github.com/JohnSundell/Files) or [running shell commands](https://github.com/JohnSundell/ShellOut). You can do so by adding them at the top of the file like so:
 
 ```swift
 #!/opt/local/bin/swift-sh
-import AnyLint // @Flinesoft
+import AnyLint // @FlineDev
 import ShellOut // @JohnSundell
 
 Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
@@ -451,7 +451,7 @@ If you are using AnyLint for a project in Xcode, you can configure a build scrip
 if which anylint > /dev/null; then
     anylint -x
 else
-    echo "warning: AnyLint not installed, download it from https://github.com/Flinesoft/AnyLint"
+    echo "warning: AnyLint not installed, download it from https://github.com/FlineDev/AnyLint"
 fi
 ```
 
@@ -463,7 +463,7 @@ Next, make sure the AnyLint script runs before the steps `Compiling Sources` by 
 
 Refer to the Regex quick reference on [rubular.com](https://rubular.com/) which all apply for Swift as well:
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Flinesoft/AnyLint/main/RubularQuickReference.png"
+    <img src="https://raw.githubusercontent.com/FlineDev/AnyLint/main/RubularQuickReference.png"
       width=900 />
 </p>
 
@@ -476,7 +476,7 @@ Here are some **advanced Regex features** you might want to use or learn more ab
 
 1. Back references can be used within regexes to match previous capture groups.
 
-   For example, you can make sure that the PR number and link match in `PR: [#100](https://github.com/Flinesoft/AnyLint/pull/100)` by using a capture group (`(\d+)`) and a back reference (`\1`) like in: `\[#(\d+)\]\(https://[^)]+/pull/\1\)`.
+   For example, you can make sure that the PR number and link match in `PR: [#100](https://github.com/FlineDev/AnyLint/pull/100)` by using a capture group (`(\d+)`) and a back reference (`\1`) like in: `\[#(\d+)\]\(https://[^)]+/pull/\1\)`.
 
    [Learn more](https://www.regular-expressions.info/backref.html)
 
@@ -490,11 +490,11 @@ Here are some **advanced Regex features** you might want to use or learn more ab
 
    For example, consider a regex violating if there's an empty line after an opening curly brace like so: `{\n\s*\n\s*\S`. This would match the lines of `func do() {\n\n    return 5}`, but what you actually want is it to start matching on the empty newline like so: `(?<={\n)\s*\n\s*\S`.
 
-   See also [#3](https://github.com/Flinesoft/AnyLint/issues/3)
+   See also [#3](https://github.com/FlineDev/AnyLint/issues/3)
 
 ## Donation
 
-AnyLint was brought to you by [Cihat Gündüz](https://github.com/Jeehut) in his free time. If you want to thank me and support the development of this project, please **make a small donation on [PayPal](https://paypal.me/Dschee/5EUR)**. In case you also like my other [open source contributions](https://github.com/Flinesoft) and [articles](https://medium.com/@Jeehut), please consider motivating me by **becoming a sponsor on [GitHub](https://github.com/sponsors/Jeehut)** or a **patron on [Patreon](https://www.patreon.com/Jeehut)**.
+AnyLint was brought to you by [Cihat Gündüz](https://github.com/Jeehut) in his free time. If you want to thank me and support the development of this project, please **make a small donation on [PayPal](https://paypal.me/Dschee/5EUR)**. In case you also like my other [open source contributions](https://github.com/FlineDev) and [articles](https://medium.com/@Jeehut), please consider motivating me by **becoming a sponsor on [GitHub](https://github.com/sponsors/Jeehut)** or a **patron on [Patreon](https://www.patreon.com/Jeehut)**.
 
 Thank you very much for any donation, it really helps out a lot! 💯
 
