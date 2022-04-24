@@ -31,6 +31,10 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.8.5] - 2022-04-24
+### Fixed
+- Fixed an issue where first violation can't be shown in Xcode due to 'swift-driver version: 1.45.2' printed on same line.
+
 ## [0.8.4] - 2022-04-01
 ### Fixed
 - Fixed an issue with pointing to the wrong Swift-SH path on Apple Silicon Macs. Should also fix the path on Linux.  
