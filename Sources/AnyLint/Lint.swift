@@ -8,6 +8,7 @@ public enum Lint {
     /// - Parameters:
     ///   - checkInfo: The info object providing some general information on the lint check.
     ///   - regex: The regex to use for matching the contents of files. By defaults points to the start of the regex, unless you provide the named group 'pointer'.
+    ///   - violationlocation: Specifies the position of the violation marker violations should be reported. Can be the `lower` or `upper` end of a `fullMatch` or `captureGroup(index:)`.
     ///   - matchingExamples: An array of example contents where the `regex` is expected to trigger. Optionally, the expected pointer position can be marked with ↘.
     ///   - nonMatchingExamples: An array of example contents where the `regex` is expected not to trigger.
     ///   - includeFilters: An array of regexes defining which files should be incuded in the check. Will check all files matching any of the given regexes.
@@ -18,6 +19,7 @@ public enum Lint {
     public static func checkFileContents(
         checkInfo: CheckInfo,
         regex: Regex,
+        violationLocation: ViolationLocationConfig = .init(range: .fullMatch, bound: .lower),
         matchingExamples: [String] = [],
         nonMatchingExamples: [String] = [],
         includeFilters: [Regex] = [#".*"#],
@@ -59,6 +61,7 @@ public enum Lint {
         let violations = try FileContentsChecker(
             checkInfo: checkInfo,
             regex: regex,
+            violationLocation: violationLocation,
             filePathsToCheck: filePathsToCheck,
             autoCorrectReplacement: autoCorrectReplacement,
             repeatIfAutoCorrected: repeatIfAutoCorrected

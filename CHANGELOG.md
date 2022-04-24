@@ -19,7 +19,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- Added new option `violationLocation` parameter for `checkFileContents` for specifying position of violation marker using `.init(range:bound:)`, where `range` can be one of `.fullMatch` or `.captureGroup(index:)` and bound one of `.lower` or `.upper`.
 ### Changed
 - None.
 ### Deprecated
