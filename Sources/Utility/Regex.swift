@@ -1,4 +1,4 @@
-// Originally from: https://github.com/sharplet/Regex & https://github.com/Flinesoft/HandySwift (modified).
+// Originally from: https://github.com/sharplet/Regex & https://github.com/FlineDev/HandySwift (modified).
 
 import Foundation
 
