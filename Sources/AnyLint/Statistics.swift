@@ -50,6 +50,9 @@ final class Statistics {
     }
 
     func logCheckSummary() {
+        // make sure first violation reports in a new line when e.g. 'swift-driver version: 1.45.2' is printed
+        print("")
+
         if executedChecks.isEmpty {
             log.message("No checks found to perform.", level: .warning)
         } else if violationsBySeverity.values.contains(where: { $0.isFilled }) {
