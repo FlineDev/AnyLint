@@ -41,16 +41,23 @@ extension FileContentsChecker: Checker {
                             locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
 
                         case .upper:
-                            locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+                            locationInfo = fileContents.locationInfo(of: match.range.upperBound)
                         }
 
                     case .captureGroup(let index):
+                        let capture = match.captures[index]!
+                        let captureRange = NSRange(match.string.range(of: capture)!, in: match.string)
+
                         switch self.violationLocation.bound {
                         case .lower:
-                            locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+                            locationInfo = fileContents.locationInfo(
+                                of: fileContents.index(match.range.lowerBound, offsetBy: captureRange.location)
+                            )
 
                         case .upper:
-                            locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+                            locationInfo = fileContents.locationInfo(
+                                of: fileContents.index(match.range.lowerBound, offsetBy: captureRange.location + captureRange.length)
+                            )
                         }
                     }
 
@@ -117,7 +124,7 @@ extension FileContentsChecker: Checker {
             let violationsOnRechecks = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: regex,
-                violationLocation: self.violationLocation
+                violationLocation: self.violationLocation,
                 filePathsToCheck: filePathsToReCheck,
                 autoCorrectReplacement: autoCorrectReplacement,
                 repeatIfAutoCorrected: repeatIfAutoCorrected
