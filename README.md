@@ -448,10 +448,12 @@ Lint.logSummaryAndExit(arguments: CommandLine.arguments) {
 If you are using AnyLint for a project in Xcode, you can configure a build script to run it on each build. In order to do this select your target, choose the `Build Phases` tab and click the + button on the top left corner of that pane. Select `New Run Script Phase` and copy the following into the text box below the `Shell: /bin/sh` of your new run script phase:
 
 ```bash
+export PATH="$PATH:/opt/homebrew/bin"
+
 if which anylint > /dev/null; then
     anylint -x
 else
-    echo "warning: AnyLint not installed, download it from https://github.com/FlineDev/AnyLint"
+    echo "warning: AnyLint not installed, see from https://github.com/FlineDev/AnyLint"
 fi
 ```
 
