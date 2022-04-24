@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/FlineDev/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.8.5-blue.svg"
-             alt="Version: 0.8.5">
+        <img src="https://img.shields.io/badge/Version-0.9.0-blue.svg"
+             alt="Version: 0.9.0">
     </a>
     <a href="https://github.com/FlineDev/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
@@ -272,12 +272,13 @@ try Lint.checkFileContents(
 )
 ```
 
-There's 3 more parameters you can optionally set if needed:
+There's 5 more parameters you can optionally set if needed:
 
 1. `excludeFilters`: Array of `Regex` objects to exclude from the file paths to check.
-2. `autoCorrectReplacement`: Replacement string which can reference any capture groups in the `regex`.
-3. `autoCorrectExamples`: Example structs with `before` and `after` for autocorrection validation.
-4. `repeatIfAutoCorrected`: Repeat check if at least one auto-correction was applied in last run. Defaults to `false`.
+1. `violationLocation`: Specifies the position of the violation marker violations should be reported. Can be the `lower` or `upper` end of a `fullMatch` or `captureGroup(index:)`.  
+1. `autoCorrectReplacement`: Replacement string which can reference any capture groups in the `regex`.
+1. `autoCorrectExamples`: Example structs with `before` and `after` for autocorrection validation.
+1. `repeatIfAutoCorrected`: Repeat check if at least one auto-correction was applied in last run. Defaults to `false`.
 
 The `excludeFilters` can be used alternatively to the `includeFilters` or alongside them. If used alongside, exclusion will take precedence over inclusion.
 
@@ -301,6 +302,7 @@ try Lint.checkFileContents(
       "spacing": #"\s*"#,
       "body": #"\{\s+\}"#
     ],
+    violationLocation: .init(range: .fullMatch, bound: .upper),
     matchingExamples: [
         "func foo2bar()  { }",
         "func foo2bar(x: Int, y: Int)  { }",

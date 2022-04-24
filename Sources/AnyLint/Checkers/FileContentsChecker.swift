@@ -4,6 +4,7 @@ import Utility
 struct FileContentsChecker {
     let checkInfo: CheckInfo
     let regex: Regex
+    let violationLocation: ViolationLocationConfig
     let filePathsToCheck: [String]
     let autoCorrectReplacement: String?
     let repeatIfAutoCorrected: Bool
@@ -31,7 +32,27 @@ extension FileContentsChecker: Checker {
                 let skipHereRegex = try Regex(#"AnyLint\.skipHere:[^\n]*[, ]\#(checkInfo.id)"#)
 
                 for match in regex.matches(in: fileContents).reversed() {
-                    let locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+                    let locationInfo: String.LocationInfo
+
+                    switch self.violationLocation.range {
+                    case .fullMatch:
+                        switch self.violationLocation.bound {
+                        case .lower:
+                            locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+
+                        case .upper:
+                            locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+                        }
+
+                    case .captureGroup(let index):
+                        switch self.violationLocation.bound {
+                        case .lower:
+                            locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+
+                        case .upper:
+                            locationInfo = fileContents.locationInfo(of: match.range.lowerBound)
+                        }
+                    }
 
                     log.message("Found violating match at \(locationInfo) ...", level: .debug)
 
@@ -96,6 +117,7 @@ extension FileContentsChecker: Checker {
             let violationsOnRechecks = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: regex,
+                violationLocation: self.violationLocation
                 filePathsToCheck: filePathsToReCheck,
                 autoCorrectReplacement: autoCorrectReplacement,
                 repeatIfAutoCorrected: repeatIfAutoCorrected
