@@ -21,6 +21,7 @@ final class FileContentsCheckerTests: XCTestCase {
             let violations = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: #"(let|var) \w+=\w+"#,
+                violationLocation: .init(range: .fullMatch, bound: .lower),
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: nil,
                 repeatIfAutoCorrected: false
@@ -52,6 +53,7 @@ final class FileContentsCheckerTests: XCTestCase {
             let violations = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: #"(let|var) \w+=\w+"#,
+                violationLocation: .init(range: .fullMatch, bound: .lower),
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: nil,
                 repeatIfAutoCorrected: false
@@ -84,6 +86,7 @@ final class FileContentsCheckerTests: XCTestCase {
             let violations = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: #"(let|var) \w+=\w+"#,
+                violationLocation: .init(range: .fullMatch, bound: .lower),
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: nil,
                 repeatIfAutoCorrected: false
@@ -134,6 +137,7 @@ final class FileContentsCheckerTests: XCTestCase {
             let violations = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: #"(let|var) (\w+)\s*=\s*(\w+)"#,
+                violationLocation: .init(range: .fullMatch, bound: .lower),
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: "$1 $2 = $3",
                 repeatIfAutoCorrected: false
@@ -164,6 +168,7 @@ final class FileContentsCheckerTests: XCTestCase {
             let violations = try FileContentsChecker(
                 checkInfo: checkInfo,
                 regex: #"(?<!\d)(\d+)(\d{3})(?!\d)"#,
+                violationLocation: .init(range: .fullMatch, bound: .lower),
                 filePathsToCheck: filePathsToCheck,
                 autoCorrectReplacement: "$1_$2",
                 repeatIfAutoCorrected: true
