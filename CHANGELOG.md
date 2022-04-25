@@ -19,7 +19,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- Allow `customCheck` closure to be throwing by re-throwing if they are.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
 - None.
 ### Deprecated
