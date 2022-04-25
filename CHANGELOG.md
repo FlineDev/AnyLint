@@ -21,8 +21,7 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- Default violation level was changed from `error` to `warning`.  
-  Author: [Cihat Gündüz](https://github.com/Jeehut) | Issue: [#47](https://github.com/FlineDev/AnyLint/issues/47)
+- None.
 ### Deprecated
 - None.
 ### Removed
@@ -31,6 +30,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 - None.
 ### Security
 - None.
+
+## [0.9.1] - 2022-04-25
+### Changed
+- Default violation level was changed from `error` to `warning`.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut) | Issue: [#47](https://github.com/FlineDev/AnyLint/issues/47)
 
 ## [0.9.0] - 2022-04-24
 ### Added
