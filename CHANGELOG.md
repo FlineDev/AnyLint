@@ -21,7 +21,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- None.
+- Default violation level was changed from `error` to `warning`.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut) | Issue: [#47](https://github.com/FlineDev/AnyLint/issues/47)
 ### Deprecated
 - None.
 ### Removed
