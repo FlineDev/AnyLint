@@ -31,6 +31,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Security
 - None.
 
+## [0.9.2] - 2022-04-25
+### Added
+- Allow `customCheck` closure to be throwing by re-throwing if they are.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+
 ## [0.9.1] - 2022-04-25
 ### Changed
 - Default violation level was changed from `error` to `warning`.  
@@ -38,12 +43,12 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [0.9.0] - 2022-04-24
 ### Added
-- Added new option `violationLocation` parameter for `checkFileContents` for specifying position of violation marker using `.init(range:bound:)`, where `range` can be one of `.fullMatch` or `.captureGroup(index:)` and bound one of `.lower` or `.upper`.
-
+- Added new option `violationLocation` parameter for `checkFileContents` for specifying position of violation marker using `.init(range:bound:)`, where `range` can be one of `.fullMatch` or `.captureGroup(index:)` and bound one of `.lower` or `.upper`.  
+  
 ## [0.8.5] - 2022-04-24
 ### Fixed
-- Fixed an issue where first violation can't be shown in Xcode due to 'swift-driver version: 1.45.2' printed on same line.
-
+- Fixed an issue where first violation can't be shown in Xcode due to 'swift-driver version: 1.45.2' printed on same line.  
+  
 ## [0.8.4] - 2022-04-01
 ### Fixed
 - Fixed an issue with pointing to the wrong Swift-SH path on Apple Silicon Macs. Should also fix the path on Linux.  

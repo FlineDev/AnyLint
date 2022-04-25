@@ -29,6 +29,6 @@ final class CheckInfoTests: XCTestCase {
         let checkInfo4: CheckInfo = "test4: hint4"
         XCTAssertEqual(checkInfo4.id, "test4")
         XCTAssertEqual(checkInfo4.hint, "hint4")
-        XCTAssertEqual(checkInfo4.severity, .error)
+        XCTAssertEqual(checkInfo4.severity, .warning)
     }
 }

@@ -1,4 +1,4 @@
-#!/opt/local/bin/swift-sh
+#!/opt/homebrew/bin/swift-sh
 import AnyLint // .
 import Utility
 import ShellOut // @JohnSundell
