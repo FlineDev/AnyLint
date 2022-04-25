@@ -51,7 +51,7 @@ final class Statistics {
 
     func logCheckSummary() {
         // make sure first violation reports in a new line when e.g. 'swift-driver version: 1.45.2' is printed
-        print("\n")
+        print("\n")  // AnyLint.skipHere: Logger
 
         if executedChecks.isEmpty {
             log.message("No checks found to perform.", level: .warning)
