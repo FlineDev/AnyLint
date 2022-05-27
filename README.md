@@ -17,8 +17,8 @@
              alt="Coverage"/>
     </a>
     <a href="https://github.com/FlineDev/AnyLint/releases">
-        <img src="https://img.shields.io/badge/Version-0.9.2-blue.svg"
-             alt="Version: 0.9.2">
+        <img src="https://img.shields.io/badge/Version-0.10.0-blue.svg"
+             alt="Version: 0.10.0">
     </a>
     <a href="https://github.com/FlineDev/AnyLint/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
