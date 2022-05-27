@@ -1,7 +1,7 @@
 class Anylint < Formula
   desc "Lint anything by combining the power of Swift & regular expressions"
   homepage "https://github.com/FlineDev/AnyLint"
-  url "https://github.com/FlineDev/AnyLint.git", :tag => "0.9.2", :revision => "a696a4d40a3ede9daa07d7a381101a1e4e6efc46"
+  url "https://github.com/FlineDev/AnyLint.git", :tag => "0.10.0", :revision => "5a9c6d2289e1fc4e4f453c04d8a1ec891ea0797d"
   head "https://github.com/FlineDev/AnyLint.git"
 
   depends_on :xcode => ["12.5", :build]
