@@ -21,17 +21,23 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Added
 - None.
 ### Changed
-- Improved output color & formatting of new `--measure` option for printing execution time per check.  
-  Author: [Cihat Gündüz](https://github.com/Jeehut)
+- None.
 ### Deprecated
 - None.
 ### Removed
 - None.
 ### Fixed
-- New `--measure` option did not work when no violations were found, now also prints when all checks succeed.  
-  Author: [Cihat Gündüz](https://github.com/Jeehut)
+- None.
 ### Security
 - None.
+
+## [0.10.1] - 2022-05-27
+### Changed
+- Improved output color & formatting of new `--measure` option for printing execution time per check.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
+### Fixed
+- New `--measure` option did not work when no violations were found, now also prints when all checks succeed.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 
 ## [0.10.0] - 2022-05-27
 ### Added
