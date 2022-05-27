@@ -123,7 +123,7 @@ public final class Logger {
             print(formattedCurrentTime(), "✅", message.green)
 
         case .info:
-            print(formattedCurrentTime(), "ℹ️ ", message.lightBlue)
+            print(formattedCurrentTime(), "ℹ️ ", message.lightCyan)
 
         case .warning:
             print(formattedCurrentTime(), "⚠️ ", message.yellow)

@@ -75,6 +75,10 @@ final class Statistics {
                 showViolationsInXcode()
             }
         } else {
+            if printExecutionTime {
+                self.logExecutionTimes()
+            }
+
             log.message(
                 "Performed \(executedChecks.count) check(s) in \(filesChecked.count) file(s) without any violations.",
                 level: .success
@@ -83,11 +87,11 @@ final class Statistics {
     }
 
     func logExecutionTimes() {
-        log.message("Executed checks sorted by their execution time:", level: .info)
+        log.message("⏱ Executed checks sorted by their execution time:", level: .info)
 
         for (check, executionTime) in self.executionTimePerCheck.sorted(by: { $0.value > $1.value }) {
             let milliseconds = Int(executionTime * 1000)
-            log.message("\(check.id) took \(milliseconds)ms", level: .info)
+            log.message("\(milliseconds)ms\t\t\(check.id)", level: .info)
         }
     }
 
