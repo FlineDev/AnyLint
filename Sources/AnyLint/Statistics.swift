@@ -8,6 +8,7 @@ final class Statistics {
     var violationsPerCheck: [CheckInfo: [Violation]] = [:]
     var violationsBySeverity: [Severity: [Violation]] = [.info: [], .warning: [], .error: []]
     var filesChecked: Set<String> = []
+    var executionTimePerCheck: [CheckInfo: TimeInterval] = [:]
 
     var maxViolationSeverity: Severity? {
         violationsBySeverity.keys.filter { !violationsBySeverity[$0]!.isEmpty }.max { $0.rawValue < $1.rawValue }
@@ -23,6 +24,12 @@ final class Statistics {
         executedChecks.append(check)
         violationsPerCheck[check] = violations
         violationsBySeverity[check.severity]!.append(contentsOf: violations)
+    }
+
+    func measureTime(check: CheckInfo, lintTaskClosure: () throws -> Void) rethrows {
+        let startedAt = Date()
+        try lintTaskClosure()
+        self.executionTimePerCheck[check] = Date().timeIntervalSince(startedAt)
     }
 
     /// Use for unit testing only.
@@ -49,13 +56,17 @@ final class Statistics {
         }
     }
 
-    func logCheckSummary() {
+    func logCheckSummary(printExecutionTime: Bool) {
         // make sure first violation reports in a new line when e.g. 'swift-driver version: 1.45.2' is printed
         print("\n")  // AnyLint.skipHere: Logger
 
         if executedChecks.isEmpty {
             log.message("No checks found to perform.", level: .warning)
         } else if violationsBySeverity.values.contains(where: { $0.isFilled }) {
+            if printExecutionTime {
+                self.logExecutionTimes()
+            }
+
             switch log.outputType {
             case .console, .test:
                 logViolationsToConsole()
@@ -68,6 +79,15 @@ final class Statistics {
                 "Performed \(executedChecks.count) check(s) in \(filesChecked.count) file(s) without any violations.",
                 level: .success
             )
+        }
+    }
+
+    func logExecutionTimes() {
+        log.message("Executed checks sorted by their execution time:", level: .info)
+
+        for (check, executionTime) in self.executionTimePerCheck.sorted(by: { $0.value > $1.value }) {
+            let milliseconds = Int(executionTime * 1000)
+            log.message("\(check.id) took \(milliseconds)ms", level: .info)
         }
     }
 

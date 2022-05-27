@@ -23,6 +23,9 @@ class SingleCommand: Command {
     @Flag("-l", "--validate", description: "Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.")
     var validate: Bool
 
+    @Flag("-m", "--measure", description: "Prints the time it took to execute each check for performance optimizations")
+    var measure: Bool
+
     @Key("-i", "--init", description: "Configure AnyLint with a default template. Has to be one of: [\(CLIConstants.initTemplateCases)]")
     var initTemplateName: String?
 
@@ -66,7 +69,13 @@ class SingleCommand: Command {
         var anyConfigFileFailed = false
         for configPath in configurationPaths {
             do {
-                try LintTask(configFilePath: configPath, logDebugLevel: debug, failOnWarnings: strict, validateOnly: validate).perform()
+                try LintTask(
+                    configFilePath: configPath,
+                    logDebugLevel: self.debug,
+                    failOnWarnings: self.strict,
+                    validateOnly: self.validate,
+                    measure: self.measure
+                ).perform()
             } catch LintTask.LintError.configFileFailed {
                 anyConfigFileFailed = true
             }

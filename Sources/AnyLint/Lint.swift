@@ -28,46 +28,48 @@ public enum Lint {
         autoCorrectExamples: [AutoCorrection] = [],
         repeatIfAutoCorrected: Bool = false
     ) throws {
-        validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
-        validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
+        try Statistics.shared.measureTime(check: checkInfo) {
+            validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
+            validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
 
-        validateParameterCombinations(
-            checkInfo: checkInfo,
-            autoCorrectReplacement: autoCorrectReplacement,
-            autoCorrectExamples: autoCorrectExamples,
-            violateIfNoMatchesFound: nil
-        )
-
-        if let autoCorrectReplacement = autoCorrectReplacement {
-            validateAutocorrectsAll(
+            validateParameterCombinations(
                 checkInfo: checkInfo,
-                examples: autoCorrectExamples,
-                regex: regex,
-                autocorrectReplacement: autoCorrectReplacement
+                autoCorrectReplacement: autoCorrectReplacement,
+                autoCorrectExamples: autoCorrectExamples,
+                violateIfNoMatchesFound: nil
             )
+
+            if let autoCorrectReplacement = autoCorrectReplacement {
+                validateAutocorrectsAll(
+                    checkInfo: checkInfo,
+                    examples: autoCorrectExamples,
+                    regex: regex,
+                    autocorrectReplacement: autoCorrectReplacement
+                )
+            }
+
+            guard !Options.validateOnly else {
+                Statistics.shared.executedChecks.append(checkInfo)
+                return
+            }
+
+            let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
+                within: fileManager.currentDirectoryPath,
+                includeFilters: includeFilters,
+                excludeFilters: excludeFilters
+            )
+
+            let violations = try FileContentsChecker(
+                checkInfo: checkInfo,
+                regex: regex,
+                violationLocation: violationLocation,
+                filePathsToCheck: filePathsToCheck,
+                autoCorrectReplacement: autoCorrectReplacement,
+                repeatIfAutoCorrected: repeatIfAutoCorrected
+            ).performCheck()
+
+            Statistics.shared.found(violations: violations, in: checkInfo)
         }
-
-        guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
-            return
-        }
-
-        let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
-            within: fileManager.currentDirectoryPath,
-            includeFilters: includeFilters,
-            excludeFilters: excludeFilters
-        )
-
-        let violations = try FileContentsChecker(
-            checkInfo: checkInfo,
-            regex: regex,
-            violationLocation: violationLocation,
-            filePathsToCheck: filePathsToCheck,
-            autoCorrectReplacement: autoCorrectReplacement,
-            repeatIfAutoCorrected: repeatIfAutoCorrected
-        ).performCheck()
-
-        Statistics.shared.found(violations: violations, in: checkInfo)
     }
 
     /// Checks the names of files.
@@ -93,44 +95,46 @@ public enum Lint {
         autoCorrectExamples: [AutoCorrection] = [],
         violateIfNoMatchesFound: Bool = false
     ) throws {
-        validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
-        validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
-        validateParameterCombinations(
-            checkInfo: checkInfo,
-            autoCorrectReplacement: autoCorrectReplacement,
-            autoCorrectExamples: autoCorrectExamples,
-            violateIfNoMatchesFound: violateIfNoMatchesFound
-        )
-
-        if let autoCorrectReplacement = autoCorrectReplacement {
-            validateAutocorrectsAll(
+        try Statistics.shared.measureTime(check: checkInfo) {
+            validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
+            validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
+            validateParameterCombinations(
                 checkInfo: checkInfo,
-                examples: autoCorrectExamples,
-                regex: regex,
-                autocorrectReplacement: autoCorrectReplacement
+                autoCorrectReplacement: autoCorrectReplacement,
+                autoCorrectExamples: autoCorrectExamples,
+                violateIfNoMatchesFound: violateIfNoMatchesFound
             )
+
+            if let autoCorrectReplacement = autoCorrectReplacement {
+                validateAutocorrectsAll(
+                    checkInfo: checkInfo,
+                    examples: autoCorrectExamples,
+                    regex: regex,
+                    autocorrectReplacement: autoCorrectReplacement
+                )
+            }
+
+            guard !Options.validateOnly else {
+                Statistics.shared.executedChecks.append(checkInfo)
+                return
+            }
+
+            let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
+                within: fileManager.currentDirectoryPath,
+                includeFilters: includeFilters,
+                excludeFilters: excludeFilters
+            )
+
+            let violations = try FilePathsChecker(
+                checkInfo: checkInfo,
+                regex: regex,
+                filePathsToCheck: filePathsToCheck,
+                autoCorrectReplacement: autoCorrectReplacement,
+                violateIfNoMatchesFound: violateIfNoMatchesFound
+            ).performCheck()
+
+            Statistics.shared.found(violations: violations, in: checkInfo)
         }
-
-        guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
-            return
-        }
-
-        let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
-            within: fileManager.currentDirectoryPath,
-            includeFilters: includeFilters,
-            excludeFilters: excludeFilters
-        )
-
-        let violations = try FilePathsChecker(
-            checkInfo: checkInfo,
-            regex: regex,
-            filePathsToCheck: filePathsToCheck,
-            autoCorrectReplacement: autoCorrectReplacement,
-            violateIfNoMatchesFound: violateIfNoMatchesFound
-        ).performCheck()
-
-        Statistics.shared.found(violations: violations, in: checkInfo)
     }
 
     /// Run custom logic as checks.
@@ -139,18 +143,21 @@ public enum Lint {
     ///   - checkInfo: The info object providing some general information on the lint check.
     ///   - customClosure: The custom logic to run which produces an array of `Violation` objects for any violations.
     public static func customCheck(checkInfo: CheckInfo, customClosure: (CheckInfo) throws -> [Violation]) rethrows {
-        guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
-            return
-        }
+        try Statistics.shared.measureTime(check: checkInfo) {
+            guard !Options.validateOnly else {
+                Statistics.shared.executedChecks.append(checkInfo)
+                return
+            }
 
-        Statistics.shared.found(violations: try customClosure(checkInfo), in: checkInfo)
+            Statistics.shared.found(violations: try customClosure(checkInfo), in: checkInfo)
+        }
     }
 
     /// Logs the summary of all detected violations and exits successfully on no violations or with a failure, if any violations.
     public static func logSummaryAndExit(arguments: [String] = [], afterPerformingChecks checksToPerform: () throws -> Void = {}) throws {
         let failOnWarnings = arguments.contains(Constants.strictArgument)
         let targetIsXcode = arguments.contains(Logger.OutputType.xcode.rawValue)
+        let measure = arguments.contains(Constants.measureArgument)
 
         if targetIsXcode {
             log = Logger(outputType: .xcode)
@@ -167,7 +174,7 @@ public enum Lint {
             return // only reachable in unit tests
         }
 
-        Statistics.shared.logCheckSummary()
+        Statistics.shared.logCheckSummary(printExecutionTime: measure)
 
         if Statistics.shared.violations(severity: .error, excludeAutocorrected: targetIsXcode).isFilled {
             log.exit(status: .failure)
