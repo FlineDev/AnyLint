@@ -145,10 +145,11 @@ anylint --path Sources/lint.swift --path Tests/lint.swift
 There are also several flags you can pass to `anylint`:
 
 1. `-s` / `--strict`: Fails on warnings as well. (By default, the command only fails on errors.)
-2. `-x` / `--xcode`: Prints warnings & errors in a format to be reported right within Xcodes left sidebar.
-3. `-l` / `--validate`: Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.
-4. `-v` / `--version`: Prints the current tool version. (Does not run any lint checks.)
-5. `-d` / `--debug`: Logs much more detailed information about what AnyLint is doing for debugging purposes.
+1. `-x` / `--xcode`: Prints warnings & errors in a format to be reported right within Xcodes left sidebar.
+1. `-l` / `--validate`: Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.
+1. `-m` / `--measure`: Prints the time it took to execute each check for performance optimizations.
+1. `-v` / `--version`: Prints the current tool version. (Does not run any lint checks.)
+1. `-d` / `--debug`: Logs much more detailed information about what AnyLint is doing for debugging purposes.
 
 ## Configuration
 

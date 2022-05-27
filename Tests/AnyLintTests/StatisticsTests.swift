@@ -55,7 +55,7 @@ final class StatisticsTests: XCTestCase {
     }
 
     func testLogSummary() { // swiftlint:disable:this function_body_length
-        Statistics.shared.logCheckSummary()
+        Statistics.shared.logCheckSummary(printExecutionTime: false)
         XCTAssertEqual(TestHelper.shared.consoleOutputs.count, 1)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].level, .warning)
         XCTAssertEqual(TestHelper.shared.consoleOutputs[0].message, "No checks found to perform.")
@@ -91,14 +91,15 @@ final class StatisticsTests: XCTestCase {
         Statistics.shared.checkedFiles(at: ["Hogwarts/Harry.swift", "Hogwarts/Albus.swift"])
         Statistics.shared.checkedFiles(at: ["Hogwarts/Albus.swift"])
 
-        Statistics.shared.logCheckSummary()
+        Statistics.shared.logCheckSummary(printExecutionTime: true)
 
         XCTAssertEqual(
             TestHelper.shared.consoleOutputs.map { $0.level },
-            [.info, .info, .warning, .warning, .warning, .warning, .error, .error, .error, .error, .error, .error]
+            [.info, .info, .info, .warning, .warning, .warning, .warning, .error, .error, .error, .error, .error, .error]
         )
 
         let expectedOutputs = [
+            "Executed checks sorted by their execution time:",
             "\("[id1]".bold) Found 1 violation(s).",
             ">> Hint: hint1".bold.italic,
             "\("[id2]".bold) Found 2 violation(s) at:",

@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "AnyLint",
+    platforms: [.macOS(.v10_12)],
     products: [
         .library(name: "AnyLint", targets: ["AnyLint", "Utility"]),
         .executable(name: "anylint", targets: ["AnyLintCLI"]),

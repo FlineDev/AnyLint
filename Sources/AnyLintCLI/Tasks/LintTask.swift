@@ -7,6 +7,7 @@ struct LintTask {
     let logDebugLevel: Bool
     let failOnWarnings: Bool
     let validateOnly: Bool
+    let measure: Bool
 }
 
 extension LintTask: TaskHandler {
@@ -39,6 +40,10 @@ extension LintTask: TaskHandler {
 
             if validateOnly {
                 command += " \(Constants.validateArgument)"
+            }
+
+            if measure {
+                command += " \(Constants.measureArgument)"
             }
 
             try Task.run(bash: command)

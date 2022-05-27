@@ -19,9 +19,11 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- New `--measure` / `-m` option to print execution times per check to find slow checks easily.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Changed
-- None.
+- The execution time of all checks are now being measured, independent of what options are provided.  
+  Author: [Cihat Gündüz](https://github.com/Jeehut)
 ### Deprecated
 - None.
 ### Removed
