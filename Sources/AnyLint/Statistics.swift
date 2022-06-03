@@ -91,7 +91,7 @@ final class Statistics {
 
         for (check, executionTime) in self.executionTimePerCheck.sorted(by: { $0.value > $1.value }) {
             let milliseconds = Int(executionTime * 1000)
-            log.message("\(milliseconds)ms\t\t\(check.id)", level: .info)
+            log.message("\(milliseconds)ms\t\(check.id)", level: .info)
         }
     }
 
