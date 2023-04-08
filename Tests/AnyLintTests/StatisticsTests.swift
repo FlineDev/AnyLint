@@ -99,7 +99,7 @@ final class StatisticsTests: XCTestCase {
       )
       
       let expectedOutputs = [
-         "Executed checks sorted by their execution time:",
+         "⏱ Executed checks sorted by their execution time:",
          "\("[id1]".bold) Found 1 violation(s).",
          ">> Hint: hint1".bold.italic,
          "\("[id2]".bold) Found 2 violation(s) at:",
