@@ -4,11 +4,11 @@ import Utility
 // swiftlint:disable function_body_length
 
 enum BlankTemplate: ConfigurationTemplate {
-    static func fileContents() -> String {
-        commonPrefix + #"""
+   static func fileContents() -> String {
+      commonPrefix + #"""
             // MARK: - Variables
             let readmeFile: Regex = #"^README\.md$"#
-
+        
             // MARK: - Checks
             // MARK: Readme
             try Lint.checkFilePaths(
@@ -18,7 +18,7 @@ enum BlankTemplate: ConfigurationTemplate {
                 nonMatchingExamples: ["README.markdown", "Readme.md", "ReadMe.md"],
                 violateIfNoMatchesFound: true
             )
-
+        
             // MARK: ReadmePath
             try Lint.checkFilePaths(
                 checkInfo: "ReadmePath: The README file should be named exactly `README.md`.",
@@ -32,7 +32,7 @@ enum BlankTemplate: ConfigurationTemplate {
                     ["before": "README.markdown", "after": "README.md"],
                 ]
             )
-
+        
             // MARK: ReadmeTopLevelTitle
             try Lint.checkFileContents(
                 checkInfo: "ReadmeTopLevelTitle: The README.md file should only contain a single top level title.",
@@ -42,7 +42,7 @@ enum BlankTemplate: ConfigurationTemplate {
                     # Title
                     ## Subtitle
                     Lorem ipsum
-
+        
                     # Other Title
                     ## Other Subtitle
                     """,
@@ -52,14 +52,14 @@ enum BlankTemplate: ConfigurationTemplate {
                     # Title
                     ## Subtitle
                     Lorem ipsum #1 and # 2.
-
+        
                     ## Other Subtitle
                     ### Other Subsubtitle
                     """,
                 ],
                 includeFilters: [readmeFile]
             )
-
+        
             // MARK: ReadmeTypoLicense
             try Lint.checkFileContents(
                 checkInfo: "ReadmeTypoLicense: Misspelled word 'license'.",
@@ -74,5 +74,5 @@ enum BlankTemplate: ConfigurationTemplate {
                 ]
             )
         """# + commonSuffix
-    }
+   }
 }
