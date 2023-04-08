@@ -103,6 +103,7 @@ final class StatisticsTests: XCTestCase {
          "\("[id1]".bold) Found 1 violation(s).",
          ">> Hint: hint1".bold.italic,
          "\("[id2]".bold) Found 2 violation(s) at:",
+
          "> 1. Hogwarts/Harry.swift",
          "> 2. Hogwarts/Albus.swift",
          ">> Hint: hint2".bold.italic,
