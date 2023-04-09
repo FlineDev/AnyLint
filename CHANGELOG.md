@@ -19,6 +19,20 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
+- None.
+### Changed
+- None.
+### Deprecated
+- None.
+### Removed
+- None.
+### Fixed
+- None.
+### Security
+- None.
+
+## [0.11.0] - 2023-04-09
+### Added
 - Added a new `--unvalidated` (`-u`) option for running all checks without running the validations provided, such as testing for `matchingExamples` and `nonMatchingExamples`. Use with cuation.
 ### Changed
 - Some internal code clean-up.
