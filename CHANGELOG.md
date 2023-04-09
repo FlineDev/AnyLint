@@ -37,14 +37,8 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 ### Changed
 - Some internal code clean-up.
 - Upgrade to Swift 5.7 manifest syntax.
-### Deprecated
-- None.
-### Removed
-- None.
 ### Fixed
 - The `--measure` option also measured validations & files search which distorted the measure time for the first check with the same files search. Now, it only measures the actual matching time of the Regex for better evaluation.
-### Security
-- None.
 
 ## [0.10.1] - 2022-05-27
 ### Changed
