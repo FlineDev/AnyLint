@@ -23,8 +23,10 @@ jobs:
       # - name: Run AnyLint
       #   run: anylint
 
-      # - name: Run SwiftLint
-      #   run: swiftlint --strict
+      - name: Run SwiftLint
+        uses: norio-nomura/action-swiftlint@3.2.1
+        with:
+          args: --strict
 
       - name: Run tests
         run: swift test
