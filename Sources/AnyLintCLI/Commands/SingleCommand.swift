@@ -48,8 +48,8 @@ class SingleCommand: Command {
       }
       
       let configurationPaths = customPaths.isEmpty
-      ? [fileManager.currentDirectoryPath.appendingPathComponent(CLIConstants.defaultConfigFileName)]
-      : customPaths
+         ? [fileManager.currentDirectoryPath.appendingPathComponent(CLIConstants.defaultConfigFileName)]
+         : customPaths
       
       // init subcommand
       if let initTemplateName = initTemplateName {
