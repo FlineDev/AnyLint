@@ -1,6 +1,5 @@
-// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
 @testable import AnyLintTests
 @testable import Utility
 import XCTest
