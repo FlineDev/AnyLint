@@ -29,14 +29,19 @@ extension CLIConstants {
       #if os(Linux)
          return .linux
       #else
-      // Source: https://stackoverflow.com/a/69624732
+         // Source: https://stackoverflow.com/a/69624732
          var systemInfo = utsname()
          let exitCode = uname(&systemInfo)
 
          let fallbackPlatform: Platform = .appleSilicon
          guard exitCode == EXIT_SUCCESS else { return fallbackPlatform }
 
-         let cpuArchitecture = String(cString: &systemInfo.machine.0, encoding: .utf8)
+         let cpuArchitecture = withUnsafePointer(to: &systemInfo.machine) { unsafePointer in
+            unsafePointer.withMemoryRebound(to: CChar.self, capacity: Int(_SYS_NAMELEN)) { pointer in
+               String(cString: pointer)
+            }
+         }
+
          switch cpuArchitecture {
          case "x86_64":
             return .intel

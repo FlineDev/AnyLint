@@ -1,9 +1,9 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
    name: "AnyLint",
-   platforms: [.macOS(.v10_12)],
+   platforms: [.macOS(.v10_13)],
    products: [
       .library(name: "AnyLint", targets: ["AnyLint"]),
       .executable(name: "anylint", targets: ["AnyLintCLI"]),
@@ -25,13 +25,13 @@ let package = Package(
          name: "AnyLintCLI",
          dependencies: ["Rainbow", "SwiftCLI", "Utility"]
       ),
-      .testTarget(
-         name: "UtilityTests",
-         dependencies: ["Utility"]
-      ),
       .target(
          name: "Utility",
          dependencies: ["Rainbow"]
+      ),
+      .testTarget(
+         name: "UtilityTests",
+         dependencies: ["Utility"]
       ),
    ]
 )
