@@ -33,13 +33,13 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [0.11.0] - 2023-04-09
 ### Added
-- Added a new `--unvalidated` (`-u`) option for running all checks without running the validations provided, such as testing for `matchingExamples` and `nonMatchingExamples`. Use with cuation.
+- Added a new `--unvalidated` (`-u`) option for running all checks without running the validations provided, such as testing for `matchingExamples` and `nonMatchingExamples`. Use with cuation.  
 ### Changed
-- Some internal code clean-up.
-- Upgrade to Swift 5.7 manifest syntax.
+- Some internal code clean-up.  
+- Upgrade to Swift 5.7 manifest syntax.  
 ### Fixed
-- The `--measure` option also measured validations & files search which distorted the measure time for the first check with the same files search. Now, it only measures the actual matching time of the Regex for better evaluation.
-
+- The `--measure` option also measured validations & files search which distorted the measure time for the first check with the same files search. Now, it only measures the actual matching time of the Regex for better evaluation.  
+  
 ## [0.10.1] - 2022-05-27
 ### Changed
 - Improved output color & formatting of new `--measure` option for printing execution time per check.  

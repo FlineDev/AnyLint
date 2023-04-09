@@ -23,7 +23,11 @@ class SingleCommand: Command {
    @Flag("-l", "--validate", description: "Runs only validations for `matchingExamples`, `nonMatchingExamples` and `autoCorrectExamples`.")
    var validate: Bool
 
-   @Flag("-u", "--unvalidated", description: "Runs the checks without validating their correctness. Only use for faster subsequent runs after a validated run succeeded.")
+   @Flag(
+      "-u",
+      "--unvalidated",
+      description: "Runs the checks without validating their correctness. Only use for faster subsequent runs after a validated run succeeded."
+   )
    var unvalidated: Bool
 
    @Flag("-m", "--measure", description: "Prints the time it took to execute each check for performance optimizations")
