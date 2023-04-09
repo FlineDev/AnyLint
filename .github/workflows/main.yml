@@ -14,17 +14,17 @@ concurrency:
 
 jobs:
   ci:
-    runs-on: [self-hosted]
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Source
         uses: actions/checkout@v3
       
-      - name: Run AnyLint
-        run: anylint
+      # - name: Run AnyLint
+      #   run: anylint
 
-      - name: Run SwiftLint
-        run: swiftlint --strict
+      # - name: Run SwiftLint
+      #   run: swiftlint --strict
 
       - name: Run tests
         run: swift test
