@@ -9,23 +9,23 @@ extension FileManager {
          log.exit(status: .failure)
          return // only reachable in unit tests
       }
-      
+
       guard !fileExists(atPath: targetPath) || sourcePath.lowercased() == targetPath.lowercased() else {
          log.message("File already exists at target path \(targetPath) – can't move from \(sourcePath).", level: .warning)
          return
       }
-      
+
       let targetParentDirectoryPath = targetPath.parentDirectoryPath
       if !fileExists(atPath: targetParentDirectoryPath) {
          try createDirectory(atPath: targetParentDirectoryPath, withIntermediateDirectories: true, attributes: nil)
       }
-      
+
       guard fileExistsAndIsDirectory(atPath: targetParentDirectoryPath) else {
          log.message("Expected \(targetParentDirectoryPath) to be a directory.", level: .error)
          log.exit(status: .failure)
          return // only reachable in unit tests
       }
-      
+
       if sourcePath.lowercased() == targetPath.lowercased() {
          // workaround issues on case insensitive file systems
          let temporaryTargetPath = targetPath + UUID().uuidString
@@ -34,7 +34,7 @@ extension FileManager {
       } else {
          try moveItem(atPath: sourcePath, toPath: targetPath)
       }
-      
+
       FilesSearch.shared.invalidateCache()
    }
 }

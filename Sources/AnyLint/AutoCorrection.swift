@@ -5,27 +5,27 @@ import Utility
 public struct AutoCorrection {
    /// The matching text before applying the autocorrection.
    public let before: String
-   
+
    /// The matching text after applying the autocorrection.
    public let after: String
-   
+
    var appliedMessageLines: [String] {
       if useDiffOutput, #available(OSX 10.15, *) {
          var lines: [String] = ["Autocorrection applied, the diff is: (+ added, - removed)"]
-         
+
          let beforeLines = before.components(separatedBy: .newlines)
          let afterLines = after.components(separatedBy: .newlines)
-         
+
          for difference in afterLines.difference(from: beforeLines).sorted() {
             switch difference {
             case let .insert(offset, element, _):
                lines.append("+ [L\(offset + 1)] \(element)".green)
-               
+
             case let .remove(offset, element, _):
                lines.append("- [L\(offset + 1)] \(element)".red)
             }
          }
-         
+
          return lines
       } else {
          return [
@@ -35,12 +35,12 @@ public struct AutoCorrection {
          ]
       }
    }
-   
+
    var useDiffOutput: Bool {
       before.components(separatedBy: .newlines).count >= Constants.newlinesRequiredForDiffing ||
       after.components(separatedBy: .newlines).count >= Constants.newlinesRequiredForDiffing
    }
-   
+
    /// Initializes an autocorrection.
    public init(before: String, after: String) {
       self.before = before
@@ -58,7 +58,7 @@ extension AutoCorrection: ExpressibleByDictionaryLiteral {
          log.exit(status: .failure)
          exit(EXIT_FAILURE) // only reachable in unit tests
       }
-      
+
       self = AutoCorrection(before: before, after: after)
    }
 }
@@ -70,20 +70,20 @@ extension CollectionDifference.Change: Comparable where ChangeElement == String 
       switch (lhs, rhs) {
       case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
          return leftOffset < rightOffset
-         
+
       case let (.remove(leftOffset, _, _), .insert(rightOffset, _, _)):
          return leftOffset < rightOffset || true
-         
+
       case let (.insert(leftOffset, _, _), .remove(rightOffset, _, _)):
          return leftOffset < rightOffset || false
       }
    }
-   
+
    public static func == (lhs: Self, rhs: Self) -> Bool {
       switch (lhs, rhs) {
       case let (.remove(leftOffset, _, _), .remove(rightOffset, _, _)), let (.insert(leftOffset, _, _), .insert(rightOffset, _, _)):
          return leftOffset == rightOffset
-         
+
       case (.remove, .insert), (.insert, .remove):
          return false
       }

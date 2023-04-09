@@ -7,7 +7,7 @@ final class RegexExtTests: XCTestCase {
       let regex: Regex = #"(?<name>capture[_\-\.]group)\s+\n(.*)"#
       XCTAssertEqual(regex.pattern, #"(?<name>capture[_\-\.]group)\s+\n(.*)"#)
    }
-   
+
    func testInitWithDictionaryLiteral() {
       let regex: Regex = [
          "name": #"capture[_\-\.]group"#,

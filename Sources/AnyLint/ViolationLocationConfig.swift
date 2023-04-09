@@ -6,23 +6,23 @@ public struct ViolationLocationConfig {
    public enum Range {
       /// Uses the full matched range of the Regex.
       case fullMatch
-      
+
       /// Uses the capture group range of the provided index.
       case captureGroup(index: Int)
    }
-   
+
    /// The bound to use for pionter reporting. One of `.lower` or `.upper`.
    public enum Bound {
       /// Uses the lower end of the provided range.
       case lower
-      
+
       /// Uses the upper end of the provided range.
       case upper
    }
-   
+
    let range: Range
    let bound: Bound
-   
+
    /// Initializes a new instance with given range and bound.
    /// - Parameters:
    ///   - range: The range to use for pointer reporting. One of `.fullMatch` or `.captureGroup(index:)`.

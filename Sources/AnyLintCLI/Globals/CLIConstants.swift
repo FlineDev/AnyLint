@@ -8,10 +8,10 @@ enum CLIConstants {
       switch self.getPlatform() {
       case .intel:
          return "/usr/local/bin/swift-sh"
-         
+
       case .appleSilicon:
          return "/opt/homebrew/bin/swift-sh"
-         
+
       case .linux:
          return "/home/linuxbrew/.linuxbrew/bin/swift-sh"
       }
@@ -24,29 +24,29 @@ extension CLIConstants {
       case appleSilicon
       case linux
    }
-   
+
    fileprivate static func getPlatform() -> Platform {
-#if os(Linux)
-      return .linux
-#else
+      #if os(Linux)
+         return .linux
+      #else
       // Source: https://stackoverflow.com/a/69624732
-      var systemInfo = utsname()
-      let exitCode = uname(&systemInfo)
-      
-      let fallbackPlatform: Platform = .appleSilicon
-      guard exitCode == EXIT_SUCCESS else { return fallbackPlatform }
-      
-      let cpuArchitecture = String(cString: &systemInfo.machine.0, encoding: .utf8)
-      switch cpuArchitecture {
-      case "x86_64":
-         return .intel
-         
-      case "arm64":
-         return .appleSilicon
-         
-      default:
-         return fallbackPlatform
-      }
-#endif
+         var systemInfo = utsname()
+         let exitCode = uname(&systemInfo)
+
+         let fallbackPlatform: Platform = .appleSilicon
+         guard exitCode == EXIT_SUCCESS else { return fallbackPlatform }
+
+         let cpuArchitecture = String(cString: &systemInfo.machine.0, encoding: .utf8)
+         switch cpuArchitecture {
+         case "x86_64":
+            return .intel
+
+         case "arm64":
+            return .appleSilicon
+
+         default:
+            return fallbackPlatform
+         }
+      #endif
    }
 }

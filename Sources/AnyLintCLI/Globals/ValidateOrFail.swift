@@ -14,7 +14,7 @@ enum ValidateOrFail {
          return // only reachable in unit tests
       }
    }
-   
+
    static func configFileExists(at configFilePath: String) throws {
       guard fileManager.fileExists(atPath: configFilePath) else {
          log.message(

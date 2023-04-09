@@ -7,7 +7,7 @@ final class AutoCorrectionTests: XCTestCase {
       XCTAssertEqual(autoCorrection.before, "Lisence")
       XCTAssertEqual(autoCorrection.after, "License")
    }
-   
+
    func testAppliedMessageLines() {
       let singleLineAutoCorrection: AutoCorrection = ["before": "Lisence", "after": "License"]
       XCTAssertEqual(
@@ -18,7 +18,7 @@ final class AutoCorrectionTests: XCTestCase {
             "+ License",
          ]
       )
-      
+
       let multiLineAutoCorrection: AutoCorrection = [
          "before": "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n",
          "after": "A\nB\nD\nE\nF1\nF2\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n",

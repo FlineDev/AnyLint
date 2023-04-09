@@ -26,10 +26,6 @@ let package = Package(
          dependencies: ["Rainbow", "SwiftCLI", "Utility"]
       ),
       .testTarget(
-         name: "AnyLintCLITests",
-         dependencies: ["AnyLintCLI"]
-      ),
-      .testTarget(
          name: "UtilityTests",
          dependencies: ["Utility"]
       ),

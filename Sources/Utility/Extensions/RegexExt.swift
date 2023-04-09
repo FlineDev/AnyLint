@@ -20,7 +20,7 @@ extension Regex: ExpressibleByStringLiteral {
             return Regex.defaultOptions
          }
       }()
-      
+
       do {
          self = try Regex(pattern, options: options)
       } catch {
@@ -35,19 +35,19 @@ extension Regex: ExpressibleByDictionaryLiteral {
    public init(dictionaryLiteral elements: (String, String)...) {
       var patternElements = elements
       var options: Options = Regex.defaultOptions
-      
+
       if let regexOptionsValue = elements.last(where: { $0.0 == Constants.regexOptionsSeparator })?.1 {
          patternElements.removeAll { $0.0 == Constants.regexOptionsSeparator }
-         
+
          if regexOptionsValue.contains(Constants.caseInsensitiveRegexOption) {
             options.insert(.ignoreCase)
          }
-         
+
          if regexOptionsValue.contains(Constants.dotMatchesNewlinesRegexOption) {
             options.insert(.dotMatchesLineSeparators)
          }
       }
-      
+
       do {
          let pattern: String = patternElements.reduce(into: "") { result, element in result.append("(?<\(element.0)>\(element.1))") }
          self = try Regex(pattern, options: options)
@@ -64,7 +64,7 @@ extension Regex {
    public func replaceAllCaptures(in input: String, with template: String) -> String {
       replacingMatches(in: input, with: numerizedNamedCaptureRefs(in: template))
    }
-   
+
    /// Numerizes references to named capture groups to work around missing named capture group replacement in `NSRegularExpression` APIs.
    func numerizedNamedCaptureRefs(in replacementString: String) -> String {
       let captureGroupNameRegex = Regex(#"\(\?\<([a-zA-Z0-9_-]+)\>[^\)]+\)"#)

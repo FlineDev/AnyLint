@@ -85,8 +85,10 @@ excluded:
   - Tests/LinuxMain.swift
 
 disabled_rules:
-  - todo
+  - blanket_disable_command
   - cyclomatic_complexity
+  - todo
+
 
 # Rule Configurations
 conditional_returns_on_newline:
@@ -106,6 +108,9 @@ identifier_name:
     - id
     - db
     - to
+
+indentation_width:
+  indentation_width: 3
 
 line_length:
   warning: 160
