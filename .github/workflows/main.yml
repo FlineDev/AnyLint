@@ -27,4 +27,4 @@ jobs:
         run: swiftlint --strict
 
       - name: Run tests
-        run: swift test -v
+        run: swift test
