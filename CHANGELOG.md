@@ -19,15 +19,16 @@ If needed, pluralize to `Tasks`, `PRs` or `Authors` and list multiple entries se
 
 ## [Unreleased]
 ### Added
-- None.
+- Added a new `--unvalidated` (`-u`) option for running all checks without running the validations provided, such as testing for `matchingExamples` and `nonMatchingExamples`. Use with cuation.
 ### Changed
-- None.
+- Some internal code clean-up.
+- Upgrade to Swift 5.7 manifest syntax.
 ### Deprecated
 - None.
 ### Removed
 - None.
 ### Fixed
-- None.
+- The `--measure` option also measured validations & files search which distorted the measure time for the first check with the same files search. Now, it only measures the actual matching time of the Regex for better evaluation.
 ### Security
 - None.
 

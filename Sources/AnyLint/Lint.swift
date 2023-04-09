@@ -28,7 +28,7 @@ public enum Lint {
       autoCorrectExamples: [AutoCorrection] = [],
       repeatIfAutoCorrected: Bool = false
    ) throws {
-      try Statistics.shared.measureTime(check: checkInfo) {
+      if !Options.unvalidated {
          validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
          validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
 
@@ -47,18 +47,20 @@ public enum Lint {
                autocorrectReplacement: autoCorrectReplacement
             )
          }
+      }
 
-         guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
-            return
-         }
+      guard !Options.validateOnly else {
+         Statistics.shared.executedChecks.append(checkInfo)
+         return
+      }
 
-         let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
-            within: fileManager.currentDirectoryPath,
-            includeFilters: includeFilters,
-            excludeFilters: excludeFilters
-         )
+      let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
+         within: fileManager.currentDirectoryPath,
+         includeFilters: includeFilters,
+         excludeFilters: excludeFilters
+      )
 
+      try Statistics.shared.measureTime(check: checkInfo) {
          let violations = try FileContentsChecker(
             checkInfo: checkInfo,
             regex: regex,
@@ -95,7 +97,7 @@ public enum Lint {
       autoCorrectExamples: [AutoCorrection] = [],
       violateIfNoMatchesFound: Bool = false
    ) throws {
-      try Statistics.shared.measureTime(check: checkInfo) {
+      if !Options.unvalidated {
          validate(regex: regex, matchesForEach: matchingExamples, checkInfo: checkInfo)
          validate(regex: regex, doesNotMatchAny: nonMatchingExamples, checkInfo: checkInfo)
          validateParameterCombinations(
@@ -113,18 +115,20 @@ public enum Lint {
                autocorrectReplacement: autoCorrectReplacement
             )
          }
+      }
 
-         guard !Options.validateOnly else {
-            Statistics.shared.executedChecks.append(checkInfo)
-            return
-         }
+      guard !Options.validateOnly else {
+         Statistics.shared.executedChecks.append(checkInfo)
+         return
+      }
 
-         let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
-            within: fileManager.currentDirectoryPath,
-            includeFilters: includeFilters,
-            excludeFilters: excludeFilters
-         )
+      let filePathsToCheck: [String] = FilesSearch.shared.allFiles(
+         within: fileManager.currentDirectoryPath,
+         includeFilters: includeFilters,
+         excludeFilters: excludeFilters
+      )
 
+      try Statistics.shared.measureTime(check: checkInfo) {
          let violations = try FilePathsChecker(
             checkInfo: checkInfo,
             regex: regex,

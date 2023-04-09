@@ -7,6 +7,7 @@ struct LintTask {
    let logDebugLevel: Bool
    let failOnWarnings: Bool
    let validateOnly: Bool
+   let unvalidated: Bool
    let measure: Bool
 }
 
@@ -40,6 +41,10 @@ extension LintTask: TaskHandler {
 
          if validateOnly {
             command += " \(Constants.validateArgument)"
+         }
+
+         if unvalidated {
+            command += " \(Constants.unvalidatedArgument)"
          }
 
          if measure {

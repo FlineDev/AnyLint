@@ -23,6 +23,9 @@ public enum Constants {
    /// The validate-only mode argument for command-line pass-through.
    public static let validateArgument: String = "validate"
 
+   /// The unvalidated mode argument for command-line pass-through.
+   public static let unvalidatedArgument: String = "unvalidated"
+
    /// The measure mode to see how long each check took to execute
    public static let measureArgument: String = "measure"
 
